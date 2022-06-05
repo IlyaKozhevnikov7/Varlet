@@ -9,7 +9,7 @@ namespace Varlet
 	{
 	private:
 
-		std::vector<Module*> _dependencies;
+		mutable std::vector<Module*> _dependencies;
 
 	public:
 
@@ -17,11 +17,15 @@ namespace Varlet
 
 		virtual ~Module() = default;
 
+		std::vector<Module*>& GetDependencies() const;
+
 		virtual void Init();
 
-		virtual void InitDependencies(const std::vector<Module*>& dependencies);
-
 		virtual void Shutdown() = 0;
+
+	protected:
+
+		virtual void InitDependencies(std::vector<Module*>& dependencies);
 
 	};
 
