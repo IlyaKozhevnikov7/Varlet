@@ -14,6 +14,7 @@ project "Editor"
 
 	includedirs {
 		"%{entryPointPath}",
+		"%{wks.location}/Varlet/Source/Include",
 		"%{includeDir}"
 	}
 
