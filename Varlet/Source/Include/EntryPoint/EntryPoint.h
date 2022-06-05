@@ -17,7 +17,9 @@ int main(int argc, char* argv[])
 	Varlet::Engine engine;
 	
 	engine.Init();
+
 	engine.RegisterTargetModule(targetModule);
+	engine.InitModules();
 
 	engine.Run();
 

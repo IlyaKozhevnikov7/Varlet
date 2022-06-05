@@ -8,8 +8,6 @@ namespace Varlet
 
 	void Engine::RegisterTargetModule(Module* target)
 	{
-		//target->Init();
-
 		std::vector<Module*> modules;
 		modules.push_back(target);
 
@@ -24,6 +22,12 @@ namespace Varlet
 			if (auto updatebleModule = dynamic_cast<IUpdatebleModule*>(module))
 				_updatebleModules.push_back(updatebleModule);
 		}
+	}
+
+	void Engine::InitModules()
+	{
+		for (auto module : _modules)
+			module->Init();
 	}
 
 	void Engine::Run()

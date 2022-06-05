@@ -21,6 +21,8 @@ namespace Varlet
 
 		void RegisterTargetModule(Module* targetModule);
 	
+		void InitModules();
+
 		void Run();
 
 		void Shutdown();
