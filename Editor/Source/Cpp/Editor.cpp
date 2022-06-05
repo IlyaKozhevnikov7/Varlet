@@ -3,8 +3,6 @@
 
 void Editor::Init()
 {
-	Module::Init();
-
 	std::cout << "Editor init" << std::endl;
 }
 

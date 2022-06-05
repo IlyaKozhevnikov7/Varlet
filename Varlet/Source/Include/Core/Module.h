@@ -13,7 +13,7 @@ namespace Varlet
 
 	public:
 
-		Module() = default;
+		Module();
 
 		virtual ~Module() = default;
 

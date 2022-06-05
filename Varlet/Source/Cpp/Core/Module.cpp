@@ -2,6 +2,11 @@
 
 namespace Varlet
 {
+	Module::Module()
+	{
+		InitDependencies(_dependencies);
+	}
+
 	std::vector<Module*>& Module::GetDependencies() const
 	{
 		return _dependencies;
@@ -9,7 +14,6 @@ namespace Varlet
 
 	void Module::Init()
 	{
-		InitDependencies(_dependencies);
 	}
 
 	void Module::InitDependencies(std::vector<Module*>& dependencies)

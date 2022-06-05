@@ -8,7 +8,7 @@ namespace Varlet
 
 	void Engine::RegisterTargetModule(Module* target)
 	{
-		target->Init();
+		//target->Init();
 
 		std::vector<Module*> modules;
 		modules.push_back(target);
