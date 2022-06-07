@@ -4,7 +4,7 @@
 
 namespace Varlet
 {
-	class VARLET_API Engine
+	class CORE_API Engine
 	{
 	private:
 
