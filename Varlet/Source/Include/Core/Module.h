@@ -5,7 +5,7 @@
 
 namespace Varlet
 {
-	class VARLET_API Module
+	class CORE_API Module
 	{
 	private:
 
