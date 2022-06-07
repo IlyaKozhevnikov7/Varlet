@@ -1,9 +1,21 @@
 #include "Engine.h"
+#include "GLFWContext.h"
 
 namespace Varlet
 {
+	Engine::Engine()
+	{
+		_context = new GLFWContext();
+	}
+
+	Engine::~Engine()
+	{
+		delete _context;
+	}
+
 	void Engine::Init()
 	{
+		_context->Init();
 	}
 
 	void Engine::RegisterTargetModule(Module* target)
@@ -39,6 +51,8 @@ namespace Varlet
 
 	void Engine::Shutdown()
 	{
+		_context->Shutdown();
+
 		for (auto module : _modules)
 			module->Shutdown();
 	}

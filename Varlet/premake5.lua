@@ -14,7 +14,14 @@ project "Varlet"
 
 	includedirs {
 		"%{includeDir}",
-		"%{includeDir}/Core"
+		"%{includeDir}/Core",
+		"%{includeDir}/Platform",
+
+		"W:/Varlet/Varlet/Dependencies/libs"
+	}
+
+	links {
+		"glfw3"
 	}
 
 	defines {
