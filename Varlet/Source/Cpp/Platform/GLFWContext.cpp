@@ -20,6 +20,8 @@ namespace Varlet
 	
 	void GLFWContext::Shutdown()
 	{
+		glfwDestroyWindow(_window);
+		_window = nullptr;
 		glfwTerminate();
 	}
 }
