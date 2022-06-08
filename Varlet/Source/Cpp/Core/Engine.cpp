@@ -6,6 +6,7 @@ namespace Varlet
 	Engine::Engine()
 	{
 		_context = new GLFWContext();
+		_isRunning = true;
 	}
 
 	Engine::~Engine()
@@ -27,7 +28,7 @@ namespace Varlet
 		if (dependencies.size() > 0)
 			modules.insert(modules.begin(), dependencies.begin(), dependencies.end());
 
-		for (auto& module : modules)
+		for (auto module : modules)
 		{
 			_modules.push_back(module);
 
@@ -44,7 +45,7 @@ namespace Varlet
 
 	void Engine::Run()
 	{
-		while (_isRunning)
+		while (IsRunning())
 		{
 			for (auto module : _updatebleModules)
 				module->Update();
@@ -59,5 +60,10 @@ namespace Varlet
 
 		for (auto module : _modules)
 			module->Shutdown();
+	}
+
+	bool Engine::IsRunning() const
+	{
+		return _isRunning && _context->IsRunning();
 	}
 }

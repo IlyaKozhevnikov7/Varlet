@@ -32,5 +32,9 @@ namespace Varlet
 		void Run();
 
 		void Shutdown();
+
+	private:
+
+		bool IsRunning() const;
 	};
 }

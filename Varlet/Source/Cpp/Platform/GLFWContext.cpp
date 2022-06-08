@@ -15,7 +15,12 @@ namespace Varlet
 			glfwMakeContextCurrent(_window);
 		}
 		
-		return 1;
+		return initResult;
+	}
+
+	bool GLFWContext::IsRunning() const
+	{
+		return glfwWindowShouldClose(_window) == false;
 	}
 
 	void GLFWContext::Update()

@@ -13,6 +13,8 @@ namespace Varlet
 	
 		int32_t Init() override;
 	
+		bool IsRunning() const override;
+
 		void Update() override;
 
 		void Shutdown() override;
