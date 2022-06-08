@@ -2,10 +2,9 @@
 
 #include "Varlet.h"
 #include "Context.h"
-
 namespace Varlet
 {
-	class CORE_API Engine
+	class CORE_API Engine final
 	{
 	private:
 		
@@ -13,6 +12,8 @@ namespace Varlet
 
 		std::vector<Module*> _modules;
 		std::vector<IUpdatebleModule*> _updatebleModules;
+
+		bool _isRunning;
 
 	public:
 

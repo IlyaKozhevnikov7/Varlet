@@ -11,11 +11,17 @@ namespace Varlet
 		
 		if (initResult != 0)
 		{
-			_window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
+			_window = glfwCreateWindow(640, 480, "Varlet", nullptr, nullptr);
 			glfwMakeContextCurrent(_window);
 		}
 		
 		return 1;
+	}
+
+	void GLFWContext::Update()
+	{
+		glfwSwapBuffers(_window);
+		glfwPollEvents();
 	}
 	
 	void GLFWContext::Shutdown()

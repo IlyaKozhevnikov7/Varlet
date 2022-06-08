@@ -12,6 +12,8 @@ namespace Varlet
 	
 		int32_t Init() override;
 	
+		void Update() override;
+
 		void Shutdown() override;
 	
 		~GLFWContext() override = default;

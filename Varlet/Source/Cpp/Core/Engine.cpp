@@ -44,9 +44,13 @@ namespace Varlet
 
 	void Engine::Run()
 	{
-		for (int i = 0; i < 5; i++)
+		while (_isRunning)
+		{
 			for (auto module : _updatebleModules)
 				module->Update();
+
+			_context->Update();
+		}
 	}
 
 	void Engine::Shutdown()
