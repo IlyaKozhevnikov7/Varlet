@@ -1,7 +1,7 @@
 #include "GLFWContext.h"
 
-#include "../../Dependencies/GLFW/glfw3.h"
-#include "../../Dependencies/GLFW/glfw3native.h"
+#include "GLFW/glfw3.h"
+#include "GLFW/glfw3native.h"
 
 namespace Varlet
 {

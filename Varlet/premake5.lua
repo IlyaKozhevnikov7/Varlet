@@ -15,7 +15,9 @@ project "Varlet"
 	includedirs {
 		"%{includeDir}",
 		"%{includeDir}/Core",
-		"%{includeDir}/Platform"
+		"%{includeDir}/Platform",
+
+		"%{prj.location}/Dependencies"
 	}
 
 	links {
