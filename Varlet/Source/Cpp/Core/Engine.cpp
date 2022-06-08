@@ -14,6 +14,17 @@ namespace Varlet
 		delete _context;
 	}
 
+	Engine* Engine::Get()
+	{
+		static Engine instance;
+		return &instance;
+	}
+
+	ContextAPI* Engine::GetContext() const
+	{
+		return _context;
+	}
+
 	void Engine::Init()
 	{
 		_context->Init();
