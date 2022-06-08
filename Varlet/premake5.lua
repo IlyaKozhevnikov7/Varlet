@@ -17,7 +17,8 @@ project "Varlet"
 		"%{includeDir}/Core",
 		"%{includeDir}/Platform",
 
-		"%{prj.location}/Dependencies"
+		"%{prj.location}/Dependencies",
+		"%{prj.location}/Dependencies/GLAD/include"
 	}
 
 	links {
