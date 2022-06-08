@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Varlet.h"
+#include "VarletCore.h"
 #include "Context.h"
+#include "Module.h"
+
 namespace Varlet
 {
 	class CORE_API Engine final

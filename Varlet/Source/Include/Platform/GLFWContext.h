@@ -1,5 +1,6 @@
 #pragma once
 
+#include "VarletCore.h"
 #include "Context.h"
 
 struct GLFWwindow;

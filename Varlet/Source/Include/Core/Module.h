@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Varlet.h"
+#include "VarletCore.h"
 #include <vector>
 
 namespace Varlet

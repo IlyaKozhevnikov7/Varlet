@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Varlet.h"
+#include "VarletModules.h"
 #include "EntryPoint.h"
 
 class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
