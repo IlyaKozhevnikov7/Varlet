@@ -5,7 +5,7 @@ namespace Varlet
 {
 	Engine::Engine()
 	{
-		_context = new GLFWContext();
+		_context = new GLFWContext(); // hardcode context
 		_isRunning = true;
 	}
 

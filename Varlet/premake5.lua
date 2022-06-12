@@ -16,6 +16,7 @@ project "Varlet"
 		"%{includeDir}",
 		"%{includeDir}/Core",
 		"%{includeDir}/Platform",
+		"%{includeDir}/Rendering",
 
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}"
