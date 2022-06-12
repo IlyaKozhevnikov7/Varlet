@@ -17,16 +17,16 @@ project "Varlet"
 		"%{includeDir}/Core",
 		"%{includeDir}/Platform",
 
-		"%{prj.location}/Dependencies",
-		"%{prj.location}/Dependencies/GLAD/include"
+		"%{includeDirs.GLFW}",
+		"%{includeDirs.GLAD}"
 	}
 
 	links {
-		"glfw3"
+		"glfw3dll"
 	}
 
 	libdirs {
-		"%{prj.location}/Dependencies/libs"
+		"%{libraryDirs.GLFW}"
 	}
 
 	defines {

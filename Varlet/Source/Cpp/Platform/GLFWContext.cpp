@@ -8,13 +8,16 @@ namespace Varlet
 	int32_t GLFWContext::Init()
 	{
 		int32_t initResult = glfwInit();
-		
-		if (initResult != 0)
+
+		if (initResult)
 		{
-			_window = glfwCreateWindow(640, 480, "Varlet", nullptr, nullptr);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+			glfwSwapInterval(1);
+			_window = glfwCreateWindow(640, 480, "Varlet", NULL, NULL);
 			glfwMakeContextCurrent(_window);
 		}
-		
+
 		return initResult;
 	}
 

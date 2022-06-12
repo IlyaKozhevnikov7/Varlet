@@ -9,7 +9,10 @@ project "Editor"
 
 	files {
 		"%{sourceIncludeFiles}",
-		"%{sourceCppFiles}"
+		"%{sourceCppFiles}",
+		"%{includeDirs.ImGui}/**",
+
+		"%{includeDirs.GLAD}/../src/glad.c"
 	}
 
 	includedirs {
@@ -17,11 +20,19 @@ project "Editor"
 		"%{wks.location}/Varlet/Source/Include",
 		"%{includeDir}",
 
-		"%{prj.location}/Dependencies"
+		"%{prj.location}/Dependencies",
+		"%{includeDirs.GLAD}",
+		"%{includeDirs.GLFW}"
 	}
 
 	links {
-		"Varlet"
+		"Varlet",
+		"glfw3dll",
+		"opengl32"
+	}
+
+	libdirs {
+		"%{libraryDirs.GLFW}"
 	}
 
 	defines {

@@ -58,10 +58,10 @@ namespace Varlet
 	{
 		while (IsRunning())
 		{
+			_context->Update();
+
 			for (auto module : _updatebleModules)
 				module->Update();
-
-			_context->Update();
 		}
 	}
 
