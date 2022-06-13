@@ -17,6 +17,10 @@ namespace Varlet
 		return SUCCESSFUL_INITIALIZATION;
 	}
 
+	void Module::Shutdown()
+	{
+	}
+
 	void Module::InitDependencies(std::vector<Module*>& dependencies)
 	{
 	}

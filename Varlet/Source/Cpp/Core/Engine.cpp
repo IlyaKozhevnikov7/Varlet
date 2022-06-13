@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "GLFWContext.h"
+#include "OpenGLRenderer.h"
 
 namespace Varlet
 {
@@ -45,6 +46,13 @@ namespace Varlet
 
 			if (auto updatebleModule = dynamic_cast<IUpdatebleModule*>(module))
 				_updatebleModules.push_back(updatebleModule);
+		}
+
+		// temp add renderer here
+		{
+			auto openGLRenderer = new OpenGLRenderer();
+			_modules.push_back(openGLRenderer);
+			_updatebleModules.push_back(openGLRenderer);
 		}
 	}
 

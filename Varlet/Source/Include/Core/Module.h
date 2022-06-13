@@ -24,7 +24,7 @@ namespace Varlet
 
 		virtual int32_t Init();
 
-		virtual void Shutdown() = 0;
+		virtual void Shutdown();
 
 	protected:
 

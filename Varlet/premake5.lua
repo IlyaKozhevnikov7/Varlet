@@ -9,7 +9,9 @@ project "Varlet"
 
 	files {
 		"%{sourceIncludeFiles}",
-		"%{sourceCppFiles}"
+		"%{sourceCppFiles}",
+
+		"%{includeDirs.GLAD}/../src/glad.c"
 	}
 
 	includedirs {

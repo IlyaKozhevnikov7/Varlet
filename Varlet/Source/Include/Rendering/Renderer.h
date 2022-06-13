@@ -5,10 +5,10 @@
 
 namespace Varlet
 {
-	class CORE_API Renderer : public Module, public IUpdatebleModule
+	class Renderer : public Module, public IUpdatebleModule
 	{
 	public:
 
-		virtual void Draw() = 0;
+		~Renderer() override = default;
 	};
 }
