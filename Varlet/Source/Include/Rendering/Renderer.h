@@ -5,7 +5,7 @@
 
 namespace Varlet
 {
-	class CORE_API Renderer final : public Module, public IUpdatebleModule
+	class CORE_API Renderer : public Module, public IUpdatebleModule
 	{
 	public:
 

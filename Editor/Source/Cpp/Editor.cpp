@@ -17,18 +17,20 @@ Editor::Editor()
 	_context = nullptr;
 }
 
-void Editor::Init()
+int32_t Editor::Init()
 {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
 	{
 		std::cout << "Failed to initialize OpenGL context" << std::endl;
-		return;
+		return FAILED_INITIALIZATION;
 	}
 
 	_context = VarletAPI::GetContextWindow<GLFWwindow>();
 
 	if (_context == nullptr)
-		return;
+	{
+		return FAILED_INITIALIZATION;
+	}
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -55,6 +57,8 @@ void Editor::Init()
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(_context, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
+
+	return SUCCESSFUL_INITIALIZATION;
 }
 
 void Editor::Shutdown()

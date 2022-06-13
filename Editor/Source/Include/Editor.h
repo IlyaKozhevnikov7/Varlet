@@ -19,7 +19,7 @@ public:
 
 private:
 
-	void Init() override;
+	int32_t Init() override;
 
 	void Shutdown() override;
 

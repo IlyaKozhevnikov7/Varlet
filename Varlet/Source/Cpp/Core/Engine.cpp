@@ -51,7 +51,10 @@ namespace Varlet
 	void Engine::InitModules()
 	{
 		for (auto module : _modules)
-			module->Init();
+			if (module->Init() == FAILED_INITIALIZATION)
+			{
+				VARLET_LOG(LevelType::Error, "Module initialization error");
+			}
 	}
 
 	void Engine::Run()
