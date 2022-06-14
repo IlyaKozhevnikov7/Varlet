@@ -9,7 +9,7 @@ namespace Varlet
 	{
 	public:
 
-		virtual int32_t GetAPIId() const = 0;
+		virtual int32_t Init() override;
 
 		~Renderer() override = default;
 	};
