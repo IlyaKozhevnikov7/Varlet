@@ -25,10 +25,10 @@ namespace Varlet
 
 		const OpenGLSettings& GetSettings();
 
+		virtual int32_t GetAPIId() const override;
+
 		int32_t Init() override;
 
 		void Update() override;
-
-		void Draw() override;
 	};
 }

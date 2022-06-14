@@ -17,7 +17,8 @@ project "Varlet"
 	includedirs {
 		"%{includeDir}",
 		"%{includeDir}/Core",
-		"%{includeDir}/Platform",
+		"%{includeDir}/Platform/Windows",
+		"%{includeDir}/Platform/OpenGL",
 		"%{includeDir}/Rendering",
 
 		"%{includeDirs.GLFW}",

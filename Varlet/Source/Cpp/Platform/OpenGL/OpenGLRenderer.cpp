@@ -11,6 +11,11 @@ namespace Varlet
 		return _settings;
 	}
 
+	int32_t OpenGLRenderer::GetAPIId() const
+	{
+		return 1;
+	}
+
 	int32_t OpenGLRenderer::Init()
 	{
 		if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == false)
