@@ -17,18 +17,15 @@ project "Varlet"
 	includedirs {
 		"%{includeDir}",
 		"%{includeDir}/Core",
-<<<<<<< HEAD
 		"%{includeDir}/Platform",
-
-		"%{prj.location}/Dependencies"
-=======
 		"%{includeDir}/Platform/Windows",
 		"%{includeDir}/Platform/OpenGL",
 		"%{includeDir}/Rendering",
 
+		"%{prj.location}/Dependencies"
+
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}"
->>>>>>> dev
 	}
 
 	links {
