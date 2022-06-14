@@ -1,3 +1,5 @@
+include "Dependencies.lua"
+
 workspace "Varlet"
 	architecture "x64"
 

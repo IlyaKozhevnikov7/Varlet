@@ -9,23 +9,34 @@ project "Varlet"
 
 	files {
 		"%{sourceIncludeFiles}",
-		"%{sourceCppFiles}"
+		"%{sourceCppFiles}",
+
+		"%{includeDirs.GLAD}/../src/glad.c"
 	}
 
 	includedirs {
 		"%{includeDir}",
 		"%{includeDir}/Core",
+<<<<<<< HEAD
 		"%{includeDir}/Platform",
 
 		"%{prj.location}/Dependencies"
+=======
+		"%{includeDir}/Platform/Windows",
+		"%{includeDir}/Platform/OpenGL",
+		"%{includeDir}/Rendering",
+
+		"%{includeDirs.GLFW}",
+		"%{includeDirs.GLAD}"
+>>>>>>> dev
 	}
 
 	links {
-		"glfw3"
+		"glfw3dll"
 	}
 
 	libdirs {
-		"%{prj.location}/Dependencies/libs"
+		"%{libraryDirs.GLFW}"
 	}
 
 	defines {

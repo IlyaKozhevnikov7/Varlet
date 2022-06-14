@@ -3,16 +3,23 @@
 #include "VarletModules.h"
 #include "EntryPoint.h"
 
+struct GLFWwindow;
+struct ImGuiIO;
+
 class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
 {
+private:
+
+	GLFWwindow* _context;
+
 public:
 
-	Editor() = default;
+	Editor();
 	~Editor() override = default;
 
 private:
 
-	void Init() override;
+	int32_t Init() override;
 
 	void Shutdown() override;
 

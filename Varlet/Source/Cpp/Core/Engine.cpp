@@ -1,16 +1,29 @@
 #include "Engine.h"
 #include "GLFWContext.h"
+#include "OpenGLRenderer.h"
 
 namespace Varlet
 {
 	Engine::Engine()
 	{
-		_context = new GLFWContext();
+		_context = new GLFWContext(); // hardcode context
+		_isRunning = true;
 	}
 
 	Engine::~Engine()
 	{
 		delete _context;
+	}
+
+	Engine* Engine::Get()
+	{
+		static Engine instance;
+		return &instance;
+	}
+
+	ContextAPI* Engine::GetContext() const
+	{
+		return _context;
 	}
 
 	void Engine::Init()
@@ -27,29 +40,39 @@ namespace Varlet
 		if (dependencies.size() > 0)
 			modules.insert(modules.begin(), dependencies.begin(), dependencies.end());
 
-		for (auto& module : modules)
+		for (auto module : modules)
 		{
 			_modules.push_back(module);
 
 			if (auto updatebleModule = dynamic_cast<IUpdatebleModule*>(module))
 				_updatebleModules.push_back(updatebleModule);
 		}
+
+		// temp add renderer here
+		{
+			auto openGLRenderer = new OpenGLRenderer();
+			_modules.push_back(openGLRenderer);
+			_updatebleModules.push_back(openGLRenderer);
+		}
 	}
 
 	void Engine::InitModules()
 	{
 		for (auto module : _modules)
-			module->Init();
+			if (module->Init() == FAILED_INITIALIZATION)
+			{
+				VARLET_LOG(LevelType::Error, "Module initialization error");
+			}
 	}
 
 	void Engine::Run()
 	{
-		while (_isRunning)
+		while (IsRunning())
 		{
+			_context->Update();
+
 			for (auto module : _updatebleModules)
 				module->Update();
-
-			_context->Update();
 		}
 	}
 
@@ -59,5 +82,10 @@ namespace Varlet
 
 		for (auto module : _modules)
 			module->Shutdown();
+	}
+
+	bool Engine::IsRunning() const
+	{
+		return _isRunning && _context->IsRunning();
 	}
 }

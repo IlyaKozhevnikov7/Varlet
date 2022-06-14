@@ -14,16 +14,16 @@ int32_t main(int32_t argc, char* argv[])
 	for (int32_t i = 0; i < argc; i++)
 		std::cout << argv[i] << std::endl;
 
-	Varlet::Engine engine;
+	auto engine = Varlet::Engine::Get();
 	
-	engine.Init();
+	engine->Init();
 
-	engine.RegisterTargetModule(targetModule);
-	engine.InitModules();
+	engine->RegisterTargetModule(targetModule);
+	engine->InitModules();
 
-	engine.Run();
+	engine->Run();
 
-	engine.Shutdown();
+	engine->Shutdown();
 
 	return 0;
 }

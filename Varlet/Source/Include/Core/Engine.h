@@ -19,9 +19,11 @@ namespace Varlet
 
 	public:
 
-		Engine();
-
 		~Engine();
+
+		static Engine* Get();
+			
+		ContextAPI* GetContext() const;
 
 		void Init();
 
@@ -32,5 +34,11 @@ namespace Varlet
 		void Run();
 
 		void Shutdown();
+
+	private:
+
+		Engine();
+
+		bool IsRunning() const;
 	};
 }

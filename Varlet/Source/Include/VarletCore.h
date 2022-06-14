@@ -7,3 +7,5 @@
 #endif // DLL_EXPORT
 
 #include <stdint.h>
+
+#include "Logger.h"

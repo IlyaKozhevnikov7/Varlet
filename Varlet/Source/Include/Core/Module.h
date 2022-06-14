@@ -3,6 +3,9 @@
 #include "VarletCore.h"
 #include <vector>
 
+#define SUCCESSFUL_INITIALIZATION 0
+#define FAILED_INITIALIZATION -1
+
 namespace Varlet
 {
 	class CORE_API Module
@@ -19,9 +22,9 @@ namespace Varlet
 
 		std::vector<Module*>& GetDependencies() const;
 
-		virtual void Init();
+		virtual int32_t Init();
 
-		virtual void Shutdown() = 0;
+		virtual void Shutdown();
 
 	protected:
 
