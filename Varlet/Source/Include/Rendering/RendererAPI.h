@@ -58,7 +58,6 @@ namespace Varlet
 			static_assert(std::is_base_of<IRendererAPI, T>::value, "IRendererAPIInitializer must have Renderer template type");
 
 			RendererAPI::Init(new T());
-			RendererAPI::Init(new T());
 		}
 
 		~IRendererAPIInitializer() override = default;
