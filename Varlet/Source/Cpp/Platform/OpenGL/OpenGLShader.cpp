@@ -8,17 +8,17 @@ namespace Varlet
 	{
 		// now here automaticly created simple triangle shader
 		const char* vertexShaderSource = R"(
-		#version 460 core
+		#version 460
 
-		layout (location = 0) vec3 aPos;
+		layout (location = 0) in vec2 aPos;
 
 		void main()
 		{
-			gl_Position = vec4(aPos, 0.f);
+			gl_Position = vec4(aPos, 0.f, 1.f);
 		})";
 
 		const char* geomtryShaderSource = R"(
-		#version 460 core
+		#version 460
 
 		layout (triangle_strip, max_vertices = 3) out;
 
@@ -42,38 +42,38 @@ namespace Varlet
 		})";
 
 		const char* fragmentShaderSource = R"(
-		#version 460 core
+		#version 460
 
-		in vec3 color;
+		//in vec3 color;
 
 		out vec4 fragColor;
 
 		void main()
 		{
-			fragColor = vec4(color, 1.f);
+			fragColor = vec4(1.f, 0.5f, 0.f, 1.f);
 		})";
 
 		uint32_t vertexShaderId = glCreateShader(ShaderType::Vertex);
-		glShaderSource(vertexShaderId, 1, &vertexShaderSource, NULL);
+		glShaderSource(vertexShaderId, 1, &vertexShaderSource, nullptr);
 		glCompileShader(vertexShaderId);
-		Compile(vertexShaderId, ObjrctType::VertexShader);
+		Compile(vertexShaderId, ObjectType::VertexShader);
 
 		uint32_t geomtryShaderId = glCreateShader(ShaderType::Geometry);
 		glShaderSource(geomtryShaderId, 1, &geomtryShaderSource, NULL);
 		glCompileShader(geomtryShaderId);
-		Compile(geomtryShaderId, ObjrctType::GeomertyShader);
+		Compile(geomtryShaderId, ObjectType::GeomertyShader);
 
 		uint32_t fragmentShaderId = glCreateShader(ShaderType::Fragment);
 		glShaderSource(fragmentShaderId, 1, &fragmentShaderSource, NULL);
 		glCompileShader(fragmentShaderId);
-		Compile(fragmentShaderId, ObjrctType::FragmentShader);
+		Compile(fragmentShaderId, ObjectType::FragmentShader);
 
 		_id = glCreateProgram();
 		glAttachShader(_id, vertexShaderId);
 		glAttachShader(_id, geomtryShaderId);
 		glAttachShader(_id, fragmentShaderId);
 		glLinkProgram(_id);
-		Compile(_id, ObjrctType::Program);
+		Compile(_id, ObjectType::Program);
 
 		glDeleteProgram(vertexShaderId);
 		glDeleteProgram(geomtryShaderId);
@@ -90,12 +90,12 @@ namespace Varlet
 		glUseProgram(_id);
 	}
 
-	void OpenGLShader::Compile(const uint32_t& objId, ObjrctType&& objType)
+	void OpenGLShader::Compile(const uint32_t& objId, ObjectType&& objType)
 	{
 		int32_t isSuccess;
 		char errorLog[512];
 
-		if (objType == ObjrctType::Program)
+		if (objType == ObjectType::Program)
 		{
 			glGetProgramiv(objId, GL_LINK_STATUS, &isSuccess);
 
