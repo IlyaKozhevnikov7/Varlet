@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Renderer.h"
-#include "RendererAPI.h"
+#include "RenderingCore.h"
 #include "OpenGLRendererAPI.h"
 
 namespace Varlet

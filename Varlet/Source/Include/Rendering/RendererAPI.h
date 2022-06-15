@@ -15,7 +15,7 @@ namespace Varlet
 		// create ...
 	};
 
-	class RendererAPI
+	class RendererAPI final
 	{
 	private:
 
@@ -23,20 +23,7 @@ namespace Varlet
 
 	public:
 
-		RendererAPI() = default;
-		virtual ~RendererAPI() = default;
-
-		static void Init(IRendererAPI* api)
-		{
-#ifdef DEBUG
-			static bool initialized = false;
-			assert(initialized == false && "RendererAPI already was initialized");
-			assert(api != nullptr && "RendererAPI init argument was nullptr");
-			initialized = true;
-#endif // DEBUG
-
-			_api = api;
-		}
+		static void Init(IRendererAPI* api);
 	};
 
 	class IRendererAPIInitializerBase

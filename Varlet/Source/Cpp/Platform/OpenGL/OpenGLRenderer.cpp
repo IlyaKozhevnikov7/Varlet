@@ -1,7 +1,7 @@
 #include "OpenGLRenderer.h"
+#include "OpenGLShader.h"
 
 #include "glad/glad.h"
-
 #include "GLFW/glfw3.h"
 
 namespace Varlet
@@ -38,5 +38,7 @@ namespace Varlet
 
 	void OpenGLRenderer::Update()
 	{
+		//static OpenGLShader triangle;
+		//triangle.Use();
 	}
 }

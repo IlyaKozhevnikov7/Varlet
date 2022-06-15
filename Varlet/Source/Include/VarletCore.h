@@ -8,5 +8,6 @@
 
 #include <stdint.h>
 #include <cassert>
+#include <string>
 
 #include "Logger.h"
