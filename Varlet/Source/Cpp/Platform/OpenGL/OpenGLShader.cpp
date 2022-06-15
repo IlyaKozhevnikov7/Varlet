@@ -8,7 +8,7 @@ namespace Varlet
 	{
 		// now here automaticly created simple triangle shader
 		const char* vertexShaderSource = R"(
-		#version 460
+		#version 460 core
 
 		layout (location = 0) in vec2 aPos;
 
@@ -18,7 +18,7 @@ namespace Varlet
 		})";
 
 		const char* geomtryShaderSource = R"(
-		#version 460
+		#version 460 core
 
 		layout (triangle_strip, max_vertices = 3) out;
 
@@ -42,9 +42,7 @@ namespace Varlet
 		})";
 
 		const char* fragmentShaderSource = R"(
-		#version 460
-
-		//in vec3 color;
+		#version 460 core
 
 		out vec4 fragColor;
 
@@ -54,7 +52,7 @@ namespace Varlet
 		})";
 
 		uint32_t vertexShaderId = glCreateShader(ShaderType::Vertex);
-		glShaderSource(vertexShaderId, 1, &vertexShaderSource, nullptr);
+		glShaderSource(vertexShaderId, 1, &vertexShaderSource, NULL);
 		glCompileShader(vertexShaderId);
 		Compile(vertexShaderId, ObjectType::VertexShader);
 
