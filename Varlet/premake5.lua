@@ -22,7 +22,8 @@ project "Varlet"
 		"%{includeDir}/Platform/OpenGL",
 
 		"%{includeDirs.GLFW}",
-		"%{includeDirs.GLAD}"
+		"%{includeDirs.GLAD}",
+		"%{includeDirs.GLM}"
 	}
 
 	links {

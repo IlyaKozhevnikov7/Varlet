@@ -10,6 +10,8 @@ namespace Varlet
 	private:
 
 		uint32_t _id;
+		uint32_t textureId;
+		uint32_t renderbufferId;
 
 	public:
 
