@@ -1,4 +1,5 @@
 /Build
+/Sandbox
 
 # Visual Studio files
 .vs
@@ -6,3 +7,6 @@
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
+# ImGui .ini files
+**.ini

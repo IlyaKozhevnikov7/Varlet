@@ -10,5 +10,5 @@
 #include <cassert>
 #include <string>
 
-#include "GLM/glm.hpp"
+#include "../../Dependencies/GLM/include/glm/glm.hpp"
 #include "Logger.h"
