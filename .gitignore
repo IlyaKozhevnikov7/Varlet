@@ -9,4 +9,4 @@
 **.vcxproj.user
 
 # ImGui .ini files
-**.ini
+**imgui.ini

@@ -24,6 +24,10 @@ private:
 	void Shutdown() override;
 
 	void Update() override;
+
+	void DrawDockSpace() const;
+
+	void DrawViewPort() const;
 };
 
 MAKE_TARGET_SYSTEM(Editor);
