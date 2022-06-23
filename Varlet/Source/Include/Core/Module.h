@@ -2,6 +2,7 @@
 
 #include "VarletCore.h"
 #include <vector>
+#include "Scene.h"
 
 #define SUCCESSFUL_INITIALIZATION 0
 #define FAILED_INITIALIZATION -1
@@ -46,6 +47,7 @@ namespace Varlet
 	private:
 
 		// startup scene path
+		Scene* _currentScene;
 
 	public:
 

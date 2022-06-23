@@ -18,6 +18,7 @@ project "Varlet"
 		"%{includeDir}",
 		"%{includeDir}/Core",
 		"%{includeDir}/Rendering",
+		"%{includeDir}/Scene",
 		"%{includeDir}/Platform/Windows",
 		"%{includeDir}/Platform/OpenGL",
 

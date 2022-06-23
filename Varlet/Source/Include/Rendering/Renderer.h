@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Module.h"
+#include "VarletModules.h"
 
 namespace Varlet
 {
