@@ -16,7 +16,7 @@ namespace Varlet
 
 	public:
 
-		Module();
+		Module() = default;
 
 		virtual ~Module() = default;
 
@@ -39,5 +39,22 @@ namespace Varlet
 		virtual ~IUpdatebleModule() = default;
 
 		virtual void Update() = 0;
+	};
+
+	class CORE_API GameModule : public Module, public IUpdatebleModule
+	{
+	private:
+
+		// startup scene path
+
+	public:
+
+		GameModule() = default;
+
+		~GameModule() override = default;
+
+		virtual int32_t Init() override;
+
+		virtual void Update() override;
 	};
 }

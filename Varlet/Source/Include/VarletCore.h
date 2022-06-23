@@ -2,7 +2,7 @@
 
 #ifdef DLL_EXPORT
 	#define CORE_API __declspec(dllexport)
-#elif	
+#else
 	#define CORE_API __declspec(dllimport)
 #endif // DLL_EXPORT
 

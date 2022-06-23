@@ -12,9 +12,10 @@
 
 #include <iostream>
 
-Editor::Editor()
+Editor::Editor(Varlet::GameModule* module)
 {
-	_context = nullptr;
+	_window = nullptr;
+	_context = module;
 }
 
 int32_t Editor::Init()
@@ -25,9 +26,9 @@ int32_t Editor::Init()
 		return FAILED_INITIALIZATION;
 	}
 
-	_context = VarletAPI::GetContextWindow<GLFWwindow>();
+	_window = VarletAPI::GetContextWindow<GLFWwindow>();
 
-	if (_context == nullptr)
+	if (_window == nullptr)
 	{
 		return FAILED_INITIALIZATION;
 	}
@@ -55,7 +56,7 @@ int32_t Editor::Init()
 	}
 
 	// Setup Platform/Renderer backends
-	ImGui_ImplGlfw_InitForOpenGL(_context, true);
+	ImGui_ImplGlfw_InitForOpenGL(_window, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
 	return SUCCESSFUL_INITIALIZATION;
@@ -125,7 +126,7 @@ void Editor::Update()
 	// Rendering
 	ImGui::Render();
 	int display_w, display_h;
-	glfwGetFramebufferSize(_context, &display_w, &display_h);
+	glfwGetFramebufferSize(_window, &display_w, &display_h);
 	glViewport(0, 0, display_w, display_h);
 	glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
 	glClear(GL_COLOR_BUFFER_BIT);
