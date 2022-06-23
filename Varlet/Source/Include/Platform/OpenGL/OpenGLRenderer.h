@@ -1,6 +1,11 @@
 #pragma once
 
+<<<<<<< HEAD
 #include "Renderer.h"
+=======
+#include "RenderingCore.h"
+#include "OpenGLRendererAPI.h"
+>>>>>>> dev
 
 namespace Varlet
 {
@@ -13,7 +18,11 @@ namespace Varlet
 		bool cullFace = true;
 	};
 
+<<<<<<< HEAD
 	class OpenGLRenderer final : public Renderer
+=======
+	class OpenGLRenderer final : public Renderer, public IRendererAPIInitializer<OpenGLRendererAPI>
+>>>>>>> dev
 	{
 	private:
 
@@ -25,8 +34,11 @@ namespace Varlet
 
 		const OpenGLSettings& GetSettings();
 
+<<<<<<< HEAD
 		virtual int32_t GetAPIId() const override;
 
+=======
+>>>>>>> dev
 		int32_t Init() override;
 
 		void Update() override;

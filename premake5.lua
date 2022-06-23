@@ -19,3 +19,4 @@ workspace "Varlet"
 
 	include "Editor"
 	include "Varlet"
+	include "Sandbox"

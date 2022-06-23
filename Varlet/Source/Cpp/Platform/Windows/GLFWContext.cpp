@@ -15,6 +15,16 @@ namespace Varlet
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 			glfwSwapInterval(1);
 			_window = glfwCreateWindow(640, 480, "Varlet", NULL, NULL);
+<<<<<<< HEAD
+=======
+
+			if (_window == nullptr)
+			{
+				glfwTerminate();
+				return GLFW_FALSE;
+			}
+
+>>>>>>> dev
 			glfwMakeContextCurrent(_window);
 		}
 

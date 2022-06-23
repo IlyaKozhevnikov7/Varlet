@@ -1,5 +1,5 @@
 project "Editor"
-	kind "ConsoleApp"
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "off"
@@ -16,7 +16,6 @@ project "Editor"
 	}
 
 	includedirs {
-		"%{entryPointPath}",
 		"%{wks.location}/Varlet/Source/Include",
 		"%{includeDir}",
 

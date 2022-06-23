@@ -1,8 +1,8 @@
 #pragma once
 
 #include "VarletModules.h"
-#include "EntryPoint.h"
 
+<<<<<<< HEAD
 struct GLFWwindow;
 struct ImGuiIO;
 
@@ -15,6 +15,26 @@ private:
 public:
 
 	Editor();
+=======
+#ifdef DLL_EXPORT
+	#define EDITOR_API __declspec(dllexport)
+#else
+	#define EDITOR_API __declspec(dllimport)
+#endif
+
+struct GLFWwindow;
+
+class EDITOR_API Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
+{
+private:
+
+	GLFWwindow* _window;
+	Varlet::GameModule* _context;
+
+public:
+
+	Editor(Varlet::GameModule* module);
+>>>>>>> dev
 	~Editor() override = default;
 
 private:
@@ -24,6 +44,8 @@ private:
 	void Shutdown() override;
 
 	void Update() override;
-};
 
-MAKE_TARGET_SYSTEM(Editor);
+	void DrawDockSpace() const;
+
+	void DrawViewPort() const;
+};
