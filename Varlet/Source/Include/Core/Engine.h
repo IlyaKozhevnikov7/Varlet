@@ -6,7 +6,7 @@
 
 namespace Varlet
 {
-	class CORE_API Engine final
+	class Engine final
 	{
 	private:
 		

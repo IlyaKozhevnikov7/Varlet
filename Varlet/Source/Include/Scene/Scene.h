@@ -5,7 +5,7 @@
 
 namespace Varlet
 {
-	class CORE_API Scene final
+	class Scene final
 	{
 	private:
 

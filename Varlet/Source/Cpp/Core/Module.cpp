@@ -16,6 +16,11 @@ namespace Varlet
 		return SUCCESSFUL_INITIALIZATION;
 	}
 
+	int32_t Module::PostInit()
+	{
+		return SUCCESSFUL_INITIALIZATION;
+	}
+
 	void Module::Shutdown()
 	{
 	}

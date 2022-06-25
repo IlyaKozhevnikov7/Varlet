@@ -22,7 +22,11 @@ namespace Varlet
 
 		std::vector<Module*>& GetDependencies() const;
 
+		// for self initialization
 		virtual int32_t Init();
+
+		// for initialization with other modules
+		virtual int32_t PostInit();
 
 		virtual void Shutdown();
 

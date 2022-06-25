@@ -7,7 +7,7 @@ struct GLFWwindow;
 
 namespace Varlet
 {
-	class CORE_API GLFWContext final : public Context<GLFWwindow>
+	class GLFWContext final : public Context<GLFWwindow>
 	{
 	public:
 	
