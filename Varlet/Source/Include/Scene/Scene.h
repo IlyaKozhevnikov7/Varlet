@@ -9,10 +9,15 @@ namespace Varlet
 	{
 	private:
 
-		std::vector<Entity> _entities;
+		std::vector<Entity*> _entities;
 
 	public:
 
+		Scene() = default;
+		~Scene() = default;
 
+		void Update();
+
+		Entity* CreateEntity();
 	};
 }

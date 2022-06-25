@@ -2,7 +2,6 @@
 
 #include "VarletCore.h"
 #include <vector>
-#include "Scene.h"
 
 #define SUCCESSFUL_INITIALIZATION 0
 #define FAILED_INITIALIZATION -1
@@ -42,18 +41,22 @@ namespace Varlet
 		virtual void Update() = 0;
 	};
 
+	class Scene;
+
 	class CORE_API GameModule : public Module, public IUpdatebleModule
 	{
 	private:
 
 		// startup scene path
-		Scene* _currentScene;
+		Scene* _currentScene = nullptr;
 
 	public:
 
 		GameModule() = default;
 
 		~GameModule() override = default;
+
+		Scene* GetCurrentScene() const;	
 
 		virtual int32_t Init() override;
 
