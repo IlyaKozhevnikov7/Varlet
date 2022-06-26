@@ -6,10 +6,10 @@
 
 namespace Varlet
 {
-	class Engine final
+	class CORE_API Engine final
 	{
 	private:
-		
+
 		ContextAPI* _context;
 
 		std::vector<Module*> _modules;
@@ -22,13 +22,13 @@ namespace Varlet
 		~Engine();
 
 		static Engine* Get();
-			
+
 		ContextAPI* GetContext() const;
 
 		void Init();
 
 		void RegisterTargetModule(Module* targetModule);
-	
+
 		void InitModules();
 
 		void Run();
