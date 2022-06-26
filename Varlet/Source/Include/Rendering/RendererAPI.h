@@ -1,13 +1,15 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Renderer.h"
+#include "RenderingCore.h"
 
 namespace Varlet
 {
 	class IRendererAPI
 	{
 	public:
+
+		//virtual CameraCore* CreateCamera() = 0;
 
 		// create shader
 		// create texture

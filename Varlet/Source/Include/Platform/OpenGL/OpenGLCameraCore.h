@@ -1,11 +1,11 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "RenderingCore.h"
+#include "Rendering/RenderingCore.h"
 
 namespace Varlet
 {
-	class OpenGLCamera final : public CameraCore
+	class OpenGLCameraCore final : public CameraCore
 	{
 	protected:
 

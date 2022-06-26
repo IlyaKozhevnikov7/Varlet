@@ -6,7 +6,7 @@ class Component;
 
 namespace Varlet
 {
-	class CORE_API Entity final
+	class Entity final
 	{
 	public:
 

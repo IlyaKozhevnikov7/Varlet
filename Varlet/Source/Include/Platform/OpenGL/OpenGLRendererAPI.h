@@ -8,5 +8,7 @@ namespace Varlet
 	class OpenGLRendererAPI final : public IRendererAPI
 	{
 	public:
+
+		//CameraCore* CreateCamera() override;
 	};
 }

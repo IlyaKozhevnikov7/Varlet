@@ -59,11 +59,20 @@ int32_t Editor::Init()
 	ImGui_ImplGlfw_InitForOpenGL(_window, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	return SUCCESSFUL_INITIALIZATION;
+	return _context->Init();
+}
+
+int32_t Editor::PostInit()
+{
+	auto scene = _context->GetCurrentScene();
+
+	return _context->PostInit();
 }
 
 void Editor::Shutdown()
 {
+	_context->Shutdown();
+
 	std::cout << "Editor shutdown" << std::endl;
 }
 
@@ -142,6 +151,8 @@ void Editor::Update()
 		ImGui::RenderPlatformWindowsDefault();
 		glfwMakeContextCurrent(backup_current_context);
 	}
+
+	//_context->Update();
 }
 
 void Editor::DrawDockSpace() const
