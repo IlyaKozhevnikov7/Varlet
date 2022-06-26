@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Component.h"
 #include "MeshRenderer.h"
+#include "Transform.h"
 
 namespace Varlet
 {
@@ -24,6 +25,10 @@ namespace Varlet
 	{
 		if (auto meshRenderer = dynamic_cast<MeshRenderer*>(ñomponent))
 		{
+			RendererData data;//{ meshRenderer, entity->GetComponent<Transform>() };
+			data.meshRenderer = meshRenderer;
+			data.transform = entity->GetComponent<Transform>();
+
 			VARLET_LOG(LevelType::Normal, "Entity added new mesh renderer");
 		}
 	}

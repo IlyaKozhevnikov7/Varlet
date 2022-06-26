@@ -5,16 +5,25 @@
 
 class Component;
 class MeshRenderer;
+class Transform;
 
 namespace Varlet
 {
 	class Entity;
 
+	struct RendererData
+	{
+	public:
+
+		MeshRenderer* meshRenderer;
+		Transform* transform;
+	};
+
 	class Renderer : public Module, public IUpdatebleModule
 	{
 	private:
 
-		std::vector<MeshRenderer*> _meshRenderers;
+		std::vector<RendererData> _rendererData;
 
 	public:
 

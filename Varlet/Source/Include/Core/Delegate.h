@@ -57,6 +57,11 @@ private:
 
 public:
 
+	~Delegate()
+	{
+		delete _observer;
+	}
+
 	template<typename T>
 	void Bind(T* object, ReturnValue(T::* method)(Args...))
 	{

@@ -25,12 +25,24 @@ namespace Varlet
 		{
 			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 
-			T* component = new T();
+			auto component = new T();
 			_components.push_back(dynamic_cast<Component*>(component));
 
 			newComponentCreated.Invoke(this, component);
 
 			return component;
+		}
+
+		template<class T>
+		T* GetComponent()
+		{
+			//static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
+
+			for (auto component : _components)
+				if (auto correctComponent = dynamic_cast<T*>(component))
+					return correctComponent;
+
+			return nullptr;
 		}
 	};
 }
