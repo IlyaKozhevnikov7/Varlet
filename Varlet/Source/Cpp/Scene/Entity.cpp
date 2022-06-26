@@ -3,6 +3,8 @@
 
 namespace Varlet
 {
+    Event<Entity*, Component*> Entity::newComponentCreated;
+
     void Entity::Update()
     {
         for (auto component : _components)

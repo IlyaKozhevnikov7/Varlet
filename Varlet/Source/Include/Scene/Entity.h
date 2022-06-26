@@ -10,6 +10,10 @@ namespace Varlet
 	{
 	public:
 
+		CORE_API static Event<Entity*, Component*> newComponentCreated;
+
+	private:
+
 		std::vector<Component*> _components;
 
 	public:
@@ -23,6 +27,8 @@ namespace Varlet
 
 			T* component = new T();
 			_components.push_back(dynamic_cast<Component*>(component));
+
+			newComponentCreated.Invoke(this, component);
 
 			return component;
 		}

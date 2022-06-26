@@ -1,11 +1,12 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Entity.h"
 
 namespace Varlet
 {
-	class CORE_API Scene final
+	class Entity;
+
+	class Scene final
 	{
 	private:
 
@@ -18,6 +19,6 @@ namespace Varlet
 
 		void Update();
 
-		Entity* CreateEntity();
+		CORE_API Entity* CreateEntity();
 	};
 }

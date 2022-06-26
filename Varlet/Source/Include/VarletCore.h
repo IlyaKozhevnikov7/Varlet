@@ -11,4 +11,5 @@
 #include <string>
 
 #include "../../Dependencies/GLM/include/glm/glm.hpp"
+#include "Core/Delegate.h"
 #include "Core/Logger.h"
