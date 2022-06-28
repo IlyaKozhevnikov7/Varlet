@@ -2,6 +2,7 @@
 
 #include "VarletCore.h"
 #include "Engine.h"
+#include "Rendering/RendererAPI.h"
 
 class CORE_API VarletAPI
 {

@@ -28,6 +28,6 @@ namespace Varlet
 
 		int32_t Init() override;
 
-		void Update() override;
+		virtual void Render(const RendererData& rendererData) override;
 	};
 }

@@ -9,6 +9,6 @@ namespace Varlet
 	{
 	public:
 
-		//CameraCore* CreateCamera() override;
+		CameraCore* CreateCameraCore() const override;
 	};
 }

@@ -3,8 +3,8 @@
 
 namespace Varlet
 {
-    //CameraCore* OpenGLRendererAPI::CreateCamera()
-    //{
-    //    return new OpenGLCameraCore();
-    //}
+    CameraCore* OpenGLRendererAPI::CreateCameraCore() const
+    {
+        return new OpenGLCameraCore();
+    }
 }

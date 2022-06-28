@@ -4,8 +4,8 @@
 
 namespace Varlet
 {
-	void OpenGLCameraCore::CulculateView()
+	void OpenGLCameraCore::CulculateView(const glm::vec3& postion, const glm::vec3& rotation)
 	{
-		_view = glm::lookAtRH(_position, _position - _forward, glm::vec3(0.f, 1.f, 0.f));
+		_view = glm::lookAtRH(postion, postion - rotation, glm::vec3(0.f, 1.f, 0.f));
 	}
 }

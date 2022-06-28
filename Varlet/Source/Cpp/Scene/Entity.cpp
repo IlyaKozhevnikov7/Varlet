@@ -3,7 +3,7 @@
 
 namespace Varlet
 {
-    Event<Entity*, Component*> Entity::newComponentCreated;
+    Event<Entity*, Component*> Entity::NewComponentCreatedEvent;
 
     void Entity::Update()
     {

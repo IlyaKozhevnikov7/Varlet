@@ -5,6 +5,8 @@
 
 class Transform final : public Component
 {
+	friend class Camera;
+
 private:
 
 	glm::vec3 _position;

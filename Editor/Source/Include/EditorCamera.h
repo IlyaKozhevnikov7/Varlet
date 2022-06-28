@@ -1,10 +1,11 @@
 #pragma once
 
-template<typename T>
-class EditorCamera final
-{
-private:
+#include "Scene/Component.h"
 
-	T* _core;
+class EditorCamera final : public Component
+{
+public:
+
+
 };
 

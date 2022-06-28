@@ -10,7 +10,7 @@ namespace Varlet
 	{
 	public:
 
-		CORE_API static Event<Entity*, Component*> newComponentCreated;
+		CORE_API static Event<Entity*, Component*> NewComponentCreatedEvent;
 
 	private:
 
@@ -26,9 +26,12 @@ namespace Varlet
 			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 
 			auto component = new T();
-			_components.push_back(dynamic_cast<Component*>(component));
+			auto componentBase = dynamic_cast<Component*>(component);
 
-			newComponentCreated.Invoke(this, component);
+			_components.push_back(componentBase);
+			componentBase->SetOwner(this);
+
+			NewComponentCreatedEvent.Invoke(this, componentBase);
 
 			return component;
 		}
@@ -36,13 +39,25 @@ namespace Varlet
 		template<class T>
 		T* GetComponent()
 		{
-			//static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
+			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 
 			for (auto component : _components)
 				if (auto correctComponent = dynamic_cast<T*>(component))
 					return correctComponent;
 
 			return nullptr;
+		}
+
+		template<class T>
+		bool HasComponent()
+		{
+			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
+		
+			for (auto component : _components)
+				if (auto correctComponent = dynamic_cast<T*>(component))
+					return true;
+		
+			return false;
 		}
 	};
 }

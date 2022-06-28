@@ -5,11 +5,13 @@
 
 namespace Varlet
 {
+	class CameraCore;
+
 	class IRendererAPI
 	{
 	public:
 
-		//virtual CameraCore* CreateCamera() = 0;
+		virtual CameraCore* CreateCameraCore() const = 0;
 
 		// create shader
 		// create texture
@@ -26,6 +28,8 @@ namespace Varlet
 	public:
 
 		static void Init(IRendererAPI* api);
+
+		static CameraCore* CreateCameraCore();
 	};
 
 	class IRendererAPIInitializerBase

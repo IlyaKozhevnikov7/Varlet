@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef DLL_EXPORT
+#ifdef VARLET_DLL_EXPORT
 	#define CORE_API __declspec(dllexport)
 #else
 	#define CORE_API __declspec(dllimport)

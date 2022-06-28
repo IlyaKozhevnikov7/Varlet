@@ -8,7 +8,7 @@ workspace "Varlet"
 		"Release"
 	}
 
-	startproject "Editor"
+	--startproject "Editor"
 
 	entryPointPath = "%{wks.location}/Varlet/Source/Include/EntryPoint"
 

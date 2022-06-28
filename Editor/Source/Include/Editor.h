@@ -1,18 +1,19 @@
 #pragma once
 
 #include "VarletModules.h"
-#include "Platform/OpenGL/OpenGLCameraCore.h"
 
-#ifdef DLL_EXPORT
+#ifdef EDITOR_DLL_EXPORT
 	#define EDITOR_API __declspec(dllexport)
 #else
 	#define EDITOR_API __declspec(dllimport)
 #endif
 
-struct GLFWwindow;
+namespace Varlet
+{
+	class Entity;
+}
 
-template<typename T>
-class EditorCamera;
+struct GLFWwindow;
 
 class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
 {
@@ -21,7 +22,7 @@ private:
 	GLFWwindow* _window;
 	Varlet::GameModule* _context;
 
-	EditorCamera<Varlet::OpenGLCameraCore>* _editorCamera;
+	Varlet::Entity* _mainCamera;
 	
 public:
 

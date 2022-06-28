@@ -9,9 +9,6 @@ namespace Varlet
 	{
 	protected:
 
-		glm::vec3 _position;
-		glm::vec3 _forward;
-
 		glm::mat4 _view;
 		glm::mat4 _projection;
 
@@ -27,12 +24,8 @@ namespace Varlet
 
 		const glm::mat4& GetProjection() const { return _projection; }
 
-		const glm::mat4& GetViewProjection() const { return _view * _projection; }
+		glm::mat4 GetViewProjection() const { return _view * _projection; }
 
-		void Update();
-
-	protected:
-
-		virtual void CulculateView() = 0;
+		virtual void CulculateView(const glm::vec3& postion, const glm::vec3& rotation) = 0;
 	};
 }

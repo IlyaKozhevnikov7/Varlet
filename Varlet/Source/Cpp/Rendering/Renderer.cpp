@@ -5,12 +5,13 @@
 #include "Component.h"
 #include "MeshRenderer.h"
 #include "Transform.h"
+#include "Camera.h"
 
 namespace Varlet
 {
 	int32_t Renderer::Init()
 	{
-		Entity::newComponentCreated.Bind(this, &Renderer::OnNewComponentCreated);
+		Entity::NewComponentCreatedEvent.Bind(this, &Renderer::OnNewComponentCreated);
 
 		if (auto rendererAPIInitializer = dynamic_cast<IRendererAPIInitializerBase*>(this))
 		{
@@ -21,15 +22,27 @@ namespace Varlet
 		return FAILED_INITIALIZATION;
 	}
 
+	void Renderer::Update()
+	{
+		VARLET_LOG(LevelType::Normal, "Renderer::Update()");
+	}
+
 	void Renderer::OnNewComponentCreated(Entity* entity, Component* ñomponent)
 	{
 		if (auto meshRenderer = dynamic_cast<MeshRenderer*>(ñomponent))
 		{
-			RendererData data;//{ meshRenderer, entity->GetComponent<Transform>() };
-			data.meshRenderer = meshRenderer;
-			data.transform = entity->GetComponent<Transform>();
+			assert(entity->HasComponent<Transform>());
+
+			_rendererData.push_back({ meshRenderer, entity->GetComponent<Transform>() });
 
 			VARLET_LOG(LevelType::Normal, "Entity added new mesh renderer");
+		}
+
+		if (auto camera = dynamic_cast<Camera*>(ñomponent))
+		{
+			_cameras.push_back(camera);
+
+			VARLET_LOG(LevelType::Normal, "Entity added new camera");
 		}
 	}
 }

@@ -6,6 +6,7 @@
 class Component;
 class MeshRenderer;
 class Transform;
+class Camera;
 
 namespace Varlet
 {
@@ -13,8 +14,6 @@ namespace Varlet
 
 	struct RendererData
 	{
-	public:
-
 		MeshRenderer* meshRenderer;
 		Transform* transform;
 	};
@@ -23,6 +22,7 @@ namespace Varlet
 	{
 	private:
 
+		std::vector<Camera*> _cameras;
 		std::vector<RendererData> _rendererData;
 
 	public:
@@ -30,6 +30,12 @@ namespace Varlet
 		~Renderer() override = default;
 
 		virtual int32_t Init() override;
+
+		virtual void Update() override;
+
+	protected:
+
+		virtual void Render(const RendererData& rendererData) = 0;
 
 	private:
 

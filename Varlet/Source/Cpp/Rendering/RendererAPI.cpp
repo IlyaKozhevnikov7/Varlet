@@ -15,4 +15,9 @@ namespace Varlet
 
 		_api = api;
 	}
+
+	CameraCore* RendererAPI::CreateCameraCore()
+	{
+		return _api->CreateCameraCore();
+	}
 }

@@ -35,7 +35,7 @@ project "Editor"
 	}
 
 	defines {
-		"DLL_EXPORT"
+		"EDITOR_DLL_EXPORT"
 	}
 
 	filter "configurations:Debug"

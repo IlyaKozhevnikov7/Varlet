@@ -37,7 +37,8 @@ namespace Varlet
 		return SUCCESSFUL_INITIALIZATION;
 	}
 
-	void OpenGLRenderer::Update()
+	void OpenGLRenderer::Render(const RendererData& rendererData)
 	{
+
 	}
 }

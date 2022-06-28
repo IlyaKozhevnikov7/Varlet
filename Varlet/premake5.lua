@@ -36,7 +36,7 @@ project "Varlet"
 	}
 
 	defines {
-		"DLL_EXPORT"
+		"VARLET_DLL_EXPORT"
 	}
 
 	filter "configurations:Debug"

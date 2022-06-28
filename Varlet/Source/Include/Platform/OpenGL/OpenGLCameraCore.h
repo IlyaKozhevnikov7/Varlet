@@ -9,6 +9,6 @@ namespace Varlet
 	{
 	protected:
 
-		void CulculateView() override;
+		void CulculateView(const glm::vec3& postion, const glm::vec3& rotation) override;
 	};
 }

@@ -1,5 +1,11 @@
 #include "Editor.h"
+#include "EditorCamera.h"
 #include "Core/VarletAPI.h"
+
+#include "Scene/Scene.h"
+#include "Scene/Entity.h"
+#include "Scene/Transform.h"
+#include "Scene/Camera.h"
 
 #include "glad/glad.h"
 
@@ -16,6 +22,7 @@ Editor::Editor(Varlet::GameModule* module)
 {
 	_window = nullptr;
 	_context = module;
+	_mainCamera = nullptr;
 }
 
 int32_t Editor::Init()
@@ -65,6 +72,12 @@ int32_t Editor::Init()
 int32_t Editor::PostInit()
 {
 	auto scene = _context->GetCurrentScene();
+
+	_mainCamera = scene->CreateEntity();
+
+	_mainCamera->AddComponent<Transform>();
+	_mainCamera->AddComponent<Camera>();
+	_mainCamera->AddComponent<EditorCamera>();
 
 	return _context->PostInit();
 }
