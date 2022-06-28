@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "GLFWContext.h"
+#include "GLFWInput.h"
 #include "OpenGLRenderer.h"
 
 namespace Varlet
@@ -53,6 +54,11 @@ namespace Varlet
 			auto openGLRenderer = new OpenGLRenderer();
 			_modules.push_back(openGLRenderer);
 			_updatebleModules.push_back(openGLRenderer);
+		}
+
+		// temp add input here
+		{
+			_modules.push_back(new GLFWInput());
 		}
 	}
 

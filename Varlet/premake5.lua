@@ -17,6 +17,7 @@ project "Varlet"
 	includedirs {
 		"%{includeDir}",
 		"%{includeDir}/Core",
+		"%{includeDir}/Input",
 		"%{includeDir}/Rendering",
 		"%{includeDir}/Scene",
 		"%{includeDir}/Platform/Windows",
