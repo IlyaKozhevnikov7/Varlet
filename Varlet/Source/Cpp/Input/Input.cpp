@@ -16,20 +16,20 @@ bool Input::GetKey(const int32_t& keyCode, const int32_t& state)
 
 bool Input::GetMouse(const int32_t& keyCode, const int32_t& state)
 {
-	return false;
+	return _core->GetMouse(keyCode, state);
 }
 
 float Input::GetMouseX()
 {
-	return 0.0f;
+	return _core->GetMouseX();
 }
 
 float Input::GetMouseY()
 {
-	return 0.0f;
+	return _core->GetMouseY();
 }
 
 glm::vec2 Input::GetMousePosition()
 {
-	return glm::vec2();
+	return _core->GetMousePosition();
 }

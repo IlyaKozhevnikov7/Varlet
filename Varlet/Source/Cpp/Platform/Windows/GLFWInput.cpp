@@ -24,21 +24,24 @@ namespace Varlet
 
 	bool GLFWInput::GetMouse(const int32_t& keyCode, const int32_t& state) const
 	{
-		return false;
+		return glfwGetMouseButton(_window, keyCode) == state;
 	}
 
 	float GLFWInput::GetMouseX() const
 	{
-		return 0.0f;
+		return GetMousePosition().x;
 	}
 
 	float GLFWInput::GetMouseY() const
 	{
-		return 0.0f;
+		return GetMousePosition().y;
 	}
 
 	glm::vec2 GLFWInput::GetMousePosition() const
 	{
-		return glm::vec2();
+		double x, y;
+		glfwGetCursorPos(_window, &x, &y);
+
+		return glm::vec2(x, y);
 	}
 }
