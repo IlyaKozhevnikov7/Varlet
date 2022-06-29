@@ -6,12 +6,15 @@
 namespace Varlet
 {
 	class CameraCore;
+	class UniformBuffer;
 
 	class IRendererAPI
 	{
 	public:
 
 		virtual CameraCore* CreateCameraCore() const = 0;
+
+		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
 
 		// create shader
 		// create texture
@@ -30,6 +33,8 @@ namespace Varlet
 		static void Init(IRendererAPI* api);
 
 		static CameraCore* CreateCameraCore();
+
+		static UniformBuffer* CreateUniformBuffer(const int64_t& size);
 	};
 
 	class IRendererAPIInitializerBase

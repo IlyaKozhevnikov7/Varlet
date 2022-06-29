@@ -24,6 +24,17 @@ namespace Varlet
 
 	void Renderer::Update()
 	{
+		for (const auto camera : _cameras)
+		{
+			if (camera->IsActive() == false)
+				continue;
+
+			// use uniform buffer for current camera
+
+			for (const auto data : _rendererData)
+				Render(data);
+		}
+
 		VARLET_LOG(LevelType::Normal, "Renderer::Update()");
 	}
 

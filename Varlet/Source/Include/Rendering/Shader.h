@@ -13,7 +13,7 @@ namespace Varlet
 		std::string geomtryPath;
 	};
 
-	class Shader
+	class CORE_API Shader
 	{
 	public:
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Component.h"
+#include "VarletFramework.h"
 
 class CORE_API Transform final : public Component
 {

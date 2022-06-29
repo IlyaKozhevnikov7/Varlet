@@ -23,6 +23,8 @@ public:
 
 	void SetActive(bool activeState);
 
+	bool IsActive() const;
+
 	virtual void Start();
 
 	virtual void Update();

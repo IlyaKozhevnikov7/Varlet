@@ -10,5 +10,7 @@ namespace Varlet
 	public:
 
 		CameraCore* CreateCameraCore() const override;
+
+		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
 	};
 }

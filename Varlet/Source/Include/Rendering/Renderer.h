@@ -2,6 +2,7 @@
 
 #include "VarletCore.h"
 #include "VarletModules.h"
+#include "RenderingCore.h"
 
 class Component;
 class MeshRenderer;
@@ -24,6 +25,8 @@ namespace Varlet
 
 		std::vector<Camera*> _cameras;
 		std::vector<RendererData> _rendererData;
+
+		// TODO uniform buffer for current processed camera
 
 	public:
 

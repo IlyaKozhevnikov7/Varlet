@@ -20,4 +20,9 @@ namespace Varlet
 	{
 		return _api->CreateCameraCore();
 	}
+
+	UniformBuffer* RendererAPI::CreateUniformBuffer(const int64_t& size)
+	{
+		return _api->CreateUniformBuffer(size);
+	}
 }

@@ -15,6 +15,11 @@ void Component::SetActive(bool activeState)
 		OnDeactivated();
 }
 
+bool Component::IsActive() const
+{
+	return _isActive;
+}
+
 void Component::Start()
 {
 }
