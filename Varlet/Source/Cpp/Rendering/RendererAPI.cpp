@@ -16,6 +16,11 @@ namespace Varlet
 		_api = api;
 	}
 
+	Shader* RendererAPI::CreateShader(const ShaderInitializer* initializer)
+	{
+		return _api->CreateShader(initializer);
+	}
+
 	CameraCore* RendererAPI::CreateCameraCore()
 	{
 		return _api->CreateCameraCore();

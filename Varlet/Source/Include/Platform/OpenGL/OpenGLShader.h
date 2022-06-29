@@ -14,7 +14,7 @@ namespace Varlet
 			Geometry = 0x8DD9
 		};
 
-		enum ObjectType : uint32_t
+		enum ObjectType : uint8_t
 		{
 			VertexShader = 0,
 			FragmentShader,
@@ -28,11 +28,11 @@ namespace Varlet
 
 	public:
 
-		OpenGLShader();
+		OpenGLShader(const ShaderInitializer* initializer);
 
 		~OpenGLShader() override;
 
-		virtual void Use() override;
+		virtual void Use() const override;
 
 	private:
 

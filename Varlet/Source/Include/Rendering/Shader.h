@@ -17,10 +17,10 @@ namespace Varlet
 	{
 	public:
 
-		Shader() = default;
+		Shader(const ShaderInitializer* initializer);
 
 		virtual ~Shader() = default;
 
-		virtual void Use() = 0;
+		virtual void Use() const = 0;
 	};
 }

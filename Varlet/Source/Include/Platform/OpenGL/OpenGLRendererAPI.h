@@ -9,8 +9,10 @@ namespace Varlet
 	{
 	public:
 
+		Shader* CreateShader(const ShaderInitializer* initializer) const override;
+
 		CameraCore* CreateCameraCore() const override;
 
-		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
+		UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
 	};
 }

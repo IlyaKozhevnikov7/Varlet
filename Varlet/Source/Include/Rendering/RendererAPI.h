@@ -1,22 +1,25 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "RenderingCore.h"
 
 namespace Varlet
 {
 	class CameraCore;
 	class UniformBuffer;
+	class Shader;
+
+	struct ShaderInitializer;
 
 	class IRendererAPI
 	{
 	public:
 
+		virtual Shader* CreateShader(const ShaderInitializer* initializer) const = 0;
+
 		virtual CameraCore* CreateCameraCore() const = 0;
 
 		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
 
-		// create shader
 		// create texture
 		// create framebuffer
 		// create ...
@@ -31,6 +34,8 @@ namespace Varlet
 	public:
 
 		static void Init(IRendererAPI* api);
+
+		static Shader* CreateShader(const ShaderInitializer* initializer);
 
 		static CameraCore* CreateCameraCore();
 
