@@ -14,3 +14,8 @@ glm::vec3 Transform::GetScale() const
 {
     return _scale;
 }
+
+void Transform::Translate(const glm::vec3& delta)
+{
+    _position += delta;
+}

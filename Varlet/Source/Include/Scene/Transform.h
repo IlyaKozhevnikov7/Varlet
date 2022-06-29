@@ -3,7 +3,7 @@
 #include "VarletCore.h"
 #include "Component.h"
 
-class Transform final : public Component
+class CORE_API Transform final : public Component
 {
 	friend class Camera;
 
@@ -20,5 +20,8 @@ public:
 	glm::vec3 GetRotation() const;
 
 	glm::vec3 GetScale() const;
+
+	// TODO translate in local space
+	void Translate(const glm::vec3& delta);
 };
 

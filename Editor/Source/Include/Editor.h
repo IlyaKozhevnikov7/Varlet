@@ -14,6 +14,7 @@ namespace Varlet
 }
 
 struct GLFWwindow;
+class EditorCamera;
 
 class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
 {
@@ -22,8 +23,9 @@ private:
 	GLFWwindow* _window;
 	Varlet::GameModule* _context;
 
-	Varlet::Entity* _mainCamera;
-	
+	//Varlet::Entity* _mainCamera;
+	EditorCamera* _mainCamera;
+
 public:
 
 	EDITOR_API Editor(Varlet::GameModule* module);

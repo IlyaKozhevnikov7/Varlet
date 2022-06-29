@@ -13,11 +13,23 @@ protected:
 
 	Varlet::Entity* _owner;
 
+private:
+
+	bool _isActive;
+
 public:
 
 	void SetOwner(Varlet::Entity* owner);
 
+	void SetActive(bool activeState);
+
 	virtual void Start();
 
 	virtual void Update();
+
+protected:
+
+	virtual void OnActivated();
+
+	virtual void OnDeactivated();
 };

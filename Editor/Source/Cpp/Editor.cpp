@@ -2,10 +2,7 @@
 #include "EditorCamera.h"
 #include "Core/VarletAPI.h"
 
-#include "Scene/Scene.h"
-#include "Scene/Entity.h"
-#include "Scene/Transform.h"
-#include "Scene/Camera.h"
+#include "VarletFramework.h"
 
 #include "glad/glad.h"
 
@@ -73,11 +70,19 @@ int32_t Editor::PostInit()
 {
 	auto scene = _context->GetCurrentScene();
 
-	_mainCamera = scene->CreateEntity();
+	//_mainCamera = scene->CreateEntity();
 
-	_mainCamera->AddComponent<Transform>();
-	_mainCamera->AddComponent<Camera>();
-	_mainCamera->AddComponent<EditorCamera>();
+	//_mainCamera->AddComponent<Transform>();
+	//_mainCamera->AddComponent<Camera>();
+	//_mainCamera->AddComponent<EditorCamera>();
+
+	auto camera = scene->CreateEntity();
+
+	camera->AddComponent<Transform>();
+	camera->AddComponent<Camera>();
+	_mainCamera = camera->AddComponent<EditorCamera>();
+
+	_mainCamera->InternalStart();
 
 	return _context->PostInit();
 }
@@ -91,6 +96,8 @@ void Editor::Shutdown()
 
 void Editor::Update()
 {
+	_mainCamera->InternalUpdate();
+
 	ImGuiIO io = ImGui::GetIO();
 
 	// Our state
