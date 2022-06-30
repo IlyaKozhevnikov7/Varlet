@@ -5,7 +5,7 @@
 
 namespace Varlet
 {
-	class CORE_API OpenGLFramebuffer final : public FrameBuffer
+	class CORE_API OpenGLFramebuffer final : public Framebuffer
 	{
 	private:
 

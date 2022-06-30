@@ -14,18 +14,20 @@ namespace Varlet
 
 		float _fov;
 
-		FrameBuffer* _framebuffer;
+		Framebuffer* _framebuffer;
 
 	public:
 
+		CameraCore();
+
 		virtual ~CameraCore() = default;
 
-		const glm::mat4& GetView() const { return _view; }
+		const glm::mat4& GetView() const;
 
-		const glm::mat4& GetProjection() const { return _projection; }
+		const glm::mat4& GetProjection() const;
 
-		glm::mat4 GetViewProjection() const { return _view * _projection; }
+		const glm::mat4 GetViewProjection() const;
 
 		virtual void CulculateView(const glm::vec3& postion, const glm::vec3& rotation) = 0;
-	};
+	};	
 }

@@ -4,13 +4,13 @@
 
 namespace Varlet
 {
-	class FrameBuffer
+	class CORE_API Framebuffer
 	{
 	public:
 
-		FrameBuffer() = default;
+		Framebuffer() = default;
 
-		virtual ~FrameBuffer() = default;
+		virtual ~Framebuffer() = default;
 
 		virtual void Bind() = 0;
 

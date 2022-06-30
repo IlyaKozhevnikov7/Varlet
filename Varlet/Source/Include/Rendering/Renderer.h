@@ -2,16 +2,16 @@
 
 #include "VarletCore.h"
 #include "VarletModules.h"
-#include "RenderingCore.h"
 
 class Component;
 class MeshRenderer;
 class Transform;
-class Camera;
+class Camera;	
 
 namespace Varlet
 {
 	class Entity;
+	class UniformBuffer;
 
 	struct RendererData
 	{
@@ -27,12 +27,13 @@ namespace Varlet
 		std::vector<RendererData> _rendererData;
 
 		// TODO uniform buffer for current processed camera
+		UniformBuffer* _processedCameraData;
 
 	public:
 
-		~Renderer() override = default;
+		~Renderer() override;
 
-		virtual int32_t Init() override;
+		virtual int32_t PostInit() override;
 
 		virtual void Update() override;
 

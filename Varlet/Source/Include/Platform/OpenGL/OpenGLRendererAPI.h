@@ -13,6 +13,8 @@ namespace Varlet
 
 		CameraCore* CreateCameraCore() const override;
 
+		Framebuffer* CreateFrameBuffer() const override;
+
 		UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
 	};
 }

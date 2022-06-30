@@ -1,4 +1,4 @@
-#include "OpenGLFrameBuffer.h"
+#include "OpenGLFramebuffer.h"
 #include "glad/glad.h"
 
 namespace Varlet

@@ -11,5 +11,6 @@
 #include <string>
 
 #include "../../Dependencies/GLM/include/glm/glm.hpp"
+#include "../../Dependencies/GLM/include/GLM/gtc/type_ptr.hpp"
 #include "Core/Delegate.h"
 #include "Core/Logger.h"

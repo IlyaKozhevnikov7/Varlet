@@ -19,11 +19,14 @@ private:
 
 public:
 
-	Camera();
-
 	void Start() override;
 
 	void Update() override;
 
+	const glm::mat4& GetView() const;
+
+	const glm::mat4& GetProjection() const;
+
+	const glm::mat4 GetViewProjection() const;
 };
 

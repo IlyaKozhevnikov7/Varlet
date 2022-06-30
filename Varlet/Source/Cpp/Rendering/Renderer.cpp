@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "RendererAPI.h"
+#include "RenderingCore.h"
 
 #include "Entity.h"
 #include "Component.h"
@@ -9,13 +10,20 @@
 
 namespace Varlet
 {
-	int32_t Renderer::Init()
+	Renderer::~Renderer()
+	{
+		delete _processedCameraData;
+	}
+
+	int32_t Renderer::PostInit()
 	{
 		Entity::NewComponentCreatedEvent.Bind(this, &Renderer::OnNewComponentCreated);
 
 		if (auto rendererAPIInitializer = dynamic_cast<IRendererAPIInitializerBase*>(this))
 		{
 			rendererAPIInitializer->InitRendererAPI();
+			_processedCameraData = RendererAPI::CreateUniformBuffer(sizeof(glm::mat4) * 3); // view, projection, and view-projection
+
 			return SUCCESSFUL_INITIALIZATION;
 		}
 
@@ -30,6 +38,10 @@ namespace Varlet
 				continue;
 
 			// use uniform buffer for current camera
+			_processedCameraData->Bind();
+			_processedCameraData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
+			_processedCameraData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
+			_processedCameraData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
 
 			for (const auto data : _rendererData)
 				Render(data);

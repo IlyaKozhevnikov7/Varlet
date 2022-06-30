@@ -7,6 +7,7 @@ namespace Varlet
 	class CameraCore;
 	class UniformBuffer;
 	class Shader;
+	class Framebuffer;
 
 	struct ShaderInitializer;
 
@@ -18,10 +19,11 @@ namespace Varlet
 
 		virtual CameraCore* CreateCameraCore() const = 0;
 
+		virtual Framebuffer* CreateFrameBuffer() const = 0;
+
 		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
 
 		// create texture
-		// create framebuffer
 		// create ...
 	};
 
@@ -38,6 +40,8 @@ namespace Varlet
 		static Shader* CreateShader(const ShaderInitializer* initializer);
 
 		static CameraCore* CreateCameraCore();
+
+		static Framebuffer* CreateFrameBuffer();
 
 		static UniformBuffer* CreateUniformBuffer(const int64_t& size);
 	};
