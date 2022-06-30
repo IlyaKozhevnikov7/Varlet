@@ -16,7 +16,7 @@ namespace Varlet
 		_api = api;
 	}
 
-	Shader* RendererAPI::CreateShader(const ShaderInitializer* initializer)
+	Shader* RendererAPI::CreateShader(const ShaderInitializer& initializer)
 	{
 		return _api->CreateShader(initializer);
 	}
@@ -29,6 +29,11 @@ namespace Varlet
 	Framebuffer* RendererAPI::CreateFrameBuffer()
 	{
 		return _api->CreateFrameBuffer();
+	}
+
+	Texture* RendererAPI::CreateTexture(const TextureConfiguration& configuration)
+	{
+		return _api->CreateTexture(configuration);
 	}
 
 	UniformBuffer* RendererAPI::CreateUniformBuffer(const int64_t& size)

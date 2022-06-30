@@ -4,7 +4,7 @@
 
 namespace Varlet
 {
-	OpenGLShader::OpenGLShader(const ShaderInitializer* initializer) : Shader(initializer)
+	OpenGLShader::OpenGLShader(const ShaderInitializer& initializer) : Shader(initializer)
 	{
 		// now here automaticly created simple triangle shader
 		const char* vertexShaderSource = R"(

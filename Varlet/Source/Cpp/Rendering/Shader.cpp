@@ -2,7 +2,7 @@
 
 namespace Varlet
 {
-	Shader::Shader(const ShaderInitializer* initializer)
+	Shader::Shader(const ShaderInitializer& initializer)
 	{
 	}
 }

@@ -25,7 +25,8 @@ project "Varlet"
 
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}",
-		"%{includeDirs.GLM}"
+		"%{includeDirs.GLM}",
+		"%{includeDirs.STB}"
 	}
 
 	links {

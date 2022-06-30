@@ -6,3 +6,4 @@
 #include "Framebuffer.h"
 #include "CameraCore.h"
 #include "UniformBuffer.h"
+#include "Texture.h"

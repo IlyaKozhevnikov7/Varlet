@@ -3,10 +3,11 @@
 #include "OpenGLCameraCore.h"
 #include "OpenGLUniformBuffer.h"
 #include "OpenGLFramebuffer.h"
+#include "OpenGLTexture.h"
 
 namespace Varlet
 {
-	Shader* OpenGLRendererAPI::CreateShader(const ShaderInitializer* initializer) const
+	Shader* OpenGLRendererAPI::CreateShader(const ShaderInitializer& initializer) const
 	{
 		return new OpenGLShader(initializer);
 	}
@@ -19,6 +20,11 @@ namespace Varlet
 	Framebuffer* OpenGLRendererAPI::CreateFrameBuffer() const
 	{
 		return new OpenGLFramebuffer();
+	}
+
+	Texture* OpenGLRendererAPI::CreateTexture(const TextureConfiguration& configuration) const
+	{
+		return new OpenGLTexture(configuration);
 	}
 
 	UniformBuffer* OpenGLRendererAPI::CreateUniformBuffer(const int64_t& size) const

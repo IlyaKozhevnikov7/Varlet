@@ -2,12 +2,15 @@
 
 #include "VarletCore.h"
 
+struct TextureConfiguration;
+
 namespace Varlet
 {
 	class CameraCore;
 	class UniformBuffer;
 	class Shader;
 	class Framebuffer;
+	class Texture;
 
 	struct ShaderInitializer;
 
@@ -15,7 +18,7 @@ namespace Varlet
 	{
 	public:
 
-		virtual Shader* CreateShader(const ShaderInitializer* initializer) const = 0;
+		virtual Shader* CreateShader(const ShaderInitializer& initializer) const = 0;
 
 		virtual CameraCore* CreateCameraCore() const = 0;
 
@@ -23,8 +26,7 @@ namespace Varlet
 
 		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
 
-		// create texture
-		// create ...
+		virtual Texture* CreateTexture(const TextureConfiguration& configuration) const = 0;
 	};
 
 	class RendererAPI final
@@ -37,11 +39,13 @@ namespace Varlet
 
 		static void Init(IRendererAPI* api);
 
-		static Shader* CreateShader(const ShaderInitializer* initializer);
+		static Shader* CreateShader(const ShaderInitializer& initializer);
 
 		static CameraCore* CreateCameraCore();
 
 		static Framebuffer* CreateFrameBuffer();
+
+		static Texture* CreateTexture(const TextureConfiguration& configuration);
 
 		static UniformBuffer* CreateUniformBuffer(const int64_t& size);
 	};

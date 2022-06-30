@@ -28,7 +28,7 @@ namespace Varlet
 
 	public:
 
-		OpenGLShader(const ShaderInitializer* initializer);
+		OpenGLShader(const ShaderInitializer& initializer);
 
 		~OpenGLShader() override;
 

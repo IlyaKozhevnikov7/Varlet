@@ -9,11 +9,13 @@ namespace Varlet
 	{
 	public:
 
-		Shader* CreateShader(const ShaderInitializer* initializer) const override;
+		Shader* CreateShader(const ShaderInitializer& initializer) const override;
 
 		CameraCore* CreateCameraCore() const override;
 
 		Framebuffer* CreateFrameBuffer() const override;
+
+		Texture* CreateTexture(const TextureConfiguration& configuration) const override;
 
 		UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
 	};

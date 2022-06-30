@@ -17,7 +17,7 @@ namespace Varlet
 	{
 	public:
 
-		Shader(const ShaderInitializer* initializer);
+		Shader(const ShaderInitializer& initializer);
 
 		virtual ~Shader() = default;
 
