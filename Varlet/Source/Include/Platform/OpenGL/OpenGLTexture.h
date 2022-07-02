@@ -2,7 +2,6 @@
 
 #include "VarletCore.h"
 #include "RenderingCore.h"
-#include "Texture.h"
 
 namespace Varlet
 {
