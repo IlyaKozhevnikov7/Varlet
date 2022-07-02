@@ -26,11 +26,13 @@ project "Varlet"
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}",
 		"%{includeDirs.GLM}",
-		"%{includeDirs.STB}"
+		"%{includeDirs.STB}",
+		"%{includeDirs.ASSIMP}"
 	}
 
 	links {
-		"glfw3dll"
+		"glfw3dll",
+		"assimp-vc143-mt"
 	}
 
 	libdirs {

@@ -6,4 +6,3 @@ class MeshRenderer final : public Component
 {
 
 };
-
