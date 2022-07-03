@@ -17,6 +17,7 @@ project "Varlet"
 	includedirs {
 		"%{includeDir}",
 		"%{includeDir}/Core",
+		"%{includeDir}/Gameplay",
 		"%{includeDir}/Input",
 		"%{includeDir}/Rendering",
 		"%{includeDir}/Scene",
@@ -36,7 +37,8 @@ project "Varlet"
 	}
 
 	libdirs {
-		"%{libraryDirs.GLFW}"
+		"%{libraryDirs.GLFW}",
+		"%{libraryDirs.ASSIMP}"
 	}
 
 	defines {

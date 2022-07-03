@@ -8,3 +8,4 @@ includeDirs["ASSIMP"] = "%{wks.location}/Varlet/Dependencies/ASSIMP/include"
 
 libraryDirs = {}
 libraryDirs["GLFW"] = "%{wks.location}/Varlet/Dependencies/libs/GLFW"
+libraryDirs["ASSIMP"] = "%{wks.location}/Varlet/Dependencies/libs/ASSIMP"

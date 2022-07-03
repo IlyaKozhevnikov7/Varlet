@@ -3,23 +3,6 @@
 #include "VarletCore.h"
 #include "RenderingCore.h"
 
-struct Vertex
-{
-public:
-
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 textureCoordinate;
-};
-
-struct VertexArrayData
-{
-public:
-
-	std::vector<Vertex> vertices;
-	std::vector<int32_t> indices;
-};
-
 namespace Varlet
 {
 	class CORE_API OpenGLVertexArray : public VertexArray
