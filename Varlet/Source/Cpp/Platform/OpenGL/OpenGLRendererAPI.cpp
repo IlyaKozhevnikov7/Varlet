@@ -4,6 +4,7 @@
 #include "OpenGLUniformBuffer.h"
 #include "OpenGLFramebuffer.h"
 #include "OpenGLTexture.h"
+#include "OpenGLVertexArray.h"
 
 namespace Varlet
 {
@@ -30,5 +31,10 @@ namespace Varlet
 	UniformBuffer* OpenGLRendererAPI::CreateUniformBuffer(const int64_t& size) const
 	{
 		return new OpenGLUniformBuffer(size);
+	}
+
+	VertexArray* OpenGLRendererAPI::CreateVertexArray(const VertexArrayData& data) const
+	{
+		return new OpenGLVertexArray(data);
 	}
 }

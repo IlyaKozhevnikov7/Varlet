@@ -27,7 +27,7 @@ Mesh* Mesh::LoadModel(const std::string& path)
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || scene->mRootNode == nullptr)
     {
-        VARLET_LOG(LevelType::Error, "Model loading error: " + *importer.GetErrorString());
+        VARLET_LOG(LevelType::Error, "Failed load model: " + *importer.GetErrorString());
         return nullptr;
     }
 

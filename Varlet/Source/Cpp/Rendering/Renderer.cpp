@@ -15,7 +15,7 @@ namespace Varlet
 		delete _processedCameraData;
 	}
 
-	int32_t Renderer::PostInit()
+	int32_t Renderer::Init()
 	{
 		Entity::NewComponentCreatedEvent.Bind(this, &Renderer::OnNewComponentCreated);
 

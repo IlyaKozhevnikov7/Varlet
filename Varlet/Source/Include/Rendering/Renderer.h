@@ -26,14 +26,13 @@ namespace Varlet
 		std::vector<Camera*> _cameras;
 		std::vector<RendererData> _rendererData;
 
-		// TODO uniform buffer for current processed camera
 		UniformBuffer* _processedCameraData;
 
 	public:
 
 		~Renderer() override;
 
-		virtual int32_t PostInit() override;
+		virtual int32_t Init() override;
 
 		virtual void Update() override;
 

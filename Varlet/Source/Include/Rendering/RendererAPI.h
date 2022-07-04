@@ -11,8 +11,10 @@ namespace Varlet
 	class Shader;
 	class Framebuffer;
 	class Texture;
+	class VertexArray;
 
 	struct ShaderInitializer;
+	struct VertexArrayData;
 
 	class IRendererAPI
 	{
@@ -27,6 +29,8 @@ namespace Varlet
 		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
 
 		virtual Texture* CreateTexture(const TextureConfiguration& configuration) const = 0;
+
+		virtual VertexArray* CreateVertexArray(const VertexArrayData& configuration) const = 0;
 	};
 
 	class RendererAPI final

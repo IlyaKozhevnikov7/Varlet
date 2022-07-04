@@ -26,6 +26,6 @@ namespace Varlet
 
 		bool IsIndexed() const;
 
-		const int32_t GetElementsCount() const;
+		const int32_t& GetElementsCount() const;
 	};
 }

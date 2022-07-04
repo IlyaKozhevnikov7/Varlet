@@ -20,6 +20,10 @@ bool Component::IsActive() const
 	return _isActive;
 }
 
+void Component::OnConstructed()
+{
+}
+
 void Component::Start()
 {
 }

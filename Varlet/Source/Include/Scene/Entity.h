@@ -29,6 +29,7 @@ namespace Varlet
 			auto componentBase = dynamic_cast<Component*>(component);
 
 			_components.push_back(componentBase);
+			componentBase->OnConstructed();
 			componentBase->SetOwner(this);
 
 			NewComponentCreatedEvent.Invoke(this, componentBase);

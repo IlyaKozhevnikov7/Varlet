@@ -48,7 +48,7 @@ namespace Varlet
 		return _indices.size() > 0;
 	}
 
-	const int32_t OpenGLVertexArray::GetElementsCount() const
+	const int32_t& OpenGLVertexArray::GetElementsCount() const
 	{
 		return IsIndexed()
 			? _indices.size()

@@ -19,11 +19,14 @@ private:
 
 public:
 
+	// todo make private
 	void SetOwner(Varlet::Entity* owner);
 
 	void SetActive(bool activeState);
 
 	bool IsActive() const;
+
+	virtual void OnConstructed();
 
 	virtual void Start();
 

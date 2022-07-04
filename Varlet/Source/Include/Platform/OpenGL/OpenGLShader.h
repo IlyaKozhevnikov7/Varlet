@@ -14,7 +14,7 @@ namespace Varlet
 			Geometry = 0x8DD9
 		};
 
-		enum ObjectType : uint8_t
+		enum class ObjectType : uint8_t
 		{
 			VertexShader = 0,
 			FragmentShader,
@@ -36,6 +36,12 @@ namespace Varlet
 
 	private:
 
-		void Compile(const uint32_t& objId, ObjectType&& objType);
+		void Compile(const uint32_t& objId, const ObjectType& objType) const;
+
+		const char* Load(const char* path) const;
+
+		const uint32_t GenerateShader(const ShaderType&& type, const char* source) const;
+
+		void TryAttach(const uint32_t& id) const;
 	};
 }
