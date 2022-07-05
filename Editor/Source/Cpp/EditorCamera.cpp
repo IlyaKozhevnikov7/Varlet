@@ -2,7 +2,9 @@
 
 void EditorCamera::InternalStart()
 {
+	_camera = _owner->GetComponent<Camera>();
 	_transform = _owner->GetComponent<Transform>();
+	_transform->Rotate(glm::vec3(0.f, 0.f, 1.f));
 }
 
 void EditorCamera::InternalUpdate()
@@ -20,4 +22,9 @@ void EditorCamera::InternalUpdate()
 	
 	if (Input::GetKey(Key::S, KeyState::Press))
 		_transform->Translate(glm::vec3(0.f, -1.f, 0.f));
+}
+
+const uint32_t& EditorCamera::GetRendereTexture() const
+{
+	return _camera->GetRendereTexture();
 }

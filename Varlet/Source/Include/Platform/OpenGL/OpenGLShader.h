@@ -38,7 +38,7 @@ namespace Varlet
 
 		void Compile(const uint32_t& objId, const ObjectType& objType) const;
 
-		const char* Load(const char* path) const;
+		std::string Load(const char* path) const;
 
 		const uint32_t GenerateShader(const ShaderType&& type, const char* source) const;
 

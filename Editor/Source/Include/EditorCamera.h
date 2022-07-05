@@ -6,6 +6,7 @@ class EditorCamera final : public Component
 {
 private:
 
+	Camera* _camera;
 	Transform* _transform;
 
 public:
@@ -13,5 +14,7 @@ public:
 	void InternalStart();
 
 	void InternalUpdate();
+
+	const uint32_t& GetRendereTexture() const;
 };
 

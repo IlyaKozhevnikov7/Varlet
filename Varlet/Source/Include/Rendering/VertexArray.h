@@ -18,7 +18,7 @@ namespace Varlet
 	public:
 
 		std::vector<Varlet::Vertex> vertices;
-		std::vector<int32_t> indices;
+		std::vector<uint32_t> indices;
 	};
 
 	class CORE_API VertexArray
@@ -28,5 +28,11 @@ namespace Varlet
 		VertexArray() = default;
 
 		virtual ~VertexArray() = default;
+
+		virtual const uint32_t& GetVAO() const = 0;
+
+		virtual bool IsIndexed() const = 0;
+
+		virtual const int32_t& GetElementsCount() const = 0;
 	};
 }

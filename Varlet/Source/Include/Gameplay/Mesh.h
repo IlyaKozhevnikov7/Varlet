@@ -11,13 +11,15 @@ namespace Varlet
 	{
 	private:
 
-		VertexArray* vertexArray;
+		VertexArray* _vertexArray;
 
 	public:
 
 		SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 
 		~SubMesh();
+
+		const VertexArray* GetVertexArray() const;
 	};
 }
 
@@ -32,6 +34,8 @@ private:
 	std::vector<Varlet::SubMesh*> _subMeshes;
 
 public:
+
+	const std::vector<Varlet::SubMesh*>& GetSubMeshes() const;
 
 	static Mesh* LoadModel(const std::string& path);
 

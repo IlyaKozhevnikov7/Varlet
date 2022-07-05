@@ -21,7 +21,7 @@ namespace Varlet
 
 	class Renderer : public Module, public IUpdatebleModule
 	{
-	private:
+	protected:
 
 		std::vector<Camera*> _cameras;
 		std::vector<RendererData> _rendererData;

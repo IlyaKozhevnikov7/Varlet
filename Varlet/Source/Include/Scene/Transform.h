@@ -23,5 +23,7 @@ public:
 
 	// TODO translate in local space
 	void Translate(const glm::vec3& delta);
+
+	void Rotate(const glm::vec3& delta);
 };
 

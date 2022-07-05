@@ -35,6 +35,14 @@ namespace Varlet
 	void Engine::RegisterTargetModule(Module* target)
 	{
 		std::vector<Module*> modules;
+
+		// temp add renderer here
+		{
+			auto openGLRenderer = new OpenGLRenderer();
+			_modules.push_back(openGLRenderer);
+			_updatebleModules.push_back(openGLRenderer);
+		}
+
 		modules.push_back(target);
 
 		std::vector<Module*>&& dependencies = std::move(target->GetDependencies());
@@ -47,13 +55,6 @@ namespace Varlet
 
 			if (auto updatebleModule = dynamic_cast<IUpdatebleModule*>(module))
 				_updatebleModules.push_back(updatebleModule);
-		}
-
-		// temp add renderer here
-		{
-			auto openGLRenderer = new OpenGLRenderer();
-			_modules.push_back(openGLRenderer);
-			_updatebleModules.push_back(openGLRenderer);
 		}
 
 		// temp add input here

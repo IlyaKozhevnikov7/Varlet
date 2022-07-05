@@ -40,4 +40,9 @@ namespace Varlet
 	{
 		return _api->CreateUniformBuffer(size);
 	}
+
+	VertexArray* RendererAPI::CreateVertexArray(const VertexArrayData& configuration)
+	{
+		return _api->CreateVertexArray(configuration);
+	}
 }

@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "RendererAPI.h"
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -10,14 +11,23 @@ namespace Varlet
 {
     SubMesh::SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
     {
-        // TODO create vertex array with api
-        // vertexArray = ...
+        _vertexArray = RendererAPI::CreateVertexArray({ vertices ,indices });
     }
 
     SubMesh::~SubMesh()
     {
-        delete vertexArray;
+        delete _vertexArray;
     }
+
+    const VertexArray* SubMesh::GetVertexArray() const
+    {
+        return _vertexArray;
+    }
+}
+
+const std::vector<Varlet::SubMesh*>& Mesh::GetSubMeshes() const
+{
+    return _subMeshes;
 }
 
 Mesh* Mesh::LoadModel(const std::string& path)

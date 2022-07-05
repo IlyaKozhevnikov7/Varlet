@@ -14,3 +14,8 @@ void MeshRenderer::SetMesh(Mesh* mesh)
 	_mesh = mesh;
 }
 
+const Mesh* MeshRenderer::GetMesh() const
+{
+	return _mesh;
+}
+

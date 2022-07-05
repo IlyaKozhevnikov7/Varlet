@@ -8,13 +8,13 @@ namespace Varlet
 {
 	OpenGLShader::OpenGLShader(const ShaderInitializer& initializer) : Shader(initializer)
 	{
-		const char* vertexShaderSource = Load(initializer.vertexPath.c_str());
-		const char* fragmentShaderSource = Load(initializer.vertexPath.c_str());
-		const char* geomtryShaderSource = Load(initializer.geomtryPath.c_str());
+		std::string vertexShaderSource = Load(initializer.vertexPath.c_str());
+		std::string fragmentShaderSource = Load(initializer.fragmentPath.c_str());
+		std::string geomtryShaderSource = Load(initializer.geomtryPath.c_str());
 
-		uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertexShaderSource);
-		uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource);
-		uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource);
+		uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertexShaderSource.c_str());
+		uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource.c_str());
+		uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource.c_str());
 
 		_id = glCreateProgram();
 
@@ -25,14 +25,14 @@ namespace Varlet
 		glLinkProgram(_id);
 		Compile(_id, ObjectType::Program);
 
-		if (vertexShaderId == 0)
+		if (vertexShaderId != 0)
 			glDeleteProgram(vertexShaderId);
+
+		if (fragmentShaderId != 0)
+			glDeleteProgram(fragmentShaderId);
 
 		if (geomtryShaderId == 0)
 			glDeleteProgram(geomtryShaderId);
-
-		if (fragmentShaderId == 0)
-			glDeleteProgram(fragmentShaderId);
 	}
 
 	OpenGLShader::~OpenGLShader()
@@ -72,7 +72,7 @@ namespace Varlet
 		}
 	}
 
-	const char* OpenGLShader::Load(const char* path) const
+	std::string OpenGLShader::Load(const char* path) const
 	{
 		std::ifstream stream;
 		stream.open(path);
@@ -81,17 +81,20 @@ namespace Varlet
 		{
 			std::stringstream buffer;
 			buffer << stream.rdbuf();
-			return buffer.str().c_str();
+			return buffer.str();
 		}
 		else
 		{
 			VARLET_LOG(LevelType::Warning, "Failed load shader: " + *path);
-			return nullptr;
+			return std::string();
 		}
 	}
 
 	const uint32_t OpenGLShader::GenerateShader(const ShaderType&& type, const char* source) const
 	{
+		if (source == nullptr)
+			return 0;
+
 		const uint32_t vertexShaderId = glCreateShader(type);
 		glShaderSource(vertexShaderId, 1, &source, NULL);
 		glCompileShader(vertexShaderId);

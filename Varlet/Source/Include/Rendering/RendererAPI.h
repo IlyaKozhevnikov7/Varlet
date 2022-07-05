@@ -52,6 +52,8 @@ namespace Varlet
 		static Texture* CreateTexture(const TextureConfiguration& configuration);
 
 		static UniformBuffer* CreateUniformBuffer(const int64_t& size);
+
+		static VertexArray* CreateVertexArray(const VertexArrayData& configuration);
 	};
 
 	class IRendererAPIInitializerBase

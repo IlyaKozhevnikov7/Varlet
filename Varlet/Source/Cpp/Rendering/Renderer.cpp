@@ -32,21 +32,6 @@ namespace Varlet
 
 	void Renderer::Update()
 	{
-		for (const auto camera : _cameras)
-		{
-			if (camera->IsActive() == false)
-				continue;
-
-			// use uniform buffer for current camera
-			_processedCameraData->Bind();
-			_processedCameraData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
-			_processedCameraData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
-			_processedCameraData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
-
-			for (const auto data : _rendererData)
-				Render(data);
-		}
-
 		VARLET_LOG(LevelType::Normal, "Renderer::Update()");
 	}
 

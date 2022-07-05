@@ -17,4 +17,6 @@ public:
 	void OnConstructed() override;
 
 	void SetMesh(Mesh* mesh);
+
+	const Mesh* GetMesh() const;
 };

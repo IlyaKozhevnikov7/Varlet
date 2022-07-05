@@ -15,9 +15,10 @@ class CORE_API Camera final : public Component
 private:
 
 	Varlet::CameraCore* _core;
-	Transform* transform;
 
 public:
+
+	Camera();
 
 	void Start() override;
 
@@ -27,6 +28,10 @@ public:
 
 	const glm::mat4& GetProjection() const;
 
-	const glm::mat4 GetViewProjection() const;
+	const glm::mat4& GetViewProjection() const;
+	
+	const Varlet::CameraCore* GetCore() const;
+
+	const uint32_t& GetRendereTexture() const;
 };
 

@@ -69,17 +69,10 @@ int32_t Editor::Init()
 int32_t Editor::PostInit()
 {
 	auto scene = _context->GetCurrentScene();
-
-	//_mainCamera = scene->CreateEntity();
-
-	//_mainCamera->AddComponent<Transform>();
-	//_mainCamera->AddComponent<Camera>();
-	//_mainCamera->AddComponent<EditorCamera>();
-
 	auto camera = scene->CreateEntity();
 
 	camera->AddComponent<Transform>();
-	camera->AddComponent<Camera>();
+	camera->AddComponent<Camera>()->SetActive(true);
 	_mainCamera = camera->AddComponent<EditorCamera>();
 
 	_mainCamera->InternalStart();
@@ -227,7 +220,7 @@ void Editor::DrawViewPort() const
 	ImGui::Begin("Viewport", nullptr, windowFlags);
 
 	// here we need to get editor camera and get its framebuffer texture id
-	// ImGui::Image()
+	//ImGui::Image((ImTextureID)_mainCamera->GetRendereTexture(), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
 
 	ImGui::End();
 }

@@ -19,6 +19,8 @@ namespace Varlet
 
 		~OpenGLFramebuffer() override;
 
+		const uint32_t& GetTexture() const override;
+
 		void Bind() override;
 
 		void UnBind() override;

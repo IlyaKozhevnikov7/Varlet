@@ -44,6 +44,11 @@ namespace Varlet
 		glDeleteRenderbuffers(1, &renderbufferId);
 	}
 
+	const uint32_t& OpenGLFramebuffer::GetTexture() const
+	{
+		return textureId;
+	}
+
 	void OpenGLFramebuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _id);
