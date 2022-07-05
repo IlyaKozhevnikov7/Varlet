@@ -20,8 +20,6 @@ public:
 
 	Camera();
 
-	void Start() override;
-
 	void Update() override;
 
 	const glm::mat4& GetView() const;

@@ -11,7 +11,7 @@ layout(std140, binding = 0) uniform Camera
     mat4 u_Projection;
     mat4 u_View;
     mat4 u_ProjectionView;
-}
+};
 
 out vec3 normal;
 out vec2 texCoord;
@@ -21,5 +21,5 @@ void main()
     normal = aNormal;
     texCoord = aTexCoord;
 
-	gl_Position = u_ViewProjection * u_Model * vec4(aPos, 0.f);
+	gl_Position = u_ProjectionView * u_Model * vec4(aPos, 0.f);
 }

@@ -8,12 +8,6 @@ namespace Varlet
 		glGenFramebuffers(1, &_id);
 		glBindFramebuffer(GL_FRAMEBUFFER, _id);
 
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		{
-			VARLET_LOG(LevelType::Error, "Framebuffer is not created");
-			return;
-		}
-
 		// redo with renderer api
 		{
 			glGenTextures(1, &textureId);
@@ -32,6 +26,12 @@ namespace Varlet
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			VARLET_LOG(LevelType::Error, "Framebuffer is not created");
+			return;
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -219,8 +219,11 @@ void Editor::DrawViewPort() const
 
 	ImGui::Begin("Viewport", nullptr, windowFlags);
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _mainCamera->GetRendereTexture());
+
 	// here we need to get editor camera and get its framebuffer texture id
-	//ImGui::Image((ImTextureID)_mainCamera->GetRendereTexture(), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((ImTextureID)_mainCamera->GetRendereTexture(), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
 
 	ImGui::End();
 }
