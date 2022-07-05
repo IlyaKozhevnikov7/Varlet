@@ -3,6 +3,7 @@
 #include "VarletCore.h"
 
 struct TextureConfiguration;
+struct LoadableTextureConfiguration;
 
 namespace Varlet
 {
@@ -30,6 +31,8 @@ namespace Varlet
 
 		virtual Texture* CreateTexture(const TextureConfiguration& configuration) const = 0;
 
+		virtual Texture* LoadTexture(const LoadableTextureConfiguration& configuration) const = 0;
+
 		virtual VertexArray* CreateVertexArray(const VertexArrayData& configuration) const = 0;
 	};
 
@@ -50,6 +53,8 @@ namespace Varlet
 		static Framebuffer* CreateFrameBuffer();
 
 		static Texture* CreateTexture(const TextureConfiguration& configuration);
+
+		static Texture* LoadTexture(const LoadableTextureConfiguration& configuration);
 
 		static UniformBuffer* CreateUniformBuffer(const int64_t& size);
 

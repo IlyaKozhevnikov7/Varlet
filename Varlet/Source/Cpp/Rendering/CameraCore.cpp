@@ -39,7 +39,7 @@ namespace Varlet
         return _projection * _view;
     }
 
-    const uint32_t& CameraCore::GetRendereTexture() const
+    const Texture* CameraCore::GetRendereTexture() const
     {
         return _framebuffer->GetTexture();
     }

@@ -1,6 +1,7 @@
 #include "Editor.h"
 #include "EditorCamera.h"
 #include "Core/VarletAPI.h"
+#include "Rendering/Texture.h"
 
 #include "VarletFramework.h"
 
@@ -218,12 +219,11 @@ void Editor::DrawViewPort() const
 	static ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
 
 	ImGui::Begin("Viewport", nullptr, windowFlags);
+	
+	auto texture = _mainCamera->GetRendereTexture();
+	texture->Activate(0);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _mainCamera->GetRendereTexture());
-
-	// here we need to get editor camera and get its framebuffer texture id
-	ImGui::Image((ImTextureID)_mainCamera->GetRendereTexture(), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((ImTextureID)texture->GetId(), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
 
 	ImGui::End();
 }

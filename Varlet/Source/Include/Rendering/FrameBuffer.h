@@ -4,6 +4,8 @@
 
 namespace Varlet
 {
+	class Texture;
+
 	class CORE_API Framebuffer
 	{
 	public:
@@ -12,7 +14,7 @@ namespace Varlet
 
 		virtual ~Framebuffer() = default;
 
-		virtual const uint32_t& GetTexture() const = 0;
+		virtual const Texture* GetTexture() const = 0;
 
 		virtual void Bind() = 0;
 

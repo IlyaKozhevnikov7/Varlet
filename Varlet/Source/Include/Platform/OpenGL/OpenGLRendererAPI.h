@@ -17,6 +17,8 @@ namespace Varlet
 
 		Texture* CreateTexture(const TextureConfiguration& configuration) const override;
 
+		Texture* LoadTexture(const LoadableTextureConfiguration& configuration) const override;
+
 		UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
 
 		VertexArray* CreateVertexArray(const VertexArrayData& data) const override;

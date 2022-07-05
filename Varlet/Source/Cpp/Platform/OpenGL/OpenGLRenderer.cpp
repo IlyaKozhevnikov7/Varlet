@@ -47,8 +47,9 @@ namespace Varlet
 
 			camera->GetCore()->Bind();
 
-			glClearColor(0.8f, 0.8f, 0.8f, 1.f);
+			glClearColor(0.f, 0.5f, 0.5f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST); // 
 
 			_processedCameraData->Bind();
 			_processedCameraData->SetData(0,						sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
@@ -66,8 +67,8 @@ namespace Varlet
 	{
 		// todo when added meterial to mesh component
 		static const auto defautlShader = RendererAPI::CreateShader({
-			"W:/Varlet/Varlet/Shaders/defaultVertex.glsl",
-			"W:/Varlet/Varlet/Shaders/defaultFragment.glsl",
+			"../Varlet/Shaders/defaultVertex.glsl",
+			"../Varlet/Shaders/defaultFragment.glsl",
 			""});
 
 		glm::mat4 model = glm::mat4(1.f);

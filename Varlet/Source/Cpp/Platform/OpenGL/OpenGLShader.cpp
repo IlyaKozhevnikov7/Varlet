@@ -92,7 +92,7 @@ namespace Varlet
 
 	const uint32_t OpenGLShader::GenerateShader(const ShaderType&& type, const char* source) const
 	{
-		if (source == nullptr)
+		if (source[0] == '\0')
 			return 0;
 
 		const uint32_t vertexShaderId = glCreateShader(type);

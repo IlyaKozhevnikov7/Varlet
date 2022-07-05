@@ -5,13 +5,16 @@
 
 namespace Varlet
 {
+	class OpenGLTexture;
+
 	class CORE_API OpenGLFramebuffer final : public Framebuffer
 	{
 	private:
 
 		uint32_t _id;
-		uint32_t textureId;
 		uint32_t renderbufferId;
+
+		OpenGLTexture* texture;
 
 	public:
 
@@ -19,7 +22,7 @@ namespace Varlet
 
 		~OpenGLFramebuffer() override;
 
-		const uint32_t& GetTexture() const override;
+		const Texture* GetTexture() const override;
 
 		void Bind() override;
 

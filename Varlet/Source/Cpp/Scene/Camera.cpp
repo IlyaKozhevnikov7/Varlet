@@ -34,7 +34,7 @@ const Varlet::CameraCore* Camera::GetCore() const
 	return _core;
 }
 
-const uint32_t& Camera::GetRendereTexture() const
+const Varlet::Texture* Camera::GetRendereTexture() const
 {
 	return _core->GetRendereTexture();
 }

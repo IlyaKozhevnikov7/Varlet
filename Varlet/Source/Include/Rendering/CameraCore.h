@@ -32,7 +32,7 @@ namespace Varlet
 
 		const glm::mat4 GetViewProjection() const;
 
-		const uint32_t& GetRendereTexture() const;
+		const Texture* GetRendereTexture() const;
 
 		virtual void CulculateView(const glm::vec3& postion, const glm::vec3& rotation) = 0;
 	};	

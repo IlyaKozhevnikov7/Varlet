@@ -2,14 +2,6 @@
 
 #include "VarletCore.h"
 
-enum class TextureType : uint8_t
-{
-	Diffuse = 0,
-	Specular
-
-	// TODO add other types
-};
-
 enum class WrapType : uint8_t
 {
 	Repeat = 0,
@@ -26,13 +18,16 @@ enum class FilterType : uint8_t
 
 struct TextureConfiguration
 {
-public:
-
-	std::string path;
-	TextureType type;
+	uint32_t width;
+	uint32_t height;
 	WrapType wrapType;
 	FilterType filter;
 	bool mipmap;
+};
+
+struct LoadableTextureConfiguration : public TextureConfiguration
+{
+	char* path;
 	bool flipUV;
 };
 
@@ -43,12 +38,15 @@ namespace Varlet
 	protected:
 
 		uint32_t _id;
-		TextureType _type;
 
 	public:
 
-		Texture(const TextureConfiguration& configuration);
+		Texture() = default;
 
 		virtual ~Texture() = default;
+
+		virtual void Activate(const uint32_t& unit) const = 0;
+
+		virtual const uint32_t& GetId() const;
 	};
 }

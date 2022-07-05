@@ -15,6 +15,6 @@ public:
 
 	void InternalUpdate();
 
-	const uint32_t& GetRendereTexture() const;
+	const Varlet::Texture* GetRendereTexture() const;
 };
 

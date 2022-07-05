@@ -24,7 +24,7 @@ void EditorCamera::InternalUpdate()
 		_transform->Translate(glm::vec3(0.f, -1.f, 0.f));
 }
 
-const uint32_t& EditorCamera::GetRendereTexture() const
+const Varlet::Texture* EditorCamera::GetRendereTexture() const
 {
 	return _camera->GetRendereTexture();
 }

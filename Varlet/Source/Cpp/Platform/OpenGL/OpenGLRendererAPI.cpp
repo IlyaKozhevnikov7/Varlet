@@ -28,6 +28,11 @@ namespace Varlet
 		return new OpenGLTexture(configuration);
 	}
 
+	Texture* OpenGLRendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration) const
+	{
+		return new OpenGLTexture(configuration);
+	}
+
 	UniformBuffer* OpenGLRendererAPI::CreateUniformBuffer(const int64_t& size) const
 	{
 		return new OpenGLUniformBuffer(size);

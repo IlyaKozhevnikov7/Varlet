@@ -2,8 +2,8 @@
 
 namespace Varlet
 {
-	Texture::Texture(const TextureConfiguration& configuration)
+	const uint32_t& Texture::GetId() const
 	{
-		_type = configuration.type;
+		return _id;
 	}
 }

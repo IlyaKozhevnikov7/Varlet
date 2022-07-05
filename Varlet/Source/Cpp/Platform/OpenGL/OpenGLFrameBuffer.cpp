@@ -1,4 +1,5 @@
 #include "OpenGLFramebuffer.h"
+#include "OpenGLTexture.h"
 #include "glad/glad.h"
 
 namespace Varlet
@@ -8,25 +9,24 @@ namespace Varlet
 		glGenFramebuffers(1, &_id);
 		glBindFramebuffer(GL_FRAMEBUFFER, _id);
 
-		// redo with renderer api
+		TextureConfiguration configuration
 		{
-			glGenTextures(1, &textureId);
-			glBindTexture(GL_TEXTURE_2D, textureId);
+			640,
+			480,
+			WrapType::ClampToEdge,
+			FilterType::Linear,
+			false
+		};
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 640, 480, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		texture = dynamic_cast<OpenGLTexture*>(RendererAPI::CreateTexture(configuration));
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture->_id, 0);
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
-
-			glGenRenderbuffers(1, &renderbufferId);
-			glBindRenderbuffer(GL_RENDERBUFFER, renderbufferId);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 640, 480);
-			glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
+		glGenRenderbuffers(1, &renderbufferId);
+		glBindRenderbuffer(GL_RENDERBUFFER, renderbufferId);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, configuration.width, configuration.height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbufferId);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -40,13 +40,15 @@ namespace Varlet
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
 		glDeleteFramebuffers(1, &_id);
-		glDeleteTextures(1, &textureId);
+		glDeleteTextures(1, &texture->_id);
 		glDeleteRenderbuffers(1, &renderbufferId);
+
+		delete texture;
 	}
 
-	const uint32_t& OpenGLFramebuffer::GetTexture() const
+	const Texture* OpenGLFramebuffer::GetTexture() const
 	{
-		return textureId;
+		return texture;
 	}
 
 	void OpenGLFramebuffer::Bind()

@@ -36,6 +36,11 @@ namespace Varlet
 		return _api->CreateTexture(configuration);
 	}
 
+	Texture* RendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration)
+	{
+		return _api->LoadTexture(configuration);
+	}
+
 	UniformBuffer* RendererAPI::CreateUniformBuffer(const int64_t& size)
 	{
 		return _api->CreateUniformBuffer(size);

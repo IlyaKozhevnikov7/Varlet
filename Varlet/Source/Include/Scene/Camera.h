@@ -5,6 +5,7 @@
 
 namespace Varlet 
 {
+	class Texture;
 	class CameraCore;
 }
 
@@ -30,6 +31,6 @@ public:
 	
 	const Varlet::CameraCore* GetCore() const;
 
-	const uint32_t& GetRendereTexture() const;
+	const Varlet::Texture* GetRendereTexture() const;
 };
 
