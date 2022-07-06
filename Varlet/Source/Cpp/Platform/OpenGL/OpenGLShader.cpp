@@ -129,4 +129,49 @@ namespace Varlet
 		if (id != 0)
 			glAttachShader(_id, id);
 	}
+
+	void OpenGLShader::SetBool(const char* name, const bool& value)
+	{
+		glUniform1i(glGetUniformLocation(_id, name), static_cast<int32_t>(value));
+	}
+
+	void OpenGLShader::SetUInt32(const char* name, const uint32_t& value)
+	{
+		glUniform1ui(glGetUniformLocation(_id, name), value);
+	}
+
+	void OpenGLShader::SetInt32(const char* name, const int32_t& value)
+	{
+		glUniform1i(glGetUniformLocation(_id, name), value);
+	}
+
+	void OpenGLShader::SetFloat(const char* name, const float& value)
+	{
+		glUniform1f(glGetUniformLocation(_id, name), value);
+	}
+
+	void OpenGLShader::SetVec2(const char* name, const glm::vec2& value)
+	{
+		glUniform2f(glGetUniformLocation(_id, name), value.x, value.y);
+	}
+
+	void OpenGLShader::SetVec3(const char* name, const glm::vec3& value)
+	{
+		glUniform3f(glGetUniformLocation(_id, name), value.x, value.y, value.z);
+	}
+
+	void OpenGLShader::SetVec4(const char* name, const glm::vec4& value)
+	{
+		glUniform4f(glGetUniformLocation(_id, name), value.x, value.y, value.z, value.w);
+	}
+
+	void OpenGLShader::SetMat3(const char* name, const glm::mat3& value)
+	{
+		glUniformMatrix3fv(glGetUniformLocation(_id, name), 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void OpenGLShader::SetMat4(const char* name, const glm::mat4& value)
+	{
+		glUniformMatrix4fv(glGetUniformLocation(_id, name), 1, GL_FALSE, glm::value_ptr(value));
+	}
 }

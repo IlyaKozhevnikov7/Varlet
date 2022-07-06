@@ -21,5 +21,5 @@ void main()
     normal = aNormal;
     texCoord = aTexCoord;
 
-	gl_Position = u_ProjectionView * u_Model * vec4(aPos, 0.f);
+	gl_Position = u_ProjectionView * u_Model * vec4(aPos, 1.f);
 }

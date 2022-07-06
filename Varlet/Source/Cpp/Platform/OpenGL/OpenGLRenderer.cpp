@@ -49,7 +49,6 @@ namespace Varlet
 
 			glClearColor(0.f, 0.5f, 0.5f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_DEPTH_TEST); // 
 
 			_processedCameraData->Bind();
 			_processedCameraData->SetData(0,						sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
@@ -75,13 +74,15 @@ namespace Varlet
 		glm::translate(model, rendererData.transform->GetPosition());
 
 		const glm::vec3 rotation = rendererData.transform->GetRotation();
-		glm::rotate(model, rotation.x, glm::vec3(1.f, 0.f, 0.f));
-		glm::rotate(model, rotation.y, glm::vec3(0.f, 1.f, 0.f));
-		glm::rotate(model, rotation.z, glm::vec3(0.f, 0.f, 1.f));
+		glm::rotate(model, glm::degrees(rotation.x), glm::vec3(1.f, 0.f, 0.f));
+		glm::rotate(model, glm::degrees(rotation.y), glm::vec3(0.f, 1.f, 0.f));
+		glm::rotate(model, glm::degrees(rotation.z), glm::vec3(0.f, 0.f, 1.f));
 
 		glm::scale(model, rendererData.transform->GetScale());
 
 		defautlShader->Use();
+
+		defautlShader->SetMat4("u_Model", model);
 
 		if (auto mesh = rendererData.meshRenderer->GetMesh())
 		{

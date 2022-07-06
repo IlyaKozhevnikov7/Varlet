@@ -216,7 +216,10 @@ void Editor::DrawDockSpace() const
 
 void Editor::DrawViewPort() const
 {
-	static ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
+	static ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
+
+	ImGui::SetNextWindowSize(ImVec2(640.f, 480.f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
 
 	ImGui::Begin("Viewport", nullptr, windowFlags);
 	
@@ -224,6 +227,8 @@ void Editor::DrawViewPort() const
 	texture->Activate(0);
 
 	ImGui::Image((ImTextureID)texture->GetId(), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
+
+	ImGui::PopStyleVar();
 
 	ImGui::End();
 }

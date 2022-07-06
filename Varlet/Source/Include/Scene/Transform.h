@@ -11,7 +11,7 @@ private:
 
 	glm::vec3 _position;
 	glm::vec3 _rotation; // TODO remake to quat
-	glm::vec3 _scale;
+	glm::vec3 _scale = glm::vec3(1.f);
 
 public:
 

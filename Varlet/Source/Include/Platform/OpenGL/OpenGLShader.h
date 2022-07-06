@@ -32,7 +32,25 @@ namespace Varlet
 
 		~OpenGLShader() override;
 
-		virtual void Use() const override;
+		void Use() const override;
+
+		void SetBool(const char* name, const bool& value) override;
+
+		void SetUInt32(const char* name, const uint32_t& value) override;
+
+		void SetInt32(const char* name, const int32_t& value) override;
+
+		void SetFloat(const char* name, const float& value) override;
+
+		void SetVec2(const char* name, const glm::vec2& value) override;
+
+		void SetVec3(const char* name, const glm::vec3& value) override;
+
+		void SetVec4(const char* name, const glm::vec4& value) override;
+
+		void SetMat3(const char* name, const glm::mat3& value) override;
+
+		void SetMat4(const char* name, const glm::mat4& value) override;
 
 	private:
 
