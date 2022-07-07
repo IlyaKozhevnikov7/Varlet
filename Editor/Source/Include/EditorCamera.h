@@ -16,5 +16,7 @@ public:
 	void InternalUpdate();
 
 	const Varlet::Texture* GetRendereTexture() const;
+
+	const Transform* GetTransform() const;
 };
 

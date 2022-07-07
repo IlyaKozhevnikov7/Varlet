@@ -22,5 +22,5 @@ void Transform::Translate(const glm::vec3& delta)
 
 void Transform::Rotate(const glm::vec3& delta)
 {
-    _rotation -= delta;
+    _rotation += delta;
 }
