@@ -19,3 +19,5 @@
 // input
 #include "Input/Input.h"
 #include "Platform/Windows/GLFWInput.h" // for key enums
+
+#include "Time/VarletTime.h"

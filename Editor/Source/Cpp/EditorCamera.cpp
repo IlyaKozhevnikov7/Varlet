@@ -11,13 +11,14 @@ void EditorCamera::InternalUpdate()
 	static glm::vec2 lastMousePos = glm::vec2(0.f);
 
 	const glm::vec2 mousePos = Input::GetMousePosition();
-	const glm::vec2 deltas = glm::vec2(mousePos.x - lastMousePos.x, mousePos.y - lastMousePos.y);
 
-	constexpr float sensivity = 0.05f;
+	constexpr float sensivity = 0.005f;
+	const glm::vec2 delta = glm::vec2(mousePos.x - lastMousePos.x, mousePos.y - lastMousePos.y) * sensivity;
 
-	_transform->Rotate(glm::vec3(deltas.x, deltas.y, 0.f) * sensivity);
+	_transform->Rotate(glm::vec3(delta, 0.f));
 
 	lastMousePos = mousePos;
+
 
 
 	if (Input::GetKey(Key::A, KeyState::Press))

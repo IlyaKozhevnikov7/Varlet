@@ -13,7 +13,6 @@ namespace Varlet
 		{
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-			glfwSwapInterval(1);
 			_window = glfwCreateWindow(640, 480, "Varlet", NULL, NULL);
 
 			if (_window == nullptr)
@@ -23,6 +22,7 @@ namespace Varlet
 			}
 
 			glfwMakeContextCurrent(_window);
+			glfwSwapInterval(0);
 		}
 
 		return initResult;

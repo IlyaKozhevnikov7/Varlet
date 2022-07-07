@@ -23,6 +23,7 @@ project "Varlet"
 		"%{includeDir}/Scene",
 		"%{includeDir}/Platform/Windows",
 		"%{includeDir}/Platform/OpenGL",
+		"%{includeDir}/Time",
 
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}",

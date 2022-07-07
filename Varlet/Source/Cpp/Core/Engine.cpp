@@ -2,6 +2,7 @@
 #include "GLFWContext.h"
 #include "GLFWInput.h"
 #include "OpenGLRenderer.h"
+#include "GLFWTime.h"
 
 namespace Varlet
 {
@@ -57,9 +58,10 @@ namespace Varlet
 			_updatebleModules.push_back(openGLRenderer);
 		}
 
-		// temp add input here
+		// temp add input and time here
 		{
 			_modules.push_back(new GLFWInput());
+			_modules.push_back(new GLFWTime());
 		}
 	}
 
@@ -86,6 +88,8 @@ namespace Varlet
 	{
 		while (IsRunning())
 		{
+			Time::UpdateTime();
+
 			_context->Update();
 
 			for (auto module : _updatebleModules)
