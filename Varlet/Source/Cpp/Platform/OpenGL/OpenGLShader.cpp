@@ -31,7 +31,7 @@ namespace Varlet
 		if (fragmentShaderId != 0)
 			glDeleteProgram(fragmentShaderId);
 
-		if (geomtryShaderId == 0)
+		if (geomtryShaderId != 0)
 			glDeleteProgram(geomtryShaderId);
 	}
 

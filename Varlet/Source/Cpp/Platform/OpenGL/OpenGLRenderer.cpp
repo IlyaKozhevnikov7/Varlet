@@ -97,6 +97,8 @@ namespace Varlet
 				else
 					glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetElementsCount());
 			}
+
+			glBindVertexArray(0);
 		}
 	}
 }
