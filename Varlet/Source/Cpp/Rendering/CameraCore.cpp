@@ -5,7 +5,7 @@ namespace Varlet
 {
     CameraCore::CameraCore()
     {
-        _projection = glm::perspective(glm::radians(90.f), 640.f / 480.f, 0.1f, 250.f);
+        _projection = glm::perspective(glm::radians(45.f), 960.f / 540.f, 0.1f, 250.f);
         _framebuffer = RendererAPI::CreateFrameBuffer();
     }
 

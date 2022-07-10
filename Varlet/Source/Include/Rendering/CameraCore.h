@@ -34,6 +34,6 @@ namespace Varlet
 
 		const Texture* GetRendereTexture() const;
 
-		virtual void CulculateView(const glm::vec3& postion, const glm::vec3& rotation) = 0;
+		virtual void CulculateView(const glm::vec3& postion, const glm::quat& rotation) = 0;
 	};	
 }

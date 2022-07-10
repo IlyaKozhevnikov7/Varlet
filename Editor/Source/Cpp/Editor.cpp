@@ -105,6 +105,7 @@ void Editor::Update()
 	ImGui::NewFrame();
 
 	{
+		DrawCameraInfo();
 		DrawDockSpace();
 		DrawViewPort();
 	}
@@ -169,6 +170,25 @@ void Editor::Update()
 	//_context->Update();
 }
 
+void Editor::DrawCameraInfo()
+{
+	const auto rotation = _mainCamera->GetTransform()->GetRotation();
+	const auto eulerAngles = _mainCamera->GetTransform()->GetEulerAngles();
+
+	ImGui::Begin("Editor Camera");
+
+	ImGui::Text("X: %f, Y: %f, Z: %f", rotation.x, rotation.y, rotation.z);
+	ImGui::Text("W: %f", rotation.w);
+
+	ImGui::Separator();
+
+	ImGui::Text("Pitch: %f", glm::degrees(eulerAngles.x));
+	ImGui::Text("Yaw: %f", glm::degrees(eulerAngles.y));
+	ImGui::Text("Roll: %f", glm::degrees(eulerAngles.z));
+
+	ImGui::End();
+}
+
 void Editor::DrawDockSpace() const
 {
 	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
@@ -222,7 +242,7 @@ void Editor::DrawViewPort() const
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
 
 	ImGui::Begin("Viewport", nullptr, windowFlags);
-	
+
 	auto texture = _mainCamera->GetRendereTexture();
 	texture->Activate(0);
 

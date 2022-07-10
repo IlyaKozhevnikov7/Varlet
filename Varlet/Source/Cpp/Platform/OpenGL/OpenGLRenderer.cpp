@@ -70,15 +70,9 @@ namespace Varlet
 			"../Varlet/Shaders/defaultFragment.glsl",
 			""});
 
-		glm::mat4 model = glm::mat4(1.f);
-		glm::translate(model, rendererData.transform->GetPosition());
-
-		const glm::vec3 rotation = rendererData.transform->GetRotation();
-		glm::rotate(model, glm::degrees(rotation.x), glm::vec3(1.f, 0.f, 0.f));
-		glm::rotate(model, glm::degrees(rotation.y), glm::vec3(0.f, 1.f, 0.f));
-		glm::rotate(model, glm::degrees(rotation.z), glm::vec3(0.f, 0.f, 1.f));
-
-		glm::scale(model, rendererData.transform->GetScale());
+		glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->GetPosition());
+		model = model * glm::mat4_cast(rendererData.transform->GetRotation());
+		model = glm::scale(model, rendererData.transform->GetScale());
 
 		defautlShader->Use();
 

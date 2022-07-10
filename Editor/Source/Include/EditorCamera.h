@@ -9,6 +9,8 @@ private:
 	Camera* _camera;
 	Transform* _transform;
 
+	float sensitivity = 0.2f;
+
 public:
 
 	void InternalStart();
@@ -17,6 +19,10 @@ public:
 
 	const Varlet::Texture* GetRendereTexture() const;
 
-	const Transform* GetTransform() const;
+	Transform* GetTransform() const;
+
+private:
+
+	float ConstrainPitch(const float& mouseDelta) const;
 };
 

@@ -41,6 +41,8 @@ private:
 
 	void Update() override;
 
+	void DrawCameraInfo();
+
 	void DrawDockSpace() const;
 
 	void DrawViewPort() const;
