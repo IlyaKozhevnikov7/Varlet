@@ -18,6 +18,7 @@ project "Editor"
 	includedirs {
 		"%{wks.location}/Varlet/Source/Include",
 		"%{includeDir}",
+		"%{includeDir}/Panels",
 
 		"%{prj.location}/Dependencies",
 		"%{includeDirs.GLAD}",

@@ -8,6 +8,11 @@
 	#define EDITOR_API __declspec(dllimport)
 #endif
 
+struct EditorData
+{
+	static Varlet::GameModule* context;
+};
+
 namespace Varlet
 {
 	class Entity;
@@ -15,16 +20,14 @@ namespace Varlet
 
 struct GLFWwindow;
 class EditorCamera;
+class Panel;
 
 class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
 {
 private:
 
+	std::vector<Panel*> _panels;
 	GLFWwindow* _window;
-	Varlet::GameModule* _context;
-
-	//Varlet::Entity* _mainCamera;
-	EditorCamera* _mainCamera;
 
 public:
 
@@ -35,6 +38,8 @@ private:
 
 	int32_t Init() override;
 
+	void InitImGui();
+
 	int32_t PostInit() override;
 
 	void Shutdown() override;
@@ -42,8 +47,4 @@ private:
 	void Update() override;
 
 	void DrawCameraInfo();
-
-	void DrawDockSpace() const;
-
-	void DrawViewPort() const;
 };
