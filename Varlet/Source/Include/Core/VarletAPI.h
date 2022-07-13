@@ -13,5 +13,10 @@ public:
 	{
 		return static_cast<TWindow*>(Varlet::Engine::Get()->GetContext()->GetWindow());
 	}
+
+	static void SetCursorState(const CursorState& state)
+	{
+		Varlet::Engine::Get()->GetContext()->SetCursorState(state);
+	}
 };
 

@@ -8,31 +8,31 @@ void EditorCamera::InternalStart()
 
 void EditorCamera::InternalUpdate()
 {
-	const glm::vec2 mousePos = Input::GetMousePosition();
-	static glm::vec2 lastMousePos = mousePos;
+	UpdateMoveAndRotation();
+	_camera->Update();
+}
 
-	const glm::vec2 delta = glm::vec2(ConstrainPitch(lastMousePos.y - mousePos.y), (lastMousePos.x - mousePos.x) * sensitivity);
+void EditorCamera::UpdateMoveAndRotation()
+{
+	const glm::vec2 mousePos = Input::GetMousePosition();
+	const glm::vec2 delta = glm::vec2(ConstrainPitch(_lastMousePos.y - mousePos.y), (_lastMousePos.x - mousePos.x) * _sensitivity);
 
 	_transform->Rotate(delta.x, glm::vec3(1.f, 0.f, 0.f));
 	_transform->Rotate(delta.y, glm::vec3(0.f, 1.f, 0.f), Space::World);
 
-	lastMousePos = mousePos;
+	_lastMousePos = mousePos;
 
-	constexpr float speed = 10.f;
-	
 	if (Input::GetKey(Key::A, KeyState::Press))
-		_transform->Translate(-_transform->GetRight() * speed * Time::GetDeltaTime());
-	
-	if (Input::GetKey(Key::D, KeyState::Press))
-		_transform->Translate(_transform->GetRight() * speed * Time::GetDeltaTime());
-	
-	if (Input::GetKey(Key::W, KeyState::Press))
-		_transform->Translate(-_transform->GetForward() * speed * Time::GetDeltaTime());
-	
-	if (Input::GetKey(Key::S, KeyState::Press))
-		_transform->Translate(_transform->GetForward() * speed * Time::GetDeltaTime());
+		_transform->Translate(-_transform->GetRight() * _speed * Time::GetDeltaTime());
 
-	_camera->Update();
+	if (Input::GetKey(Key::D, KeyState::Press))
+		_transform->Translate(_transform->GetRight() * _speed * Time::GetDeltaTime());
+
+	if (Input::GetKey(Key::W, KeyState::Press))
+		_transform->Translate(-_transform->GetForward() * _speed * Time::GetDeltaTime());
+
+	if (Input::GetKey(Key::S, KeyState::Press))
+		_transform->Translate(_transform->GetForward() * _speed * Time::GetDeltaTime());
 }
 
 const Varlet::Texture* EditorCamera::GetRendereTexture() const
@@ -50,7 +50,7 @@ float EditorCamera::ConstrainPitch(const float& mouseDelta) const
 	constexpr glm::vec2 pitchConstraint(-90.f, 90.f);
 	static float lastPitch = _transform->GetEulerAngles().x;
 
-	float delta = mouseDelta * sensitivity;
+	float delta = mouseDelta * _sensitivity;
 	float totalPitch = lastPitch + delta;
 
 	if (totalPitch < pitchConstraint.x)

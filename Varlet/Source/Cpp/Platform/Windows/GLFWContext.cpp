@@ -45,4 +45,26 @@ namespace Varlet
 		_window = nullptr;
 		glfwTerminate();
 	}
+
+	void GLFWContext::SetCursorState(const CursorState& state) const
+	{
+		int8_t glfwState;
+
+		switch (state)
+		{	
+		case CursorState::Visible:
+			glfwState = GLFW_CURSOR_NORMAL;
+			break;
+
+		case CursorState::Disabled:
+			glfwState = GLFW_CURSOR_DISABLED;
+			break;
+
+		case CursorState::Hidden:
+			glfwState = GLFW_CURSOR_HIDDEN;
+			break;
+		}
+
+		glfwSetInputMode(_window, GLFW_CURSOR, glfwState);
+	}
 }

@@ -246,7 +246,7 @@ void Editor::DrawViewPort() const
 	auto texture = _mainCamera->GetRendereTexture();
 	texture->Activate(0);
 
-	ImGui::Image((ImTextureID)texture->GetId(), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetId()), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
 
 	ImGui::PopStyleVar();
 
