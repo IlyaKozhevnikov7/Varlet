@@ -18,7 +18,7 @@ namespace Varlet
 
 	public:
 
-		OpenGLFramebuffer();
+		OpenGLFramebuffer(const int32_t& width, const int32_t& height);
 
 		~OpenGLFramebuffer() override;
 

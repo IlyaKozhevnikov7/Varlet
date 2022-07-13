@@ -38,3 +38,8 @@ const Varlet::Texture* Camera::GetRendereTexture() const
 {
 	return _core->GetRendereTexture();
 }
+
+void Camera::OnResize(const int32_t& width, const int32_t& height) const
+{
+	_core->ResizeView(width, height);
+}

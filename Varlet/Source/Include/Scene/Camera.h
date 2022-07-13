@@ -32,5 +32,7 @@ public:
 	const Varlet::CameraCore* GetCore() const;
 
 	const Varlet::Texture* GetRendereTexture() const;
+
+	void OnResize(const int32_t& width, const int32_t& height) const;
 };
 

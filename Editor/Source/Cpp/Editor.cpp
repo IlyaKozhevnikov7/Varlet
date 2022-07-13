@@ -191,8 +191,8 @@ void Editor::DrawCameraInfo()
 
 void Editor::DrawDockSpace() const
 {
-	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-	static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar 
+	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar 
 		| ImGuiWindowFlags_NoDocking 
 		| ImGuiWindowFlags_NoTitleBar 
 		| ImGuiWindowFlags_NoCollapse 
@@ -236,7 +236,7 @@ void Editor::DrawDockSpace() const
 
 void Editor::DrawViewPort() const
 {
-	static ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
+	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
 
 	ImGui::SetNextWindowSize(ImVec2(640.f, 480.f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
@@ -249,6 +249,13 @@ void Editor::DrawViewPort() const
 	ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetId()), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
 
 	ImGui::PopStyleVar();
+
+	static ImVec2 lastSize = ImGui::GetWindowSize();
+	
+	if (lastSize.x != ImGui::GetWindowSize().x || lastSize.y != ImGui::GetWindowSize().y)
+		_mainCamera->OnResize(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
+
+	lastSize = ImGui::GetWindowSize();
 
 	ImGui::End();
 }

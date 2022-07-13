@@ -24,6 +24,8 @@ public:
 
 	const Varlet::Texture* GetRendereTexture() const;
 
+	void OnResize(const int32_t& width, const int32_t& height) const;
+
 	Transform* GetTransform() const;
 
 private:

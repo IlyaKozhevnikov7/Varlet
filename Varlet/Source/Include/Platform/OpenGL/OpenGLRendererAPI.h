@@ -13,7 +13,7 @@ namespace Varlet
 
 		CameraCore* CreateCameraCore() const override;
 
-		Framebuffer* CreateFrameBuffer() const override;
+		Framebuffer* CreateFrameBuffer(const int32_t& width, const int32_t& height) const override;
 
 		Texture* CreateTexture(const TextureConfiguration& configuration) const override;
 

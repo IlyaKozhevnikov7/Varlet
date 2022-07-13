@@ -4,15 +4,15 @@
 
 namespace Varlet
 {
-	OpenGLFramebuffer::OpenGLFramebuffer()
+	OpenGLFramebuffer::OpenGLFramebuffer(const int32_t& width, const int32_t& height)
 	{
 		glGenFramebuffers(1, &_id);
 		glBindFramebuffer(GL_FRAMEBUFFER, _id);
 
 		TextureConfiguration configuration
 		{
-			640,
-			480,
+			width,
+			height,
 			WrapType::ClampToEdge,
 			FilterType::Linear,
 			false

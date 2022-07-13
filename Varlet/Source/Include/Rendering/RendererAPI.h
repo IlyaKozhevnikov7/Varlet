@@ -25,7 +25,7 @@ namespace Varlet
 
 		virtual CameraCore* CreateCameraCore() const = 0;
 
-		virtual Framebuffer* CreateFrameBuffer() const = 0;
+		virtual Framebuffer* CreateFrameBuffer(const int32_t& width, const int32_t& height) const = 0;
 
 		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
 
@@ -50,7 +50,7 @@ namespace Varlet
 
 		static CameraCore* CreateCameraCore();
 
-		static Framebuffer* CreateFrameBuffer();
+		static Framebuffer* CreateFrameBuffer(const int32_t& width, const int32_t& height);
 
 		static Texture* CreateTexture(const TextureConfiguration& configuration);
 
