@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Editor.h"
+#include "Core/VarletAPI.h"
 
 #include "../../Dependencies/ImGui/imgui.h"
 #include "../../Dependencies/ImGui/imgui_impl_glfw.h"

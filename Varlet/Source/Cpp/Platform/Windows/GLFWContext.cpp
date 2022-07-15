@@ -48,7 +48,7 @@ namespace Varlet
 
 	void GLFWContext::SetCursorState(const CursorState& state) const
 	{
-		int8_t glfwState;
+		int32_t glfwState;
 
 		switch (state)
 		{	

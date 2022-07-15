@@ -27,6 +27,18 @@ void EditViewport::Update()
 
 	ImGui::Begin("Viewport", nullptr, windowFlags);
 
+	if (Input::GetMouse(MouseKey::Right, KeyState::Release) && _camera->IsControlled())
+	{
+		VarletAPI::SetCursorState(CursorState::Visible);
+		_camera->SetControl(false);
+	}
+
+	if (Input::GetMouse(MouseKey::Right, KeyState::Press) && ImGui::IsWindowHovered() && _camera->IsControlled() == false)
+	{
+		VarletAPI::SetCursorState(CursorState::Disabled);
+		_camera->SetControl(true);
+	}
+
 	auto texture = _camera->GetRendereTexture();
 	texture->Activate(0);
 

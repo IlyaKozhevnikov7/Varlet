@@ -1,5 +1,4 @@
 #include "Editor.h"
-#include "Core/VarletAPI.h"
 
 #include "EditorCore.h"
 #include "Panels/EditViewport.h"

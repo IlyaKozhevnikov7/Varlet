@@ -14,6 +14,8 @@ private:
 
 	float _speed = 10.f;
 
+	bool _isControlled;
+
 public:
 
 	void InternalStart();
@@ -21,6 +23,10 @@ public:
 	void InternalUpdate();
 
 	void UpdateMoveAndRotation();
+
+	void SetControl(const bool&& control);
+
+	bool IsControlled() const;
 
 	const Varlet::Texture* GetRendereTexture() const;
 
