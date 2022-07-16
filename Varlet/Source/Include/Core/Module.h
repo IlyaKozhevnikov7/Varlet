@@ -49,6 +49,10 @@ namespace Varlet
 
 	class CORE_API GameModule : public Module, public IUpdatebleModule
 	{
+	public:
+
+		Event<const Scene*> SceneChangedEvent;
+
 	private:
 
 		// startup scene path

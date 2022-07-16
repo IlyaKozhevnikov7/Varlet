@@ -38,7 +38,7 @@ namespace Varlet
 		}
 
 		template<class T>
-		T* GetComponent()
+		T* GetComponent() const
 		{
 			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 
@@ -50,7 +50,7 @@ namespace Varlet
 		}
 
 		template<class T>
-		bool HasComponent()
+		bool HasComponent() const
 		{
 			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 		

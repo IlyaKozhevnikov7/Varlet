@@ -3,6 +3,7 @@
 #include "EditorCore.h"
 #include "Panels/EditViewport.h"
 #include "Panels/DockSpace.h"
+#include "Panels/SceneTree.h"
 
 #include "glad/glad.h"
 
@@ -12,17 +13,20 @@
 #include <iostream>
 
 Varlet::GameModule* EditorData::context;
+Varlet::Entity* EditorData::selectedEntity;
 
 Editor::Editor(Varlet::GameModule* module)
 {
 	_panels =
 	{
 		new DockSpace(),
-		new EditViewport()
+		new EditViewport(),
+		new SceneTree()
 	};
 
 	_window = nullptr;
 	EditorData::context = module;
+	EditorData::selectedEntity = nullptr;
 }
 
 int32_t Editor::Init()

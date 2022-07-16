@@ -42,6 +42,7 @@ namespace Varlet
 
 		// TODO remove scene creation
 		_currentScene = new Scene();
+		SceneChangedEvent.Invoke(_currentScene);
 
 		VARLET_LOG(LevelType::Normal, "GameModule init");
 		return SUCCESSFUL_INITIALIZATION;

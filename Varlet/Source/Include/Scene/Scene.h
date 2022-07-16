@@ -20,5 +20,7 @@ namespace Varlet
 		void Update();
 
 		CORE_API Entity* CreateEntity();
+
+		CORE_API const std::vector<Entity*> FindAll() const;
 	};
 }

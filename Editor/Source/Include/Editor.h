@@ -8,11 +8,6 @@
 	#define EDITOR_API __declspec(dllimport)
 #endif
 
-struct EditorData
-{
-	static Varlet::GameModule* context;
-};
-
 namespace Varlet
 {
 	class Entity;
@@ -21,6 +16,12 @@ namespace Varlet
 struct GLFWwindow;
 class EditorCamera;
 class Panel;
+
+struct EditorData
+{
+	static Varlet::GameModule* context;
+	static Varlet::Entity* selectedEntity;
+};
 
 class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
 {
@@ -45,6 +46,4 @@ private:
 	void Shutdown() override;
 
 	void Update() override;
-
-	void DrawCameraInfo();
 };

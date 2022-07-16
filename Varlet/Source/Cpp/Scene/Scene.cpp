@@ -18,4 +18,9 @@ namespace Varlet
 
 		return entity;
 	}
+
+	const std::vector<Entity*> Scene::FindAll() const
+	{
+		return _entities;
+	}
 }
