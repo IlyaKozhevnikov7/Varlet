@@ -6,6 +6,8 @@
 #define SUCCESSFUL_INITIALIZATION 0
 #define FAILED_INITIALIZATION -1
 
+class Scene;
+
 namespace Varlet
 {
 	class CORE_API Module
@@ -45,14 +47,8 @@ namespace Varlet
 		virtual void Update() = 0;
 	};
 
-	class Scene;
-
 	class CORE_API GameModule : public Module, public IUpdatebleModule
 	{
-	public:
-
-		Event<const Scene*> SceneChangedEvent;
-
 	private:
 
 		// startup scene path
@@ -63,8 +59,6 @@ namespace Varlet
 		GameModule() = default;
 
 		~GameModule() override = default;
-
-		Scene* GetCurrentScene() const;	
 
 		virtual int32_t Init() override;
 

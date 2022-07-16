@@ -6,9 +6,7 @@
 
 void EditViewport::Init()
 {
-	auto scene = EditorData::context->GetCurrentScene();
-	auto camera = scene->CreateEntity();
-
+	auto camera = Scene::CreateEntity();
 	camera->AddComponent<Transform>();
 	camera->AddComponent<Camera>()->SetActive(true);
 	_camera = camera->AddComponent<EditorCamera>();

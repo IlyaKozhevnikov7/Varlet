@@ -1,26 +1,34 @@
 #include "Scene.h"
 #include "Entity.h"
+#include "Module.h"
 
-namespace Varlet
+Event<> Scene::SceneChangedEvent;
+Scene* Scene::_current;
+
+void Scene::Update()
 {
-	void Scene::Update()
-	{
-		for (auto entity : _entities)
-			entity->Update();
-	}
+	for (auto entity : _current->_entities)
+		entity->Update();
+}
 
-	Entity* Scene::CreateEntity()
-	{
-		auto entity = new Entity();
-		_entities.push_back(entity);
+void Scene::Load(Scene* scene)
+{
+	// TODO make scena loading
+	_current = scene;
+	SceneChangedEvent.Invoke();
+}
 
-		VARLET_LOG(LevelType::Normal, "Scene::CreateEntity()");
+Varlet::Entity* Scene::CreateEntity()
+{
+	const auto entity = new Varlet::Entity();
+	_current->_entities.push_back(entity);
 
-		return entity;
-	}
+	VARLET_LOG(LevelType::Normal, "Scene::CreateEntity()");
 
-	const std::vector<Entity*> Scene::FindAll() const
-	{
-		return _entities;
-	}
+	return entity;
+}
+
+const std::vector<Varlet::Entity*> Scene::FindAll()
+{
+	return _current->_entities;
 }

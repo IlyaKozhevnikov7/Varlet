@@ -1,5 +1,4 @@
 #include "Module.h"
-
 #include "Scene.h"
 
 namespace Varlet
@@ -29,11 +28,6 @@ namespace Varlet
 	{
 	}
 
-	Scene* GameModule::GetCurrentScene() const
-	{
-		return _currentScene;
-	}
-
 	int32_t GameModule::Init()
 	{
 		Module::Init();
@@ -41,15 +35,15 @@ namespace Varlet
 		// load startup scene
 
 		// TODO remove scene creation
-		_currentScene = new Scene();
-		SceneChangedEvent.Invoke(_currentScene);
+		Scene::Load(new Scene());
 
 		VARLET_LOG(LevelType::Normal, "GameModule init");
 		return SUCCESSFUL_INITIALIZATION;
 	}
-
+	
 	void GameModule::Update()
 	{
+		Scene::Update();
 		// update scene (game loop)
 	}
 }

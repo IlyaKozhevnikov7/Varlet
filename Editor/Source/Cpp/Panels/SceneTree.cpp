@@ -4,10 +4,7 @@
 
 void SceneTree::Init()
 {
-	EditorData::context->SceneChangedEvent.Bind(this, &SceneTree::OnSceneChanged);
-
-	if (const auto scene = EditorData::context->GetCurrentScene())
-		OnSceneChanged(scene);
+	// TODO bind to scene changed event
 }
 
 void SceneTree::Update()
@@ -15,7 +12,7 @@ void SceneTree::Update()
 	ImGui::Begin("Scene Tree");
 	ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-	auto all = _currnetScene->FindAll();
+	auto all = Scene::FindAll();
 
 	static int32_t selectionMask = (1 << 2);
 	int32_t nodeClicked = -1;
