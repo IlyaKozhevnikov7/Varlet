@@ -46,19 +46,19 @@ namespace Varlet
 
 		static void Init(IRendererAPI* api);
 
-		static Shader* CreateShader(const ShaderInitializer& initializer);
+		CORE_API static Shader* CreateShader(const ShaderInitializer& initializer);
 
-		static CameraCore* CreateCameraCore();
+		CORE_API static CameraCore* CreateCameraCore();
 
-		static Framebuffer* CreateFrameBuffer(const int32_t& width, const int32_t& height);
+		CORE_API static Framebuffer* CreateFrameBuffer(const int32_t& width, const int32_t& height);
 
-		static Texture* CreateTexture(const TextureConfiguration& configuration);
+		CORE_API static Texture* CreateTexture(const TextureConfiguration& configuration);
 
-		static Texture* LoadTexture(const LoadableTextureConfiguration& configuration);
+		CORE_API static Texture* LoadTexture(const LoadableTextureConfiguration& configuration);
 
-		static UniformBuffer* CreateUniformBuffer(const int64_t& size);
+		CORE_API static UniformBuffer* CreateUniformBuffer(const int64_t& size);
 
-		static VertexArray* CreateVertexArray(const VertexArrayData& configuration);
+		CORE_API static VertexArray* CreateVertexArray(const VertexArrayData& configuration);
 	};
 
 	class IRendererAPIInitializerBase

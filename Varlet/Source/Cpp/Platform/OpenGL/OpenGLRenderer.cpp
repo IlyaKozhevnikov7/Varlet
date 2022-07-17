@@ -51,9 +51,9 @@ namespace Varlet
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			_processedCameraData->Bind();
-			_processedCameraData->SetData(0,						sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
-			_processedCameraData->SetData(sizeof(glm::mat4),		sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
-			_processedCameraData->SetData(sizeof(glm::mat4) * 2,	sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
+			_processedCameraData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
+			_processedCameraData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
+			_processedCameraData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
 
 			for (const auto data : _rendererData)
 				Render(data);
@@ -64,35 +64,29 @@ namespace Varlet
 
 	void OpenGLRenderer::Render(const RendererData& rendererData)
 	{
-		// todo when added meterial to mesh component
-		static const auto defautlShader = RendererAPI::CreateShader({
-			"../Varlet/Shaders/defaultVertex.glsl",
-			"../Varlet/Shaders/defaultFragment.glsl",
-			""});
-
-		glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->GetPosition());
-		model = model * glm::mat4_cast(rendererData.transform->GetRotation());
-		model = glm::scale(model, rendererData.transform->GetScale());
-
-		defautlShader->Use();
-
-		defautlShader->SetMat4("u_Model", model);
-
 		if (auto mesh = rendererData.meshRenderer->GetMesh())
 		{
-			for (auto subMesh : mesh->GetSubMeshes())
+			glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->GetPosition());
+			model = model * glm::mat4_cast(rendererData.transform->GetRotation());
+			model = glm::scale(model, rendererData.transform->GetScale());
+
+			for (auto shader : mesh->GetShaders())
 			{
-				auto vertexArray = subMesh->GetVertexArray();
+				shader->Use();
+				shader->SetMat4("u_Model", model);
 
-				glBindVertexArray(vertexArray->GetVAO());
+				for (auto subMesh : mesh->GetSubMeshes())
+				{
+					glBindVertexArray(subMesh->GetVAO());
 
-				if (vertexArray->IsIndexed())
-					glDrawElements(GL_TRIANGLES, vertexArray->GetElementsCount(), GL_UNSIGNED_INT, 0);
-				else
-					glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetElementsCount());
+					if (subMesh->IsIndexed())
+						glDrawElements(GL_TRIANGLES, subMesh->GetElementsCount(), GL_UNSIGNED_INT, 0);
+					else
+						glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
+				}
+
+				glBindVertexArray(0);
 			}
-
-			glBindVertexArray(0);
 		}
 	}
 }

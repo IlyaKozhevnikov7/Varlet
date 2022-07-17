@@ -5,22 +5,7 @@
 namespace Varlet
 {
 	class VertexArray;
-	struct Vertex;
-
-	class SubMesh final
-	{
-	private:
-
-		VertexArray* _vertexArray;
-
-	public:
-
-		SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
-
-		~SubMesh();
-
-		const VertexArray* GetVertexArray() const;
-	};
+	class Shader;
 }
 
 struct aiScene;
@@ -31,11 +16,14 @@ class CORE_API Mesh final
 {
 private:
 
-	std::vector<Varlet::SubMesh*> _subMeshes;
+	std::vector<Varlet::VertexArray*> _subMeshes;
+	mutable std::vector<Varlet::Shader*> _shaders;
 
 public:
 
-	const std::vector<Varlet::SubMesh*>& GetSubMeshes() const;
+	const std::vector<Varlet::VertexArray*>& GetSubMeshes() const;
+
+	std::vector<Varlet::Shader*>& GetShaders() const;
 
 	static Mesh* LoadModel(const std::string& path);
 
@@ -45,6 +33,6 @@ private:
 
 	static Mesh* ConstructMesh(Mesh* processedMesh, const aiScene* scene, aiNode* node);
 	
-	static Varlet::SubMesh* ConstructSubMesh(const aiScene* scene, aiMesh* mesh);
+	static Varlet::VertexArray* ConstructSubMesh(const aiScene* scene, aiMesh* mesh);
 };
 

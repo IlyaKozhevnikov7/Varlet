@@ -1,33 +1,19 @@
 #include "Mesh.h"
 #include "RendererAPI.h"
+#include "VertexArray.h"
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "VertexArray.h"
-
-namespace Varlet
-{
-    SubMesh::SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
-    {
-        _vertexArray = RendererAPI::CreateVertexArray({ vertices ,indices });
-    }
-
-    SubMesh::~SubMesh()
-    {
-        delete _vertexArray;
-    }
-
-    const VertexArray* SubMesh::GetVertexArray() const
-    {
-        return _vertexArray;
-    }
-}
-
-const std::vector<Varlet::SubMesh*>& Mesh::GetSubMeshes() const
+const std::vector<Varlet::VertexArray*>& Mesh::GetSubMeshes() const
 {
     return _subMeshes;
+}
+
+std::vector<Varlet::Shader*>& Mesh::GetShaders() const
+{
+    return _shaders;
 }
 
 Mesh* Mesh::LoadModel(const std::string& path)
@@ -58,7 +44,7 @@ Mesh* Mesh::ConstructMesh(Mesh* processedMesh, const aiScene* scene, aiNode* nod
     return processedMesh;
 }
 
-Varlet::SubMesh* Mesh::ConstructSubMesh(const aiScene* scene, aiMesh* mesh)
+Varlet::VertexArray* Mesh::ConstructSubMesh(const aiScene* scene, aiMesh* mesh)
 {
     std::vector<Varlet::Vertex> vertices;
     std::vector<uint32_t> indices;
@@ -101,6 +87,6 @@ Varlet::SubMesh* Mesh::ConstructSubMesh(const aiScene* scene, aiMesh* mesh)
         for (int32_t j = 0; j < face.mNumIndices; j++)
             indices.push_back(face.mIndices[j]);
     }
-
-    return new Varlet::SubMesh(vertices, indices);
+    
+    return Varlet::RendererAPI::CreateVertexArray({ vertices ,indices });
 }
