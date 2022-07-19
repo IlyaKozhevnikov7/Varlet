@@ -19,3 +19,8 @@ const Mesh* MeshRenderer::GetMesh() const
 	return _mesh;
 }
 
+std::vector<Material*>& MeshRenderer::GetMaterials()
+{
+	return _materials;
+}
+

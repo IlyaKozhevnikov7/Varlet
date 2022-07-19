@@ -4,9 +4,70 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "OpenGLVertexArray.h"
+#include "Material.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+
+static int32_t ConvertToGlFunc(const StensilFunction& func)
+{
+	switch (func)
+	{
+	case StensilFunction::Never:
+		return GL_NEVER;
+
+	case StensilFunction::Less:
+		return GL_LESS;
+
+	case StensilFunction::LessOrEqual:
+		return GL_LEQUAL;
+
+	case StensilFunction::Greater:
+		return GL_GREATER;
+
+	case StensilFunction::GreaterOrEqual:
+		return GL_GEQUAL;
+
+	case StensilFunction::Equal:
+		return GL_EQUAL;
+
+	case StensilFunction::NotEqual:
+		return GL_NOTEQUAL;
+
+	case StensilFunction::Always:
+		return GL_ALWAYS;
+	}
+}
+
+static int32_t ConvertToGlOp(const StensilOp& op)
+{
+	switch (op)
+	{
+	case StensilOp::Keep:
+		return GL_KEEP;
+
+	case StensilOp::Zero:
+		return GL_ZERO;
+
+	case StensilOp::Replace:
+		return GL_REPLACE;
+
+	case StensilOp::Incr:
+		return GL_INCR;
+
+	case StensilOp::IncrWrap:
+		return GL_INCR_WRAP;
+
+	case StensilOp::Decr:
+		return GL_DECR;
+
+	case StensilOp::DecrWrap:
+		return GL_DECR_WRAP;
+
+	case StensilOp::Invert:
+		return GL_INVERT;
+	}
+}
 
 namespace Varlet
 {
@@ -24,6 +85,7 @@ namespace Varlet
 		}
 
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
 		glFrontFace(GL_CCW);
 
 		if (_settings.blending)
@@ -48,7 +110,7 @@ namespace Varlet
 			camera->GetCore()->Bind();
 
 			glClearColor(0.f, 0.5f, 0.5f, 1.f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 			_processedCameraData->Bind();
 			_processedCameraData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
@@ -64,29 +126,51 @@ namespace Varlet
 
 	void OpenGLRenderer::Render(const RendererData& rendererData)
 	{
-		if (auto mesh = rendererData.meshRenderer->GetMesh())
+		const Mesh* mesh = rendererData.meshRenderer->GetMesh();
+		if (mesh == nullptr)
+			return;
+
+		for (const auto material : rendererData.meshRenderer->GetMaterials())
 		{
+			if (material->isActive == false)
+				continue;
+
+			material->Activate();
+
 			glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->GetPosition());
 			model = model * glm::mat4_cast(rendererData.transform->GetRotation());
 			model = glm::scale(model, rendererData.transform->GetScale());
 
-			for (auto shader : mesh->GetShaders())
+			material->GetShader()->SetMat4("u_Model", model);
+
+			if (material->settings.stencilTest.enable)
 			{
-				shader->Use();
-				shader->SetMat4("u_Model", model);
+				const auto stencilSettings = material->settings.stencilTest;
 
-				for (auto subMesh : mesh->GetSubMeshes())
-				{
-					glBindVertexArray(subMesh->GetVAO());
+				glStencilMask(0xFF);
 
-					if (subMesh->IsIndexed())
-						glDrawElements(GL_TRIANGLES, subMesh->GetElementsCount(), GL_UNSIGNED_INT, 0);
-					else
-						glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
-				}
+				glStencilOp(
+					ConvertToGlOp(stencilSettings.failOp),
+					ConvertToGlOp(stencilSettings.zFailOp),
+					ConvertToGlOp(stencilSettings.allPass));
 
-				glBindVertexArray(0);
+				glStencilFunc(
+					ConvertToGlFunc(stencilSettings.function),
+					stencilSettings.ref,
+					stencilSettings.mask);
 			}
+
+			for (const auto subMesh : mesh->GetSubMeshes())
+			{
+				glBindVertexArray(subMesh->GetVAO());
+
+				if (subMesh->IsIndexed())
+					glDrawElements(GL_TRIANGLES, subMesh->GetElementsCount(), GL_UNSIGNED_INT, 0);
+				else
+					glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
+			}
+
+			glStencilMask(0x00);
 		}
 	}
 }

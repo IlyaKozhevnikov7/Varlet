@@ -48,7 +48,7 @@ namespace Varlet
 	class Shader;
 }
 
-class Material
+class CORE_API Material
 {
 public:
 
@@ -64,5 +64,8 @@ public:
 	Material(const  Varlet::Shader* shader);
 
 	void Activate() const;
+
+	// TODO remove
+	Varlet::Shader* GetShader();
 };
 

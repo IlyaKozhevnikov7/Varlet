@@ -14,3 +14,8 @@ void Material::Activate() const
 
 	_shader->Use();
 }
+
+Varlet::Shader* Material::GetShader()
+{
+	return const_cast<Varlet::Shader*>(_shader);
+}
