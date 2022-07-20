@@ -41,6 +41,8 @@ struct CORE_API MaterialSettings
 			allPass;
 
 	} stencilTest;
+
+	bool depthTest;
 };
 
 namespace Varlet

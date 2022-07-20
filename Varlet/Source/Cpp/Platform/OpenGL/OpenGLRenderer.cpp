@@ -85,7 +85,11 @@ namespace Varlet
 		}
 
 		glEnable(GL_DEPTH_TEST);
+
 		glEnable(GL_STENCIL_TEST);
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+
 		glFrontFace(GL_CCW);
 
 		if (_settings.blending)
@@ -160,6 +164,9 @@ namespace Varlet
 					stencilSettings.mask);
 			}
 
+			if (material->settings.depthTest == false)
+				glDisable(GL_DEPTH_TEST);
+
 			for (const auto subMesh : mesh->GetSubMeshes())
 			{
 				glBindVertexArray(subMesh->GetVAO());
@@ -170,7 +177,14 @@ namespace Varlet
 					glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
 			}
 
-			glStencilMask(0x00);
+			if (material->settings.stencilTest.enable)
+			{
+				glStencilMask(0xFF);
+				glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			}
+
+			if (material->settings.depthTest == false)
+				glEnable(GL_DEPTH_TEST);
 		}
 	}
 }
