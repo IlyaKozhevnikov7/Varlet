@@ -50,5 +50,13 @@ namespace Varlet
         delete _framebuffer;
         _framebuffer = RendererAPI::CreateFrameBuffer(width, height);
         _projection = glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 250.f);
+        _resolution.x = width;
+        _resolution.y = height;
+    }
+
+    void CameraCore::GetResolution(int32_t& width, int32_t& height) const
+    {
+        width = _resolution.x;
+        height = _resolution.y;
     }
 }

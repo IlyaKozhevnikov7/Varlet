@@ -113,13 +113,17 @@ namespace Varlet
 
 			camera->GetCore()->Bind();
 
-			glClearColor(0.f, 0.5f, 0.5f, 1.f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			int32_t width, height;
+			camera->GetCore()->GetResolution(width, height);
+			glViewport(0, 0, width, height);
 
 			_processedCameraData->Bind();
 			_processedCameraData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
 			_processedCameraData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
 			_processedCameraData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
+
+			glClearColor(0.f, 0.5f, 0.5f, 1.f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 			for (const auto data : _rendererData)
 				Render(data);

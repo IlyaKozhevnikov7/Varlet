@@ -13,6 +13,7 @@ namespace Varlet
 		glm::mat4 _projection;
 
 		float _fov;
+		glm::vec2 _resolution;
 
 		Framebuffer* _framebuffer;
 
@@ -35,6 +36,8 @@ namespace Varlet
 		const Texture* GetRendereTexture() const;
 
 		void ResizeView(const int32_t& width, const int32_t& height);
+
+		void GetResolution(int32_t& width, int32_t& height) const;
 
 		virtual void CulculateView(const glm::vec3& postion, const glm::quat& rotation) = 0;
 	};	
