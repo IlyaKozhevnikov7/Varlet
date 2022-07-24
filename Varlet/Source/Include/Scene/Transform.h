@@ -13,6 +13,8 @@ class CORE_API Transform final : public Component
 {
 	friend class Camera;
 
+	TYPE_GENERATION(Transform, Component)
+
 private:
 
 	glm::vec3 _position;

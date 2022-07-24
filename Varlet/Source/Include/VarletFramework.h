@@ -7,6 +7,7 @@
 // utils
 #include "Core/Delegate.h"
 #include "Core/Logger.h"
+#include "Core/ComponentType.h"
 
 // components
 #include "Scene/Entity.h"

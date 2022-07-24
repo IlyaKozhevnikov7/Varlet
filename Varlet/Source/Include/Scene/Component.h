@@ -5,6 +5,7 @@
 namespace Varlet
 {
 	class Entity;
+	struct TypeInfo;
 }
 
 class CORE_API Component
@@ -31,6 +32,8 @@ public:
 	virtual void Start();
 
 	virtual void Update();
+
+	virtual Varlet::TypeInfo GetType();
 
 protected:
 

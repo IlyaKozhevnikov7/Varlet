@@ -20,6 +20,8 @@ namespace Varlet
 
 		void Update();
 
+		CORE_API const std::vector<Component*>& GetComponents() const;
+
 		template<class T>
 		T* AddComponent()
 		{

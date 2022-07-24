@@ -10,4 +10,9 @@ namespace Varlet
         for (auto component : _components)
             component->Update();
     }
+
+    const std::vector<Component*>& Entity::GetComponents() const
+    {
+        return _components;
+    }
 }

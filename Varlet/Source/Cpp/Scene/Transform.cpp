@@ -1,6 +1,11 @@
 #include "Transform.h"
 #include <GLM/gtx/quaternion.hpp>
 
+START_PROPERTY_BLOCK(Transform)
+PROPERTY("Position", _position)
+PROPERTY("Scale", _scale)
+END_PROPERTY_BLOCK
+
 glm::vec3 Transform::GetPosition() const
 {
     return _position;

@@ -1,9 +1,10 @@
 #include "Editor.h"
 
 #include "EditorCore.h"
-#include "Panels/EditViewport.h"
-#include "Panels/DockSpace.h"
-#include "Panels/SceneTree.h"
+#include "EditViewport.h"
+#include "DockSpace.h"
+#include "SceneTree.h"
+#include "PropertyPanel.h"
 
 #include "glad/glad.h"
 
@@ -21,7 +22,8 @@ Editor::Editor(Varlet::GameModule* module)
 	{
 		new DockSpace(),
 		new EditViewport(),
-		new SceneTree()
+		new SceneTree(),
+		new PropertyPanel()
 	};
 
 	_window = nullptr;

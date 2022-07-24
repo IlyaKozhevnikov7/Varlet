@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "ComponentType.h"
 
 void Component::SetOwner(Varlet::Entity* owner)
 {
@@ -30,6 +31,13 @@ void Component::Start()
 
 void Component::Update()
 {
+}
+
+Varlet::TypeInfo Component::GetType()
+{
+	Varlet::TypeInfo info("Component");
+	info.properties.push_back(Varlet::Property("Activity", _isActive));
+	return info;
 }
 
 void Component::OnActivated()
