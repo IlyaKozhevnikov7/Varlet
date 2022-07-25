@@ -26,7 +26,7 @@ namespace Varlet
 		std::vector<Camera*> _cameras;
 		std::vector<RendererData> _rendererData;
 
-		UniformBuffer* _processedCameraData;
+		UniformBuffer* _globalData;
 
 	public:
 

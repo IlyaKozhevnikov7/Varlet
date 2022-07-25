@@ -59,7 +59,7 @@ const Varlet::Texture* EditorCamera::GetRendereTexture() const
 
 void EditorCamera::OnResize(const int32_t& width, const int32_t& height) const
 {
-	_camera->OnResize(width, height);
+	_camera->ResizeView(width, height);
 }
 
 Transform* EditorCamera::GetTransform() const

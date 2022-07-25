@@ -12,7 +12,7 @@ namespace Varlet
 {
 	Renderer::~Renderer()
 	{
-		delete _processedCameraData;
+		delete _globalData;
 	}
 
 	int32_t Renderer::Init()
@@ -22,11 +22,14 @@ namespace Varlet
 		if (auto rendererAPIInitializer = dynamic_cast<IRendererAPIInitializerBase*>(this))
 		{
 			rendererAPIInitializer->InitRendererAPI();
-			_processedCameraData = RendererAPI::CreateUniformBuffer(sizeof(glm::mat4) * 3); // view, projection, and view-projection
+			_globalData = RendererAPI::CreateUniformBuffer(
+				sizeof(glm::mat4) * 3 + // view, projection, and view-projection
+				sizeof(int32_t) // render id
+				);
 
 			return SUCCESSFUL_INITIALIZATION;
 		}
-
+		
 		return FAILED_INITIALIZATION;
 	}
 

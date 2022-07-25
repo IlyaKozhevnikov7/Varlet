@@ -1,4 +1,5 @@
 #include "OpenGLUniformBuffer.h"
+#include "glad/glad.h"
 
 namespace Varlet
 {

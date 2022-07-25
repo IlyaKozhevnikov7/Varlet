@@ -1,4 +1,5 @@
 #include "OpenGLVertexArray.h"
+#include "glad/glad.h"
 
 namespace Varlet
 {

@@ -11,8 +11,6 @@ namespace Varlet
 
 		Shader* CreateShader(const ShaderInitializer& initializer) const override;
 
-		CameraCore* CreateCameraCore() const override;
-
 		Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration) const override;
 
 		Texture* CreateTexture(const TextureConfiguration& configuration) const override;

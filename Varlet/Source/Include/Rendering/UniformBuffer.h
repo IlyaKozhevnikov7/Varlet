@@ -1,7 +1,6 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "glad/glad.h"
 
 namespace Varlet
 {

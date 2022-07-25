@@ -21,11 +21,6 @@ namespace Varlet
 		return _api->CreateShader(initializer);
 	}
 
-	CameraCore* RendererAPI::CreateCameraCore()
-	{
-		return _api->CreateCameraCore();
-	}
-
 	Framebuffer* RendererAPI::CreateFrameBuffer(FramebufferConfiguration& configuration)
 	{
 		return _api->CreateFrameBuffer(configuration);

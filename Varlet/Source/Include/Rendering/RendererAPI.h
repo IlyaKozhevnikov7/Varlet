@@ -8,7 +8,6 @@ struct FramebufferConfiguration;
 
 namespace Varlet
 {
-	class CameraCore;
 	class UniformBuffer;
 	class Shader;
 	class Framebuffer;
@@ -23,8 +22,6 @@ namespace Varlet
 	public:
 
 		virtual Shader* CreateShader(const ShaderInitializer& initializer) const = 0;
-
-		virtual CameraCore* CreateCameraCore() const = 0;
 
 		virtual Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration) const = 0;
 
@@ -48,8 +45,6 @@ namespace Varlet
 		static void Init(IRendererAPI* api);
 
 		CORE_API static Shader* CreateShader(const ShaderInitializer& initializer);
-
-		CORE_API static CameraCore* CreateCameraCore();
 
 		CORE_API static Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration);
 

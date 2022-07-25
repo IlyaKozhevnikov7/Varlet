@@ -20,6 +20,8 @@ private:
 
 public:
 
+	// todo make virtual destructor
+
 	// todo make private
 	void SetOwner(Varlet::Entity* owner);
 

@@ -1,45 +1,104 @@
 #include "Camera.h"
 #include "RenderingCore.h"
+#include "RendererAPI.h"
 #include "Transform.h"
 #include "Entity.h"
 
 Camera::Camera()
 {
-	_core = Varlet::RendererAPI::CreateCameraCore();
+    _fov = 45.f;
+    _projection = glm::perspective(glm::radians(_fov), 960.f / 540.f, 0.1f, 250.f);
+
+    _framebufferConfiguration =
+    {
+        960,
+        540,
+        {
+            {
+                960,
+                540,
+                WrapType::Repeat,
+                FilterType::Linear,
+                false
+            }
+        }
+    };
+
+    _framebuffer = Varlet::RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
+}
+
+Camera::~Camera()
+{
+    delete _framebuffer;
 }
 
 void Camera::Update()
 {
-	static auto transform = _owner->GetComponent<Transform>();
-	_core->CulculateView(transform->_position, transform->_rotation);
+    static auto transform = _owner->GetComponent<Transform>();
+    CulculateView(transform->_position, transform->_rotation);
+}
+
+void Camera::Bind() const
+{
+    _framebuffer->Bind();
+}
+
+void Camera::UnBind() const
+{
+    _framebuffer->UnBind();
 }
 
 const glm::mat4& Camera::GetView() const
 {
-	return _core->GetView();
+    return _view;
 }
 
 const glm::mat4& Camera::GetProjection() const
 {
-	return _core->GetProjection();
+    return _projection;
 }
 
-const glm::mat4& Camera::GetViewProjection() const
+const glm::mat4 Camera::GetViewProjection() const
 {
-	return _core->GetViewProjection();
-}
-
-const Varlet::CameraCore* Camera::GetCore() const
-{
-	return _core;
+    return _projection * _view;
 }
 
 const Varlet::Texture* Camera::GetRendereTexture() const
 {
-	return _core->GetRendereTexture();
+    return _framebuffer->GetTexture();
 }
 
-void Camera::OnResize(const int32_t& width, const int32_t& height) const
+void Camera::ResizeView(const int32_t& width, const int32_t& height)
 {
-	_core->ResizeView(width, height);
+    delete _framebuffer;
+
+    _framebufferConfiguration.width = width;
+    _framebufferConfiguration.height = height;
+
+    _framebuffer = Varlet::RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
+    _projection = glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 250.f);
+    _resolution.x = width;
+    _resolution.y = height;
+}
+
+void Camera::SetFramebufferConfiguration(const FramebufferConfiguration& configuration)
+{
+    _framebufferConfiguration.textureConfigurations = configuration.textureConfigurations;
+
+    delete _framebuffer;
+    _framebuffer = Varlet::RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
+}
+
+void Camera::GetResolution(int32_t& width, int32_t& height) const
+{
+    width = _resolution.x;
+    height = _resolution.y;
+}
+
+void Camera::CulculateView(const glm::vec3& position, const glm::quat& rotation)
+{
+    const glm::mat4 translateMat = glm::translate(glm::mat4(1.f), -position);
+    const glm::mat4 orientationMat = glm::mat4_cast(glm::inverse(rotation));
+
+    _view = orientationMat * translateMat;
 }
