@@ -7,7 +7,23 @@ namespace Varlet
     {
         _fov = 45.f;
         _projection = glm::perspective(glm::radians(_fov), 960.f / 540.f, 0.1f, 250.f);
-        _framebuffer = RendererAPI::CreateFrameBuffer(960, 540);
+
+        _framebufferConfiguration =
+        {
+            960,
+            540,
+            {
+                {
+                    960,
+                    540,
+                    WrapType::Repeat,
+                    FilterType::Linear,
+                    false
+                }
+            }
+        };
+
+        _framebuffer = RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
     }
 
     CameraCore::~CameraCore()
@@ -48,10 +64,22 @@ namespace Varlet
     void CameraCore::ResizeView(const int32_t& width, const int32_t& height)
     {
         delete _framebuffer;
-        _framebuffer = RendererAPI::CreateFrameBuffer(width, height);
+
+        _framebufferConfiguration.width = width;
+        _framebufferConfiguration.height = height;
+
+        _framebuffer = RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
         _projection = glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 250.f);
         _resolution.x = width;
         _resolution.y = height;
+    }
+
+    void CameraCore::SetFramebufferConfiguration(const FramebufferConfiguration& configuration)
+    {
+        _framebufferConfiguration.textureConfigurations = configuration.textureConfigurations;
+
+        delete _framebuffer;
+        _framebuffer = RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
     }
 
     void CameraCore::GetResolution(int32_t& width, int32_t& height) const

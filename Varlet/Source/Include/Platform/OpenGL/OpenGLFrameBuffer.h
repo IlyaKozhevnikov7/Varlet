@@ -12,17 +12,17 @@ namespace Varlet
 	private:
 
 		uint32_t _id;
-		uint32_t renderbufferId;
+		uint32_t _renderbufferId;
 
-		OpenGLTexture* texture;
+		std::vector<OpenGLTexture*> _textures;
 
 	public:
 
-		OpenGLFramebuffer(const int32_t& width, const int32_t& height);
+		OpenGLFramebuffer(FramebufferConfiguration& configuration);
 
 		~OpenGLFramebuffer() override;
 
-		const Texture* GetTexture() const override;
+		const Texture* GetTexture(const int32_t& attachment) const override;
 
 		void Bind() override;
 

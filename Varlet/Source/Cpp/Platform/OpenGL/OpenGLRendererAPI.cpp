@@ -18,9 +18,9 @@ namespace Varlet
 		return new OpenGLCameraCore();
 	}
 
-	Framebuffer* OpenGLRendererAPI::CreateFrameBuffer(const int32_t& width, const int32_t& height) const
+	Framebuffer* OpenGLRendererAPI::CreateFrameBuffer(FramebufferConfiguration& configuration) const
 	{
-		return new OpenGLFramebuffer(width, height);
+		return new OpenGLFramebuffer(configuration);
 	}
 
 	Texture* OpenGLRendererAPI::CreateTexture(const TextureConfiguration& configuration) const

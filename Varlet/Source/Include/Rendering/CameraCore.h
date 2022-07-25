@@ -17,6 +17,8 @@ namespace Varlet
 
 		Framebuffer* _framebuffer;
 
+		FramebufferConfiguration _framebufferConfiguration;
+
 	public:
 
 		CameraCore();
@@ -34,6 +36,8 @@ namespace Varlet
 		const glm::mat4 GetViewProjection() const;
 
 		const Texture* GetRendereTexture() const;
+
+		void SetFramebufferConfiguration(const FramebufferConfiguration& configuration);
 
 		void ResizeView(const int32_t& width, const int32_t& height);
 

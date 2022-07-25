@@ -7,8 +7,6 @@ namespace Varlet
 {
 	class CORE_API OpenGLTexture : public Texture
 	{
-		friend class OpenGLFramebuffer;
-
 	public:
 
 		OpenGLTexture(const TextureConfiguration& configuration);

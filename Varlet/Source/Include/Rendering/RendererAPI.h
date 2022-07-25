@@ -4,6 +4,7 @@
 
 struct TextureConfiguration;
 struct LoadableTextureConfiguration;
+struct FramebufferConfiguration;
 
 namespace Varlet
 {
@@ -25,7 +26,7 @@ namespace Varlet
 
 		virtual CameraCore* CreateCameraCore() const = 0;
 
-		virtual Framebuffer* CreateFrameBuffer(const int32_t& width, const int32_t& height) const = 0;
+		virtual Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration) const = 0;
 
 		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
 
@@ -50,7 +51,7 @@ namespace Varlet
 
 		CORE_API static CameraCore* CreateCameraCore();
 
-		CORE_API static Framebuffer* CreateFrameBuffer(const int32_t& width, const int32_t& height);
+		CORE_API static Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration);
 
 		CORE_API static Texture* CreateTexture(const TextureConfiguration& configuration);
 

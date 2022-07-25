@@ -26,9 +26,9 @@ namespace Varlet
 		return _api->CreateCameraCore();
 	}
 
-	Framebuffer* RendererAPI::CreateFrameBuffer(const int32_t& width, const int32_t& height)
+	Framebuffer* RendererAPI::CreateFrameBuffer(FramebufferConfiguration& configuration)
 	{
-		return _api->CreateFrameBuffer(width, height);
+		return _api->CreateFrameBuffer(configuration);
 	}
 
 	Texture* RendererAPI::CreateTexture(const TextureConfiguration& configuration)
