@@ -35,7 +35,7 @@ Camera::~Camera()
 void Camera::Update()
 {
     static auto transform = _owner->GetComponent<Transform>();
-    CulculateView(transform->_position, transform->_rotation);
+    CulculateView(transform->position, transform->rotation);
 }
 
 void Camera::Bind() const

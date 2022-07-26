@@ -11,23 +11,15 @@ enum class Space : uint8_t
 
 class CORE_API Transform final : public Component
 {
-	friend class Camera;
-
 	TYPE_GENERATION(Transform, Component)
-
-private:
-
-	glm::vec3 _position;
-	glm::quat _rotation = glm::quat(1.f, 0.f, 0.f, 0.f);
-	glm::vec3 _scale = glm::vec3(1.f);
 
 public:
 
-	glm::vec3 GetPosition() const;
+	glm::vec3 position = glm::vec3(1.f);
+	glm::quat rotation = glm::quat(1.f, 0.f, 0.f, 0.f);
+	glm::vec3 scale = glm::vec3(1.f);
 
-	glm::quat GetRotation() const;
-
-	glm::vec3 GetScale() const;
+public:
 
 	// TODO translate in local space
 	void Translate(const glm::vec3& delta);

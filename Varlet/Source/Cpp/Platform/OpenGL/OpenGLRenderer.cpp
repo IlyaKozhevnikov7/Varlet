@@ -145,9 +145,9 @@ namespace Varlet
 
 			material->Activate();
 
-			glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->GetPosition());
-			model = model * glm::mat4_cast(rendererData.transform->GetRotation());
-			model = glm::scale(model, rendererData.transform->GetScale());
+			glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->position);
+			model = model * glm::mat4_cast(rendererData.transform->rotation);
+			model = glm::scale(model, rendererData.transform->scale);
 
 			material->GetShader()->SetMat4("u_Model", model);
 
