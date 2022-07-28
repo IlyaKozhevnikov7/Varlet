@@ -44,31 +44,31 @@ namespace Varlet
 			return (_object->*_method)(args...);
 		}
 	};
-
-	template<typename ReturnValue, typename... Args>
-	struct Function final : ObserverBase<ReturnValue, Args...>
-	{
-		using Signature = ReturnValue(*)(Args...);
-
-	private:
-
-		Signature _method;
-
-	public:
-
-		Function(Signature method)
-		{
-			_method = method;
-		}
-
-		~Function() override = default;
-
-		ReturnValue Invoke(Args... args) const override
-		{
-			return _method(args...);
-		}
-	};
 }
+
+template<typename ReturnValue, typename... Args>
+struct Function final : Varlet::ObserverBase<ReturnValue, Args...>
+{
+	using Signature = ReturnValue(*)(Args...);
+
+private:
+
+	Signature _method;
+
+public:
+
+	Function(Signature method)
+	{
+		_method = method;
+	}
+
+	~Function() override = default;
+
+	ReturnValue Invoke(Args... args) const override
+	{
+		return _method(args...);
+	}
+};
 
 template<typename ReturnValue, typename... Args>
 struct Delegate final
@@ -118,7 +118,7 @@ public:
 
 	void Bind(void(*method)(Args...))
 	{
-		_observers.push_back(new Varlet::Function<void, Args...>(method));
+		_observers.push_back(new Function<void, Args...>(method));
 	}
 
 	void Invoke(Args... args) const

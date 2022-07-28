@@ -23,7 +23,7 @@ namespace Varlet
 		{
 			rendererAPIInitializer->InitRendererAPI();
 			_globalData = RendererAPI::CreateUniformBuffer(
-				sizeof(glm::mat4) * 3 + // view, projection, and view-projection
+				sizeof(glm::mat4) * 4 + // view | projection | projection-view | model
 				sizeof(int32_t) // render id
 				);
 

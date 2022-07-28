@@ -8,6 +8,7 @@ Camera::Camera()
 {
     _fov = 45.f;
     _projection = glm::perspective(glm::radians(_fov), 960.f / 540.f, 0.1f, 250.f);
+    _renderShader = nullptr;
 
     _framebufferConfiguration =
     {
@@ -30,6 +31,9 @@ Camera::Camera()
 Camera::~Camera()
 {
     delete _framebuffer;
+
+    if (_renderShader)
+        delete _renderShader;
 }
 
 void Camera::Update()
@@ -48,6 +52,16 @@ void Camera::UnBind() const
     _framebuffer->UnBind();
 }
 
+Varlet::Shader* Camera::GetRenderShader()
+{
+    return _renderShader;
+}
+
+const Varlet::Framebuffer* Camera::GetFramebuffer() const
+{
+    return _framebuffer;
+}
+
 const glm::mat4& Camera::GetView() const
 {
     return _view;
@@ -63,7 +77,7 @@ const glm::mat4 Camera::GetViewProjection() const
     return _projection * _view;
 }
 
-const Varlet::Texture* Camera::GetRendereTexture() const
+const Varlet::Texture* Camera::GetTargetTexture() const
 {
     return _framebuffer->GetTexture();
 }
@@ -93,6 +107,14 @@ void Camera::GetResolution(int32_t& width, int32_t& height) const
 {
     width = _resolution.x;
     height = _resolution.y;
+}
+
+void Camera::SetRenderShader(Varlet::Shader* shader)
+{
+    if (shader == nullptr)
+        delete shader;
+    else
+        _renderShader = shader;
 }
 
 void Camera::CulculateView(const glm::vec3& position, const glm::quat& rotation)

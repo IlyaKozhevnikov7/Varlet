@@ -13,13 +13,7 @@ layout(std140, binding = 0) uniform Camera
     int u_renderId;
 };
 
-out vec3 normal;
-out vec2 texCoord;
-
 void main()
 {
-    normal = aNormal;
-    texCoord = aTexCoord;
-
 	gl_Position = u_ProjectionView * u_Model * vec4(aPos, 1.f);
 }

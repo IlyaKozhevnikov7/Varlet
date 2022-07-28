@@ -18,38 +18,75 @@ void EditViewport::Update()
 {
 	_camera->InternalUpdate();
 
-	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
-
-	ImGui::SetNextWindowSize(ImVec2(640.f, 480.f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+	constexpr ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
 
 	ImGui::Begin("Viewport", nullptr, windowFlags);
 
-	if (Input::GetMouse(MouseKey::Right, KeyState::Release) && _camera->IsControlled())
-	{
-		VarletAPI::SetCursorState(CursorState::Visible);
-		_camera->SetControl(false);
-	}
+	UpdateControl();
 
-	if (Input::GetMouse(MouseKey::Right, KeyState::Press) && ImGui::IsWindowHovered() && _camera->IsControlled() == false)
+	if (_camera->IsControlled() == false)
+		UpdateSelect();
+
+	auto texture = _camera->GetRendereTexture();
+	texture->Activate(0);
+
+	const ImVec2 currentSize = ImGui::GetContentRegionAvail();
+
+	ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetId()), currentSize, ImVec2(0, 1), ImVec2(1, 0));
+
+	static ImVec2 lastSize;
+
+	if (currentSize.x != lastSize.x || currentSize.y != lastSize.y)
+		_camera->OnResize(currentSize.x, currentSize.y);
+
+	lastSize = currentSize;
+
+	ImGui::PopStyleVar();
+	ImGui::End();
+}
+
+void EditViewport::UpdateControl() const
+{
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
 	{
 		VarletAPI::SetCursorState(CursorState::Disabled);
 		_camera->SetControl(true);
 	}
 
-	auto texture = _camera->GetRendereTexture();
-	texture->Activate(0);
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+	{
+		VarletAPI::SetCursorState(CursorState::Visible);
+		_camera->SetControl(false);
+	}
+}
 
-	ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetId()), ImGui::GetWindowSize(), ImVec2(0, 1), ImVec2(1, 0));
+void EditViewport::UpdateSelect() const
+{
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
+	{
+		const ImVec2 regionMin = ImGui::GetWindowContentRegionMin();
+		const ImVec2 regionMax = ImGui::GetWindowContentRegionMax();
+		const ImVec2 windowPos = ImGui::GetWindowPos();
+		const ImVec2 mousePos = ImGui::GetMousePos();
 
-	ImGui::PopStyleVar();
+		const ImVec2 pixelPos =
+		{
+			mousePos.x - windowPos.x - regionMin.x,
+			ImGui::GetWindowSize().y - mousePos.y + windowPos.y
+		};
 
-	static ImVec2 lastSize = ImGui::GetWindowSize();
+		int8_t* pixelInfo = _camera->ReadSelectedPixel(pixelPos.x, pixelPos.y);
+		int32_t id = pixelInfo[0] + pixelInfo[1] * 256 + pixelInfo[2] * 256 * 256;
 
-	if (lastSize.x != ImGui::GetWindowSize().x || lastSize.y != ImGui::GetWindowSize().y)
-		_camera->OnResize(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
+		auto find = Scene::Find([&id](const Varlet::Entity* entity)
+			{
+				if (auto meshRenderer = entity->GetComponent<MeshRenderer>())
+					return meshRenderer->GetRenderId() == id;
 
-	lastSize = ImGui::GetWindowSize();
+				return false;
+			});
 
-	ImGui::End();
+		EditorData::selectedEntity = find;
+	}
 }

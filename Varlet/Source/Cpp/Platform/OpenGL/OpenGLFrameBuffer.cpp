@@ -58,4 +58,19 @@ namespace Varlet
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
+
+	void* OpenGLFramebuffer::ReadPixels(const int32_t& x, const int32_t& y, const int32_t& width, const int32_t& height, const uint32_t& attachment) const
+	{
+		uint8_t data[3];
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, _id);
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachment);
+
+		glReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+		return data;
+	}
 }

@@ -36,10 +36,6 @@ namespace Varlet
 
 		virtual void Update() override;
 
-	protected:
-
-		virtual void Render(const RendererData& rendererData) = 0;
-
 	private:
 
 		void OnNewComponentCreated(Entity* entity, Component* ñomponent);

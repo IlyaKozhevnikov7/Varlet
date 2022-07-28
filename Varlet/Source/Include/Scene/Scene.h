@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VarletCore.h"
+#include "VarletFramework.h"
 
 namespace Varlet
 {
@@ -16,7 +17,7 @@ public:
 
 private:
 
-	static Scene* _current;
+	CORE_API static Scene* _current;
 
 	std::vector<Varlet::Entity*> _entities;
 
@@ -32,5 +33,15 @@ public:
 
 	CORE_API static Varlet::Entity* CreateEntity();
 
-	CORE_API static const std::vector<Varlet::Entity*> FindAll();
+	CORE_API static const std::vector<Varlet::Entity*>& GetAll();
+
+	template<typename Predicate>
+	static const Varlet::Entity* Find(const Predicate& predicate)
+	{
+		for (const auto entity : _current->_entities)
+			if (predicate(entity))
+				return entity;
+		
+		return nullptr;
+	}
 };

@@ -20,7 +20,7 @@ class Panel;
 struct EditorData
 {
 	static Varlet::GameModule* context;
-	static Varlet::Entity* selectedEntity;
+	static const Varlet::Entity* selectedEntity;
 };
 
 class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule

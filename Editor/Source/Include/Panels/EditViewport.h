@@ -17,5 +17,11 @@ public:
 	void Init() override;
 
 	void Update() override;
+
+private:
+
+	void UpdateControl() const;
+
+	void UpdateSelect() const;
 };
 

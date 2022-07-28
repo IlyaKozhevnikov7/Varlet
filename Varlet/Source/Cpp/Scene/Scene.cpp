@@ -28,7 +28,7 @@ Varlet::Entity* Scene::CreateEntity()
 	return entity;
 }
 
-const std::vector<Varlet::Entity*> Scene::FindAll()
+const std::vector<Varlet::Entity*>& Scene::GetAll()
 {
 	return _current->_entities;
 }

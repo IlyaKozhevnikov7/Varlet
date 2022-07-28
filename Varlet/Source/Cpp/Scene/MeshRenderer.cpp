@@ -1,6 +1,13 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
 
+int32_t MeshRenderer::_idCounter = 1;
+
+const int32_t& MeshRenderer::GetRenderId() const
+{
+	return _renderId;
+}
+
 void MeshRenderer::OnConstructed()
 {
 	_mesh = Mesh::LoadModel(modelPath);

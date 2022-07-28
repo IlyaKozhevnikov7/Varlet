@@ -7,6 +7,8 @@ class EditorCamera final : public Component
 private:
 
 	Camera* _camera;
+	Camera* _selectedCamera;
+
 	Transform* _transform;
 
 	float _sensitivity = 0.2f;
@@ -29,6 +31,8 @@ public:
 	bool IsControlled() const;
 
 	const Varlet::Texture* GetRendereTexture() const;
+
+	int8_t* ReadSelectedPixel(const int32_t& x, const int32_t& y) const;
 
 	void OnResize(const int32_t& width, const int32_t& height) const;
 

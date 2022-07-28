@@ -30,6 +30,6 @@ namespace Varlet
 
 		void Update() override;
 
-		void Render(const RendererData& rendererData) override;
+		void Render(const RendererData& rendererData, Shader* cameraShader);
 	};
 }

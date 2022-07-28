@@ -3,6 +3,12 @@
 void EditorCamera::InternalStart()
 {
 	_camera = _owner->GetComponent<Camera>();
+
+	_selectedCamera = _owner->AddComponent<Camera>();
+
+	_selectedCamera->SetRenderShader(Varlet::RendererAPI::CreateShader({ "../Editor/Shaders/selected.vertex.glsl", "../Editor/Shaders/selected.fragment.glsl" }));
+	_selectedCamera->SetActive(true);
+
 	_transform = _owner->GetComponent<Transform>();
 
 	_lastMousePos = Input::GetMousePosition();
@@ -54,12 +60,18 @@ bool EditorCamera::IsControlled() const
 
 const Varlet::Texture* EditorCamera::GetRendereTexture() const
 {
-	return _camera->GetRendereTexture();
+	return _camera->GetTargetTexture();
+}
+
+int8_t* EditorCamera::ReadSelectedPixel(const int32_t& x, const int32_t& y) const
+{
+	return static_cast<int8_t*>(_selectedCamera->GetFramebuffer()->ReadPixels(x, y));
 }
 
 void EditorCamera::OnResize(const int32_t& width, const int32_t& height) const
 {
 	_camera->ResizeView(width, height);
+	_selectedCamera->ResizeView(width, height);
 }
 
 Transform* EditorCamera::GetTransform() const

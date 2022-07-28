@@ -12,7 +12,7 @@ void SceneTree::Update()
 	ImGui::Begin("Scene Tree");
 	ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-	auto all = Scene::FindAll();
+	auto all = Scene::GetAll();
 
 	static int32_t selectionMask = (1 << 2);
 	int32_t nodeClicked = -1;
