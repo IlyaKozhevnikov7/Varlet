@@ -5,7 +5,7 @@ namespace Varlet
 {
 	uint32_t OpenGLUniformBuffer::_bindingPointCounter = 0;
 
-	OpenGLUniformBuffer::OpenGLUniformBuffer(const int64_t& size) : UniformBuffer(size)
+	OpenGLUniformBuffer::OpenGLUniformBuffer(const int64_t& size)
 	{
 		_bindingPoint = _bindingPointCounter++;
 
@@ -16,6 +16,11 @@ namespace Varlet
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		glBindBufferRange(GL_UNIFORM_BUFFER, _bindingPoint, _id, 0, size);
+	}
+
+	OpenGLUniformBuffer::~OpenGLUniformBuffer()
+	{
+		glDeleteBuffers(1, &_id);
 	}
 
 	void OpenGLUniformBuffer::Bind() const

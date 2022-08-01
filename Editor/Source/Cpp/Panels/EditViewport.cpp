@@ -18,8 +18,13 @@ void EditViewport::Update()
 {
 	_camera->InternalUpdate();
 
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+	UpdateView();
+}
+
+void EditViewport::UpdateView() const
+{
 	constexpr ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
 
 	ImGui::Begin("Viewport", nullptr, windowFlags);
 
@@ -79,7 +84,7 @@ void EditViewport::UpdateSelect() const
 		int8_t* pixelInfo = _camera->ReadSelectedPixel(pixelPos.x, pixelPos.y);
 		int32_t id = pixelInfo[0] + pixelInfo[1] * 256 + pixelInfo[2] * 256 * 256;
 
-		auto find = Scene::Find([&id](const Varlet::Entity* entity)
+		auto find = Scene::Find([&id](const Entity* entity)
 			{
 				if (auto meshRenderer = entity->GetComponent<MeshRenderer>())
 					return meshRenderer->GetRenderId() == id;

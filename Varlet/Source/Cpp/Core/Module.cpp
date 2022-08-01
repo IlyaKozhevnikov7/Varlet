@@ -46,4 +46,9 @@ namespace Varlet
 		Scene::Update();
 		// update scene (game loop)
 	}
+
+	void GameModule::Shutdown()
+	{
+		Scene::Shutdown();
+	}
 }

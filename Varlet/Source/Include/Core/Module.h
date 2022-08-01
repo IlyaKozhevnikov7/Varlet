@@ -63,5 +63,7 @@ namespace Varlet
 		virtual int32_t Init() override;
 
 		virtual void Update() override;
+
+		virtual void Shutdown() override;
 	};
 }

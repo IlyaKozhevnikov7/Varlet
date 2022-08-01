@@ -4,63 +4,62 @@
 
 class Component;
 
-namespace Varlet
+class Entity final
 {
-	class Entity final
+public:
+
+	CORE_API static Event<Entity*, Component*> NewComponentCreatedEvent;
+
+private:
+
+	std::vector<Component*> _components;
+
+public:
+
+	void Update();
+
+	void OnDestroyed();
+
+	CORE_API const std::vector<Component*>& GetComponents() const;
+
+	template<class T>
+	T* AddComponent()
 	{
-	public:
+		static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 
-		CORE_API static Event<Entity*, Component*> NewComponentCreatedEvent;
+		auto component = new T();
+		auto componentBase = dynamic_cast<Component*>(component);
 
-	private:
+		_components.push_back(componentBase);
+		componentBase->OnConstructed();
+		componentBase->SetOwner(this);
 
-		std::vector<Component*> _components;
+		NewComponentCreatedEvent.Invoke(this, componentBase);
 
-	public:
+		return component;
+	}
 
-		void Update();
+	template<class T>
+	T* GetComponent() const
+	{
+		static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 
-		CORE_API const std::vector<Component*>& GetComponents() const;
+		for (auto component : _components)
+			if (auto correctComponent = dynamic_cast<T*>(component))
+				return correctComponent;
 
-		template<class T>
-		T* AddComponent()
-		{
-			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
+		return nullptr;
+	}
 
-			auto component = new T();
-			auto componentBase = dynamic_cast<Component*>(component);
+	template<class T>
+	bool HasComponent() const
+	{
+		static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
 
-			_components.push_back(componentBase);
-			componentBase->OnConstructed();
-			componentBase->SetOwner(this);
+		for (auto component : _components)
+			if (auto correctComponent = dynamic_cast<T*>(component))
+				return true;
 
-			NewComponentCreatedEvent.Invoke(this, componentBase);
-
-			return component;
-		}
-
-		template<class T>
-		T* GetComponent() const
-		{
-			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
-
-			for (auto component : _components)
-				if (auto correctComponent = dynamic_cast<T*>(component))
-					return correctComponent;
-
-			return nullptr;
-		}
-
-		template<class T>
-		bool HasComponent() const
-		{
-			static_assert(std::is_base_of<Component, T>::value, "Template must have component type");
-		
-			for (auto component : _components)
-				if (auto correctComponent = dynamic_cast<T*>(component))
-					return true;
-		
-			return false;
-		}
-	};
-}
+		return false;
+	}
+};

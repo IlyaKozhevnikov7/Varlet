@@ -24,7 +24,7 @@ void SceneTree::Update()
 		if ((selectionMask & (1 << i)) != 0) // is selected
 			nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
-		if (ImGui::TreeNodeEx((void*)i, nodeFlags, "Entity [%i]", i))
+		if (ImGui::TreeNodeEx(reinterpret_cast<void*>(i), nodeFlags, "Entity [%i]", i))
 		{
 			if (ImGui::IsItemClicked())
 			{

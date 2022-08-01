@@ -125,14 +125,41 @@ namespace Varlet
 			glClearColor(0.f, 0.5f, 0.5f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+			const auto shader = camera->GetRenderShader();
+
 			for (const auto data : _rendererData)
-				Render(data, camera->GetRenderShader());
+				Render(data, shader);
 
 			camera->UnBind();
 		}
 	}
 
-	void OpenGLRenderer::Render(const RendererData& rendererData, Shader* cameraShader)
+	void OpenGLRenderer::SetupMaterial(const Material* material) const
+	{
+		material->Activate();
+
+		if (material->settings.stencilTest.enable)
+		{
+			const auto stencilSettings = material->settings.stencilTest;
+
+			glStencilMask(0xFF);
+
+			glStencilOp(
+				ConvertToGlOp(stencilSettings.failOp),
+				ConvertToGlOp(stencilSettings.zFailOp),
+				ConvertToGlOp(stencilSettings.allPass));
+
+			glStencilFunc(
+				ConvertToGlFunc(stencilSettings.function),
+				stencilSettings.ref,
+				stencilSettings.mask);
+		}
+
+		if (material->settings.depthTest == false)
+			glDisable(GL_DEPTH_TEST);
+	}
+
+	void OpenGLRenderer::Render(const RendererData& rendererData, const Shader* customShader) const
 	{
 		const Mesh* mesh = rendererData.meshRenderer->GetMesh();
 		if (mesh == nullptr)
@@ -145,19 +172,10 @@ namespace Varlet
 		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(model));
 		_globalData->SetData(sizeof(glm::mat4) * 4, sizeof(int32_t), &rendererData.meshRenderer->GetRenderId());
 
-		if (cameraShader != nullptr)
+		if (customShader)
 		{
-			cameraShader->Use();
-
-			for (const auto subMesh : mesh->GetSubMeshes())
-			{
-				glBindVertexArray(subMesh->GetVAO());
-
-				if (subMesh->IsIndexed())
-					glDrawElements(GL_TRIANGLES, subMesh->GetElementsCount(), GL_UNSIGNED_INT, 0);
-				else
-					glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
-			}
+			customShader->Use();
+			Draw(mesh);
 		}
 		else
 		{
@@ -166,47 +184,32 @@ namespace Varlet
 				if (material->isActive == false)
 					continue;
 
-				material->Activate();
+				SetupMaterial(material);
 
-				if (material->settings.stencilTest.enable)
-				{
-					const auto stencilSettings = material->settings.stencilTest;
-
-					glStencilMask(0xFF);
-
-					glStencilOp(
-						ConvertToGlOp(stencilSettings.failOp),
-						ConvertToGlOp(stencilSettings.zFailOp),
-						ConvertToGlOp(stencilSettings.allPass));
-
-					glStencilFunc(
-						ConvertToGlFunc(stencilSettings.function),
-						stencilSettings.ref,
-						stencilSettings.mask);
-				}
-
-				if (material->settings.depthTest == false)
-					glDisable(GL_DEPTH_TEST);
-
-				for (const auto subMesh : mesh->GetSubMeshes())
-				{
-					glBindVertexArray(subMesh->GetVAO());
-
-					if (subMesh->IsIndexed())
-						glDrawElements(GL_TRIANGLES, subMesh->GetElementsCount(), GL_UNSIGNED_INT, 0);
-					else
-						glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
-				}
-
-				if (material->settings.stencilTest.enable)
-				{
-					glStencilMask(0xFF);
-					glStencilFunc(GL_ALWAYS, 1, 0xFF);
-				}
-
-				if (material->settings.depthTest == false)
-					glEnable(GL_DEPTH_TEST);
+				Draw(mesh);
+				PostDraw();
 			}
 		}
+	}
+
+	void OpenGLRenderer::Draw(const Mesh* mesh) const
+	{
+		for (const auto subMesh : mesh->GetSubMeshes())
+		{
+			glBindVertexArray(subMesh->GetVAO());
+
+			if (subMesh->IsIndexed())
+				glDrawElements(GL_TRIANGLES, subMesh->GetElementsCount(), GL_UNSIGNED_INT, 0);
+			else
+				glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
+		}
+	}
+
+	void OpenGLRenderer::PostDraw() const
+	{
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+
+		glEnable(GL_DEPTH_TEST);
 	}
 }

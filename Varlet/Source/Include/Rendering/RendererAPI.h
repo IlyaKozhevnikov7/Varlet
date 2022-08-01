@@ -66,9 +66,8 @@ namespace Varlet
 		virtual ~IRendererAPIInitializerBase() = default;
 	};
 
-	// TODO maybe remove exporting 
 	template<class T>
-	class CORE_API IRendererAPIInitializer : public IRendererAPIInitializerBase
+	class IRendererAPIInitializer : public IRendererAPIInitializerBase
 	{
 	public:
 

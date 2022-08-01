@@ -1,13 +1,28 @@
 #include "Component.h"
 #include "ComponentType.h"
 
-void Component::SetOwner(Varlet::Entity* owner)
+Component::Component()
 {
+	_owner = nullptr;
+	_isActive = true;
+}
+
+Entity* Component::GetOwner()
+{
+	return _owner;
+}
+
+void Component::SetOwner(Entity* owner)
+{
+	assert(_owner == nullptr && "Owner already initialized");
 	_owner = owner;
 }
 
-void Component::SetActive(bool activeState)
+void Component::SetActive(const bool& activeState)
 {
+	if (_isActive == activeState)
+		return;
+
 	_isActive = activeState;
 
 	if (_isActive)
@@ -41,6 +56,10 @@ Varlet::TypeInfo Component::GetType()
 }
 
 void Component::OnActivated()
+{
+}
+
+void Component::OnDestroyed()
 {
 }
 

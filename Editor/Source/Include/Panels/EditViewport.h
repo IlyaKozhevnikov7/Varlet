@@ -20,6 +20,8 @@ public:
 
 private:
 
+	void UpdateView() const;
+
 	void UpdateControl() const;
 
 	void UpdateSelect() const;

@@ -4,28 +4,29 @@
 
 namespace Varlet
 {
-	class Entity;
 	struct TypeInfo;
 }
 
+class Entity;
+
 class CORE_API Component
 {
-protected:
-
-	Varlet::Entity* _owner;
-
 private:
 
+	Entity* _owner;
 	bool _isActive;
 
 public:
 
-	// todo make virtual destructor
+	Component();
 
-	// todo make private
-	void SetOwner(Varlet::Entity* owner);
+	virtual ~Component() = default;
 
-	void SetActive(bool activeState);
+	Entity* GetOwner();
+
+	void SetOwner(Entity* owner);
+
+	void SetActive(const bool& activeState);
 
 	bool IsActive() const;
 
@@ -34,6 +35,8 @@ public:
 	virtual void Start();
 
 	virtual void Update();
+
+	virtual void OnDestroyed();
 
 	virtual Varlet::TypeInfo GetType();
 

@@ -3,8 +3,8 @@
 
 void DockSpace::Update()
 {
-	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar
+	constexpr ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_None;
+	constexpr ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar
 		| ImGuiWindowFlags_NoDocking
 		| ImGuiWindowFlags_NoTitleBar
 		| ImGuiWindowFlags_NoCollapse
@@ -21,12 +21,8 @@ void DockSpace::Update()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-	ImGui::Begin("DockSpace Demo", nullptr, window_flags);
-
-	ImGui::PopStyleVar(3);
-
-	ImGuiID dockspace_id = ImGui::GetID("DockSpace");
-	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+	ImGui::Begin("DockSpace", nullptr, windowFlags);
+	ImGui::DockSpace(ImGui::GetID("DockSpace"), ImVec2(0.0f, 0.0f), dockspaceFlags);
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -43,5 +39,6 @@ void DockSpace::Update()
 		ImGui::EndMenuBar();
 	}
 
+	ImGui::PopStyleVar(3);
 	ImGui::End();
 }

@@ -12,7 +12,9 @@ namespace Varlet
 
 	public:
 
-		UniformBuffer(const int64_t& size);
+		UniformBuffer() = default;
+
+		virtual ~UniformBuffer() = default;
 
 		virtual void Bind() const = 0;
 

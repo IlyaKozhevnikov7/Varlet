@@ -14,7 +14,7 @@
 #include <iostream>
 
 Varlet::GameModule* EditorData::context;
-const Varlet::Entity* EditorData::selectedEntity;
+const Entity* EditorData::selectedEntity;
 
 Editor::Editor(Varlet::GameModule* module)
 {

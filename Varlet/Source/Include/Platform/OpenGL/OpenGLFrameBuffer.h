@@ -13,8 +13,7 @@ namespace Varlet
 
 		uint32_t _id;
 		uint32_t _renderbufferId;
-
-		std::vector<OpenGLTexture*> _textures;
+		OpenGLTexture* _texture;
 
 	public:
 
@@ -22,12 +21,12 @@ namespace Varlet
 
 		~OpenGLFramebuffer() override;
 
-		const Texture* GetTexture(const int32_t& attachment) const override;
+		const Texture* GetTexture() const override;
 
 		void Bind() override;
 
 		void UnBind() override;
 
-		void* ReadPixels(const int32_t& x, const int32_t& y, const int32_t& width = 1, const int32_t& height = 1, const uint32_t& attachment = 0) const override;
+		void* ReadPixels(const int32_t& x, const int32_t& y, const int32_t& width = 1, const int32_t& height = 1) const override;
 	};
 }

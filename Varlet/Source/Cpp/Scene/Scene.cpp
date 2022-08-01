@@ -18,9 +18,9 @@ void Scene::Load(Scene* scene)
 	SceneChangedEvent.Invoke();
 }
 
-Varlet::Entity* Scene::CreateEntity()
+Entity* Scene::CreateEntity()
 {
-	const auto entity = new Varlet::Entity();
+	const auto entity = new Entity();
 	_current->_entities.push_back(entity);
 
 	VARLET_LOG(LevelType::Normal, "Scene::CreateEntity()");
@@ -28,7 +28,22 @@ Varlet::Entity* Scene::CreateEntity()
 	return entity;
 }
 
-const std::vector<Varlet::Entity*>& Scene::GetAll()
+const std::vector<Entity*>& Scene::GetAll()
 {
 	return _current->_entities;
+}
+
+void Scene::Destroy(Entity* entity)
+{
+	std::remove(_current->_entities.begin(), _current->_entities.end(), entity);
+	entity->OnDestroyed();
+}
+
+void Scene::Shutdown()
+{
+	for (auto entity : _current->_entities)
+	{
+		Scene::Destroy(entity);
+		delete entity;
+	}
 }

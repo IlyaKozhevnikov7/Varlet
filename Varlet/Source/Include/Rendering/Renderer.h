@@ -3,14 +3,14 @@
 #include "VarletCore.h"
 #include "VarletModules.h"
 
+class Entity;
 class Component;
 class MeshRenderer;
 class Transform;
-class Camera;	
+class Camera;
 
 namespace Varlet
 {
-	class Entity;
 	class UniformBuffer;
 
 	struct RendererData

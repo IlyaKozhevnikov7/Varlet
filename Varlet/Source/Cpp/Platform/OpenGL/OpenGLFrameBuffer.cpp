@@ -9,19 +9,10 @@ namespace Varlet
 		glGenFramebuffers(1, &_id);
 		glBindFramebuffer(GL_FRAMEBUFFER, _id);
 
-		const int32_t texturesAmount = configuration.textureConfigurations.size();
-		_textures = std::vector<OpenGLTexture*>(texturesAmount);
-
-		for (int32_t i = 0; i < texturesAmount; i++)
-		{
-			configuration.textureConfigurations[i].width = configuration.width;
-			configuration.textureConfigurations[i].height = configuration.height;
-
-			const auto texture = dynamic_cast<OpenGLTexture*>(RendererAPI::CreateTexture(configuration.textureConfigurations[i]));
-			_textures[i] = texture;
-
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture->GetId(), 0);
-		}
+		configuration.textureConfiguration.width = configuration.width;
+		configuration.textureConfiguration.height = configuration.height;
+		_texture = dynamic_cast<OpenGLTexture*>(RendererAPI::CreateTexture(configuration.textureConfiguration));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->GetId(), 0);
 
 		glGenRenderbuffers(1, &_renderbufferId);
 		glBindRenderbuffer(GL_RENDERBUFFER, _renderbufferId);
@@ -44,9 +35,9 @@ namespace Varlet
 		glDeleteRenderbuffers(1, &_renderbufferId);
 	}
 
-	const Texture* OpenGLFramebuffer::GetTexture(const int32_t& attachment) const
+	const Texture* OpenGLFramebuffer::GetTexture() const
 	{
-		return _textures[attachment];
+		return _texture;
 	}
 
 	void OpenGLFramebuffer::Bind()
@@ -59,12 +50,12 @@ namespace Varlet
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void* OpenGLFramebuffer::ReadPixels(const int32_t& x, const int32_t& y, const int32_t& width, const int32_t& height, const uint32_t& attachment) const
+	void* OpenGLFramebuffer::ReadPixels(const int32_t& x, const int32_t& y, const int32_t& width, const int32_t& height) const
 	{
 		uint8_t data[3];
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, _id);
-		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachment);
+		glReadBuffer(GL_COLOR_ATTACHMENT0);
 
 		glReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 

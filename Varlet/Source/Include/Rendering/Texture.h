@@ -18,8 +18,8 @@ enum class FilterType : uint8_t
 
 struct TextureConfiguration
 {
-	uint32_t width;
-	uint32_t height;
+	int32_t width;
+	int32_t height;
 	WrapType wrapType;
 	FilterType filter;
 	bool mipmap;
@@ -47,6 +47,6 @@ namespace Varlet
 
 		virtual void Activate(const uint32_t& unit) const = 0;
 
-		virtual const uint32_t& GetId() const;
+		const uint32_t& GetId() const;
 	};
 }

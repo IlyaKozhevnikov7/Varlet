@@ -7,25 +7,22 @@ void PropertyPanel::Update()
 {
 	ImGui::Begin("Property");
 
-	if (EditorData::selectedEntity == nullptr)
+	if (EditorData::selectedEntity != nullptr)
 	{
-		ImGui::End();
-		return;
-	}
-	
-	const auto components = EditorData::selectedEntity->GetComponents();
-	for (auto compoent : components)
-	{
-		ImGui::PushID(compoent);
+		const auto components = EditorData::selectedEntity->GetComponents();
+		for (auto component : components)
+		{
+			ImGui::PushID(component);
 
-		auto type = compoent->GetType();
-		if (ImGui::CollapsingHeader(type.name))
-		{		
-			for (auto property : type.properties)
-				DisplayProperty(property);
-		}
+			auto type = component->GetType();
+			if (ImGui::CollapsingHeader(type.name))
+			{
+				for (auto property : type.properties)
+					DisplayProperty(property);
+			}
 
-		ImGui::PopID();
+			ImGui::PopID();
+		};
 	}
 
 	ImGui::End();

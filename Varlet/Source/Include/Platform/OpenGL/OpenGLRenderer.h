@@ -3,6 +3,9 @@
 #include "RenderingCore.h"
 #include "OpenGLRendererAPI.h"
 
+class Mesh;
+class Material;
+
 namespace Varlet
 {
 	// test settings, now only for opengl
@@ -30,6 +33,14 @@ namespace Varlet
 
 		void Update() override;
 
-		void Render(const RendererData& rendererData, Shader* cameraShader);
+	private:
+
+		void SetupMaterial(const Material* material) const;
+
+		void Render(const RendererData& rendererData, const Shader* customShader = nullptr) const;
+
+		void Draw(const Mesh* mesh) const;
+
+		void PostDraw() const;
 	};
 }

@@ -37,9 +37,9 @@ namespace Varlet
 	{
 		std::vector<Module*> modules;
 
+		std::vector<Module*> dependencies = std::move(target->GetDependencies());
 		modules.push_back(target);
 
-		std::vector<Module*>&& dependencies = std::move(target->GetDependencies());
 		if (dependencies.size() > 0)
 			modules.insert(modules.begin(), dependencies.begin(), dependencies.end());
 
@@ -102,7 +102,10 @@ namespace Varlet
 		_context->Shutdown();
 
 		for (auto module : _modules)
+		{
 			module->Shutdown();
+			delete module;
+		}
 	}
 
 	bool Engine::IsRunning() const
