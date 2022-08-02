@@ -6,6 +6,8 @@
 #define SUCCESSFUL_INITIALIZATION 0
 #define FAILED_INITIALIZATION -1
 
+class Scene;
+
 namespace Varlet
 {
 	class CORE_API Module
@@ -22,7 +24,11 @@ namespace Varlet
 
 		std::vector<Module*>& GetDependencies() const;
 
+		// for self initialization
 		virtual int32_t Init();
+
+		// for initialization with other modules
+		virtual int32_t PostInit();
 
 		virtual void Shutdown();
 
@@ -46,6 +52,7 @@ namespace Varlet
 	private:
 
 		// startup scene path
+		Scene* _currentScene = nullptr;
 
 	public:
 
@@ -56,5 +63,7 @@ namespace Varlet
 		virtual int32_t Init() override;
 
 		virtual void Update() override;
+
+		virtual void Shutdown() override;
 	};
 }

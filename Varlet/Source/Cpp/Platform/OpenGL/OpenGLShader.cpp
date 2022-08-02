@@ -1,81 +1,38 @@
 #include "OpenGLShader.h"
+#include <fstream>
+#include <sstream>
 
 #include "glad/glad.h"
 
 namespace Varlet
 {
-	OpenGLShader::OpenGLShader()
+	OpenGLShader::OpenGLShader(const ShaderInitializer& initializer) : Shader(initializer)
 	{
-		// now here automaticly created simple triangle shader
-		const char* vertexShaderSource = R"(
-		#version 460 core
+		std::string vertexShaderSource = Load(initializer.vertexPath.c_str());
+		std::string fragmentShaderSource = Load(initializer.fragmentPath.c_str());
+		std::string geomtryShaderSource = Load(initializer.geomtryPath.c_str());
 
-		layout (location = 0) in vec2 aPos;
-
-		void main()
-		{
-			gl_Position = vec4(aPos, 0.f, 1.f);
-		})";
-
-		const char* geomtryShaderSource = R"(
-		#version 460 core
-
-		layout (triangle_strip, max_vertices = 3) out;
-
-		out vec3 color;
-
-		void main()
-		{
-			color = vec3(1.f, 0.f, 0.f);
-			gl_Position = vec4(-0.5f, -0.5f, 0.f, 0.f);
-			EmitVertex();
-
-			color = vec3(0.f, 1.f, 0.f);
-			gl_Position = vec4(0.f, 0.5f, 0.f, 0.f);
-			EmitVertex();
-
-			color = vec3(0.f, 0.f, 1.f);
-			gl_Position = vec4(0.5f, -0.5f, 0.f, 0.f);
-			EmitVertex();
-
-			EndPrimitive();
-		})";
-
-		const char* fragmentShaderSource = R"(
-		#version 460 core
-
-		out vec4 fragColor;
-
-		void main()
-		{
-			fragColor = vec4(1.f, 0.5f, 0.f, 1.f);
-		})";
-
-		uint32_t vertexShaderId = glCreateShader(ShaderType::Vertex);
-		glShaderSource(vertexShaderId, 1, &vertexShaderSource, NULL);
-		glCompileShader(vertexShaderId);
-		Compile(vertexShaderId, ObjectType::VertexShader);
-
-		uint32_t geomtryShaderId = glCreateShader(ShaderType::Geometry);
-		glShaderSource(geomtryShaderId, 1, &geomtryShaderSource, NULL);
-		glCompileShader(geomtryShaderId);
-		Compile(geomtryShaderId, ObjectType::GeomertyShader);
-
-		uint32_t fragmentShaderId = glCreateShader(ShaderType::Fragment);
-		glShaderSource(fragmentShaderId, 1, &fragmentShaderSource, NULL);
-		glCompileShader(fragmentShaderId);
-		Compile(fragmentShaderId, ObjectType::FragmentShader);
+		uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertexShaderSource.c_str());
+		uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource.c_str());
+		uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource.c_str());
 
 		_id = glCreateProgram();
-		glAttachShader(_id, vertexShaderId);
-		glAttachShader(_id, geomtryShaderId);
-		glAttachShader(_id, fragmentShaderId);
+
+		TryAttach(vertexShaderId);
+		TryAttach(fragmentShaderId);
+		TryAttach(geomtryShaderId);
+
 		glLinkProgram(_id);
 		Compile(_id, ObjectType::Program);
 
-		glDeleteProgram(vertexShaderId);
-		glDeleteProgram(geomtryShaderId);
-		glDeleteProgram(fragmentShaderId);
+		if (vertexShaderId != 0)
+			glDeleteProgram(vertexShaderId);
+
+		if (fragmentShaderId != 0)
+			glDeleteProgram(fragmentShaderId);
+
+		if (geomtryShaderId != 0)
+			glDeleteProgram(geomtryShaderId);
 	}
 
 	OpenGLShader::~OpenGLShader()
@@ -83,12 +40,12 @@ namespace Varlet
 		glDeleteProgram(_id);
 	}
 
-	void OpenGLShader::Use()
+	void OpenGLShader::Use() const
 	{
 		glUseProgram(_id);
 	}
 
-	void OpenGLShader::Compile(const uint32_t& objId, ObjectType&& objType)
+	void OpenGLShader::Compile(const uint32_t& objId, const ObjectType& objType) const
 	{
 		int32_t isSuccess;
 		char errorLog[512];
@@ -113,5 +70,108 @@ namespace Varlet
 				VARLET_LOG(LevelType::Warning, "Shader compile error [shader " + std::to_string(objId) + "] " + errorLog);
 			}
 		}
+	}
+
+	std::string OpenGLShader::Load(const char* path) const
+	{
+		std::ifstream stream;
+		stream.open(path);
+
+		if (stream.is_open())
+		{
+			std::stringstream buffer;
+			buffer << stream.rdbuf();
+			return buffer.str();
+		}
+		else
+		{
+			VARLET_LOG(LevelType::Warning, "Failed load shader: " + *path);
+			return std::string();
+		}
+	}
+
+	const uint32_t OpenGLShader::GenerateShader(const ShaderType&& type, const char* source) const
+	{
+		if (source[0] == '\0')
+			return 0;
+
+		const uint32_t vertexShaderId = glCreateShader(type);
+		glShaderSource(vertexShaderId, 1, &source, NULL);
+		glCompileShader(vertexShaderId);
+
+		ObjectType objectType;
+
+		switch (type)
+		{
+		case ShaderType::Vertex:
+			objectType = ObjectType::VertexShader;
+			break;
+
+		case ShaderType::Fragment:
+			objectType = ObjectType::FragmentShader;
+			break;
+
+		case ShaderType::Geometry:
+			objectType = ObjectType::GeomertyShader;
+			break;
+
+		default:
+			return 0;
+		}
+
+		Compile(vertexShaderId, objectType);
+
+		return vertexShaderId;
+	}
+
+	void OpenGLShader::TryAttach(const uint32_t& id) const
+	{
+		if (id != 0)
+			glAttachShader(_id, id);
+	}
+
+	void OpenGLShader::SetBool(const char* name, const bool& value)
+	{
+		glUniform1i(glGetUniformLocation(_id, name), static_cast<int32_t>(value));
+	}
+
+	void OpenGLShader::SetUInt32(const char* name, const uint32_t& value)
+	{
+		glUniform1ui(glGetUniformLocation(_id, name), value);
+	}
+
+	void OpenGLShader::SetInt32(const char* name, const int32_t& value)
+	{
+		glUniform1i(glGetUniformLocation(_id, name), value);
+	}
+
+	void OpenGLShader::SetFloat(const char* name, const float& value)
+	{
+		glUniform1f(glGetUniformLocation(_id, name), value);
+	}
+
+	void OpenGLShader::SetVec2(const char* name, const glm::vec2& value)
+	{
+		glUniform2f(glGetUniformLocation(_id, name), value.x, value.y);
+	}
+
+	void OpenGLShader::SetVec3(const char* name, const glm::vec3& value)
+	{
+		glUniform3f(glGetUniformLocation(_id, name), value.x, value.y, value.z);
+	}
+
+	void OpenGLShader::SetVec4(const char* name, const glm::vec4& value)
+	{
+		glUniform4f(glGetUniformLocation(_id, name), value.x, value.y, value.z, value.w);
+	}
+
+	void OpenGLShader::SetMat3(const char* name, const glm::mat3& value)
+	{
+		glUniformMatrix3fv(glGetUniformLocation(_id, name), 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void OpenGLShader::SetMat4(const char* name, const glm::mat4& value)
+	{
+		glUniformMatrix4fv(glGetUniformLocation(_id, name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 }

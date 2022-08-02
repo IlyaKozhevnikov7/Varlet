@@ -1,4 +1,5 @@
 #include "Module.h"
+#include "Scene.h"
 
 namespace Varlet
 {
@@ -14,14 +15,11 @@ namespace Varlet
 		return SUCCESSFUL_INITIALIZATION;
 	}
 
-<<<<<<< HEAD
-	int32_t Module::Init()
+	int32_t Module::PostInit()
 	{
 		return SUCCESSFUL_INITIALIZATION;
 	}
 
-=======
->>>>>>> dev
 	void Module::Shutdown()
 	{
 	}
@@ -36,12 +34,21 @@ namespace Varlet
 
 		// load startup scene
 
+		// TODO remove scene creation
+		Scene::Load(new Scene());
+
 		VARLET_LOG(LevelType::Normal, "GameModule init");
 		return SUCCESSFUL_INITIALIZATION;
 	}
 
 	void GameModule::Update()
 	{
+		Scene::Update();
 		// update scene (game loop)
+	}
+
+	void GameModule::Shutdown()
+	{
+		Scene::Shutdown();
 	}
 }

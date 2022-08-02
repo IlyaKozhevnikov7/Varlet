@@ -2,50 +2,44 @@
 
 #include "VarletModules.h"
 
-<<<<<<< HEAD
-struct GLFWwindow;
-struct ImGuiIO;
-
-class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
-{
-private:
-
-	GLFWwindow* _context;
-
-public:
-
-	Editor();
-=======
-#ifdef DLL_EXPORT
+#ifdef EDITOR_DLL_EXPORT
 	#define EDITOR_API __declspec(dllexport)
 #else
 	#define EDITOR_API __declspec(dllimport)
 #endif
 
 struct GLFWwindow;
+class Entity;
+class EditorCamera;
+class Panel;
 
-class EDITOR_API Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
+struct EditorData
+{
+	static Varlet::GameModule* context;
+	static const Entity* selectedEntity;
+};
+
+class Editor final : public Varlet::Module, public Varlet::IUpdatebleModule
 {
 private:
 
+	std::vector<Panel*> _panels;
 	GLFWwindow* _window;
-	Varlet::GameModule* _context;
 
 public:
 
-	Editor(Varlet::GameModule* module);
->>>>>>> dev
+	EDITOR_API Editor(Varlet::GameModule* module);
 	~Editor() override = default;
 
 private:
 
 	int32_t Init() override;
 
+	void InitImGui();
+
+	int32_t PostInit() override;
+
 	void Shutdown() override;
 
 	void Update() override;
-
-	void DrawDockSpace() const;
-
-	void DrawViewPort() const;
 };

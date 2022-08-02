@@ -14,7 +14,7 @@ namespace Varlet
 			Geometry = 0x8DD9
 		};
 
-		enum ObjectType : uint32_t
+		enum class ObjectType : uint8_t
 		{
 			VertexShader = 0,
 			FragmentShader,
@@ -28,14 +28,38 @@ namespace Varlet
 
 	public:
 
-		OpenGLShader();
+		OpenGLShader(const ShaderInitializer& initializer);
 
 		~OpenGLShader() override;
 
-		virtual void Use() override;
+		void Use() const override;
+
+		void SetBool(const char* name, const bool& value) override;
+
+		void SetUInt32(const char* name, const uint32_t& value) override;
+
+		void SetInt32(const char* name, const int32_t& value) override;
+
+		void SetFloat(const char* name, const float& value) override;
+
+		void SetVec2(const char* name, const glm::vec2& value) override;
+
+		void SetVec3(const char* name, const glm::vec3& value) override;
+
+		void SetVec4(const char* name, const glm::vec4& value) override;
+
+		void SetMat3(const char* name, const glm::mat3& value) override;
+
+		void SetMat4(const char* name, const glm::mat4& value) override;
 
 	private:
 
-		void Compile(const uint32_t& objId, ObjectType&& objType);
+		void Compile(const uint32_t& objId, const ObjectType& objType) const;
+
+		std::string Load(const char* path) const;
+
+		const uint32_t GenerateShader(const ShaderType&& type, const char* source) const;
+
+		void TryAttach(const uint32_t& id) const;
 	};
 }

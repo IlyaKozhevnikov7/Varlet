@@ -1,18 +1,37 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Renderer.h"
+
+struct TextureConfiguration;
+struct LoadableTextureConfiguration;
+struct FramebufferConfiguration;
 
 namespace Varlet
 {
+	class UniformBuffer;
+	class Shader;
+	class Framebuffer;
+	class Texture;
+	class VertexArray;
+
+	struct ShaderInitializer;
+	struct VertexArrayData;
+
 	class IRendererAPI
 	{
 	public:
 
-		// create shader
-		// create texture
-		// create framebuffer
-		// create ...
+		virtual Shader* CreateShader(const ShaderInitializer& initializer) const = 0;
+
+		virtual Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration) const = 0;
+
+		virtual UniformBuffer* CreateUniformBuffer(const int64_t& size) const = 0;
+
+		virtual Texture* CreateTexture(const TextureConfiguration& configuration) const = 0;
+
+		virtual Texture* LoadTexture(const LoadableTextureConfiguration& configuration) const = 0;
+
+		virtual VertexArray* CreateVertexArray(const VertexArrayData& configuration) const = 0;
 	};
 
 	class RendererAPI final
@@ -24,6 +43,18 @@ namespace Varlet
 	public:
 
 		static void Init(IRendererAPI* api);
+
+		CORE_API static Shader* CreateShader(const ShaderInitializer& initializer);
+
+		CORE_API static Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration);
+
+		CORE_API static Texture* CreateTexture(const TextureConfiguration& configuration);
+
+		CORE_API static Texture* LoadTexture(const LoadableTextureConfiguration& configuration);
+
+		CORE_API static UniformBuffer* CreateUniformBuffer(const int64_t& size);
+
+		CORE_API static VertexArray* CreateVertexArray(const VertexArrayData& configuration);
 	};
 
 	class IRendererAPIInitializerBase
@@ -36,7 +67,7 @@ namespace Varlet
 	};
 
 	template<class T>
-	class CORE_API IRendererAPIInitializer : public IRendererAPIInitializerBase
+	class IRendererAPIInitializer : public IRendererAPIInitializerBase
 	{
 	public:
 

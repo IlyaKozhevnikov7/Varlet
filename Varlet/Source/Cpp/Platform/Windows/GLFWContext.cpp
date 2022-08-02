@@ -13,10 +13,7 @@ namespace Varlet
 		{
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-			glfwSwapInterval(1);
 			_window = glfwCreateWindow(640, 480, "Varlet", NULL, NULL);
-<<<<<<< HEAD
-=======
 
 			if (_window == nullptr)
 			{
@@ -24,8 +21,8 @@ namespace Varlet
 				return GLFW_FALSE;
 			}
 
->>>>>>> dev
 			glfwMakeContextCurrent(_window);
+			glfwSwapInterval(0);
 		}
 
 		return initResult;
@@ -41,11 +38,33 @@ namespace Varlet
 		glfwSwapBuffers(_window);
 		glfwPollEvents();
 	}
-	
+
 	void GLFWContext::Shutdown()
 	{
 		glfwDestroyWindow(_window);
 		_window = nullptr;
 		glfwTerminate();
+	}
+
+	void GLFWContext::SetCursorState(const CursorState& state) const
+	{
+		int32_t glfwState;
+
+		switch (state)
+		{
+		case CursorState::Visible:
+			glfwState = GLFW_CURSOR_NORMAL;
+			break;
+
+		case CursorState::Disabled:
+			glfwState = GLFW_CURSOR_DISABLED;
+			break;
+
+		case CursorState::Hidden:
+			glfwState = GLFW_CURSOR_HIDDEN;
+			break;
+		}
+
+		glfwSetInputMode(_window, GLFW_CURSOR, glfwState);
 	}
 }

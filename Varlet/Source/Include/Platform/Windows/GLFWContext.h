@@ -7,18 +7,20 @@ struct GLFWwindow;
 
 namespace Varlet
 {
-	class CORE_API GLFWContext final : public Context<GLFWwindow>
+	class GLFWContext final : public Context<GLFWwindow>
 	{
 	public:
-	
+
 		int32_t Init() override;
-	
+
 		bool IsRunning() const override;
 
 		void Update() override;
 
 		void Shutdown() override;
-	
+
+		void SetCursorState(const CursorState& state) const override;
+
 		~GLFWContext() override = default;
 	};
 }
