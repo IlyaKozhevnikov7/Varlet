@@ -30,6 +30,8 @@ public:
 
 	bool IsControlled() const;
 
+	const Camera* GetCore() const;
+
 	const Varlet::Texture* GetRendereTexture() const;
 
 	int8_t* ReadSelectedPixel(const int32_t& x, const int32_t& y) const;

@@ -100,6 +100,7 @@ void Editor::Update()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	for (auto panel : _panels)
 		panel->Update();

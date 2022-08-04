@@ -2,17 +2,26 @@
 
 #include "Panel.h"
 
+namespace ImGuizmo
+{
+	enum OPERATION;
+	enum MODE;
+}
+
 class EditorCamera;
+struct ImVec2;
 
 class EditViewport final : public Panel
 {
 private:
 
 	EditorCamera* _camera;
+	ImGuizmo::OPERATION _gizmoOperation;
+	ImGuizmo::MODE _gizmoMode;
 
 public:
 
-	~EditViewport() override = default;
+	~EditViewport() override;
 
 	void Init() override;
 
@@ -20,10 +29,16 @@ public:
 
 private:
 
-	void UpdateView() const;
+	void UpdateView();
 
-	void UpdateControl() const;
+	void UpdateControl();
 
 	void UpdateSelect() const;
+
+	void UpdateContent(const ImVec2& contentSize) const;
+
+	void UpdateGizmo(const ImVec2& contentSize) const;
+
+	void UpdateCameraResolution(const ImVec2& resolution) const;
 };
 

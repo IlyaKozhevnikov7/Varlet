@@ -58,6 +58,11 @@ bool EditorCamera::IsControlled() const
 	return _isControlled;
 }
 
+const Camera* EditorCamera::GetCore() const
+{
+	return _camera;
+}
+
 const Varlet::Texture* EditorCamera::GetRendereTexture() const
 {
 	return _camera->GetTargetTexture();
