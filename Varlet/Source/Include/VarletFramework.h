@@ -13,6 +13,7 @@
 #include "Scene/Entity.h"
 #include "Scene/Scene.h"
 #include "Scene/Component.h"
+#include "Scene/Script.h"
 #include "Scene/Camera.h"
 #include "Scene/MeshRenderer.h"
 #include "Scene/Transform.h"

@@ -8,6 +8,8 @@ class Material;
 
 class CORE_API MeshRenderer final : public Component
 {
+	TYPE_GENERATION(MeshRenderer, Component)
+
 private:
 
 	static int32_t _idCounter;

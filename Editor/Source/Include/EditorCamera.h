@@ -2,7 +2,7 @@
 
 #include "VarletFramework.h"
 
-class EditorCamera final : public Component
+class EditorCamera final : public Script
 {
 private:
 

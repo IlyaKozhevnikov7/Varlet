@@ -1,6 +1,8 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
 
+EMPTY_PROPERTY_BLOCK(MeshRenderer);
+
 int32_t MeshRenderer::_idCounter = 1;
 
 const int32_t& MeshRenderer::GetRenderId() const

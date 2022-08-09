@@ -3,6 +3,7 @@
 #include "VarletCore.h"
 
 class Component;
+class Script;
 
 class Entity final
 {
@@ -13,6 +14,7 @@ public:
 private:
 
 	std::vector<Component*> _components;
+	std::vector<Script*> _scripts;
 
 public:
 
@@ -31,6 +33,10 @@ public:
 		auto componentBase = dynamic_cast<Component*>(component);
 
 		_components.push_back(componentBase);
+
+		if (const auto script = dynamic_cast<Script*>(component))
+			_scripts.push_back(script);
+
 		componentBase->OnConstructed();
 		componentBase->SetOwner(this);
 

@@ -125,6 +125,8 @@ namespace Varlet
 using BaseClass = BaseType; \
 public: \
 virtual Varlet::TypeInfo GetType(); \
+Type() = default; \
+~Type() override = default; \
 
 #define EMPTY_PROPERTY_BLOCK(Type) \
 Varlet::TypeInfo Type::GetType() \

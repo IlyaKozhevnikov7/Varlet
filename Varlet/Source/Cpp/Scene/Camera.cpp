@@ -40,21 +40,6 @@ void Camera::Update()
 	CulculateView(transform->position, transform->rotation);
 }
 
-void Camera::Bind() const
-{
-	_framebuffer->Bind();
-}
-
-void Camera::UnBind() const
-{
-	_framebuffer->UnBind();
-}
-
-Varlet::Shader* Camera::GetRenderShader()
-{
-	return _renderShader;
-}
-
 const Varlet::Framebuffer* Camera::GetFramebuffer() const
 {
 	return _framebuffer;
@@ -121,4 +106,19 @@ void Camera::CulculateView(const glm::vec3& position, const glm::quat& rotation)
 	const glm::mat4 orientationMat = glm::mat4_cast(glm::inverse(rotation));
 
 	_view = orientationMat * translateMat;
+}
+
+void Camera::Bind() const
+{
+	_framebuffer->Bind();
+}
+
+void Camera::UnBind() const
+{
+	_framebuffer->UnBind();
+}
+
+Varlet::Shader* Camera::GetRenderShader()
+{
+	return _renderShader;
 }

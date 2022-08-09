@@ -1,10 +1,10 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Component.h"
+#include "Script.h"
 #include "Rendering/RenderingCore.h"
 
-class Camera final : public Component
+class Camera final : public Script
 {
 private:
 
@@ -27,12 +27,6 @@ public:
 
 	CORE_API void Update() override;
 
-	void Bind() const;
-
-	void UnBind() const;
-
-	Varlet::Shader* GetRenderShader();
-
 	CORE_API const Varlet::Framebuffer* GetFramebuffer() const;
 
 	CORE_API const glm::mat4& GetView() const;
@@ -50,6 +44,12 @@ public:
 	CORE_API void GetResolution(int32_t& width, int32_t& height) const;
 
 	CORE_API void SetRenderShader(Varlet::Shader* shader);
+
+	void Bind() const;
+
+	void UnBind() const;
+
+	Varlet::Shader* GetRenderShader();
 
 private:
 
