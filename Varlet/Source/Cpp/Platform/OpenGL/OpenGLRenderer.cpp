@@ -161,6 +161,9 @@ namespace Varlet
 
 	void OpenGLRenderer::Render(const RendererData& rendererData, const Shader* customShader) const
 	{
+		if (rendererData.meshRenderer->isVisible == false)
+			return;
+
 		const Mesh* mesh = rendererData.meshRenderer->GetMesh();
 		if (mesh == nullptr)
 			return;

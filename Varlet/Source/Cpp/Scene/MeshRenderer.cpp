@@ -1,7 +1,9 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
 
-EMPTY_PROPERTY_BLOCK(MeshRenderer);
+START_PROPERTY_BLOCK(MeshRenderer);
+PROPERTY("Is Visible", isVisible);
+END_PROPERTY_BLOCK;
 
 int32_t MeshRenderer::_idCounter = 1;
 
@@ -12,9 +14,11 @@ const int32_t& MeshRenderer::GetRenderId() const
 
 void MeshRenderer::OnConstructed()
 {
+	_renderId = _idCounter++;
+	isVisible = true;
 	_mesh = Mesh::LoadModel(modelPath);
-
 }
+
 void MeshRenderer::SetMesh(Mesh* mesh)
 {
 	if (_mesh != nullptr)
