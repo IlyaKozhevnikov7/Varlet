@@ -10,17 +10,15 @@ namespace Varlet
 
 class Entity;
 
-class CORE_API Component
+class CORE_API Component : public Object
 {
+	TYPE_GENERATION(Component, Object)
+
 private:
 
 	Entity* _owner;
 
 public:
-
-	Component();
-
-	virtual ~Component() = default;
 
 	Entity* GetOwner();
 
@@ -31,6 +29,4 @@ public:
 	virtual void Start();
 
 	virtual void OnDestroyed();
-
-	virtual Varlet::TypeInfo GetType();
 };

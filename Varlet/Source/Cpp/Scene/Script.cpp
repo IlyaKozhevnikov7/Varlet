@@ -6,6 +6,8 @@ END_PROPERTY_BLOCK
 
 void Script::OnConstructed()
 {
+	BaseClass::OnConstructed();
+
 	_isActive = true;
 }
 

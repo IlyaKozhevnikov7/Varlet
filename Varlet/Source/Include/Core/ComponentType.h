@@ -140,7 +140,7 @@ return info; \
 Varlet::TypeInfo Type::GetType() \
 { \
 auto info = BaseClass::GetType(); \
-info.name = #Type;
+info.name = #Type; \
 
 #define END_PROPERTY_BLOCK \
 return info; \

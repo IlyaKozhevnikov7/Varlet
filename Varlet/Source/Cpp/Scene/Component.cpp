@@ -1,10 +1,7 @@
 #include "Component.h"
 #include "ComponentType.h"
 
-Component::Component()
-{
-	_owner = nullptr;
-}
+EMPTY_PROPERTY_BLOCK(Component);
 
 Entity* Component::GetOwner()
 {
@@ -19,6 +16,7 @@ void Component::SetOwner(Entity* owner)
 
 void Component::OnConstructed()
 {
+	_owner = nullptr;
 }
 
 void Component::Start()
@@ -27,10 +25,4 @@ void Component::Start()
 
 void Component::OnDestroyed()
 {
-}
-
-Varlet::TypeInfo Component::GetType()
-{
-	Varlet::TypeInfo info("Component");
-	return info;
 }
