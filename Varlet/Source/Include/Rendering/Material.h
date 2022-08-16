@@ -51,7 +51,7 @@ namespace Varlet
 	class Shader;
 }
 
-class CORE_API Material final : public Object
+class Material final : public Object
 {
 	TYPE_GENERATION(Material, Object)
 
@@ -66,11 +66,32 @@ private:
 
 public:
 
-	Material(Varlet::Shader* shader);
+	CORE_API Material(Varlet::Shader* shader);
 
 	void Activate() const;
 
-	// TODO remove
-	Varlet::Shader* GetShader();
+	CORE_API void SetBool(const char* name, const bool& value) const;
+
+	CORE_API void SetUInt32(const char* name, const uint32_t& value) const;
+
+	CORE_API void SetInt32(const char* name, const int32_t& value) const;
+
+	CORE_API void SetFloat(const char* name, const float& value) const;
+
+	CORE_API void SetVec2(const char* name, const glm::vec2& value) const;
+
+	CORE_API void SetVec3(const char* name, const glm::vec3& value) const;
+
+	CORE_API void SetVec4(const char* name, const glm::vec4& value) const;
+
+	CORE_API void SetMat3(const char* name, const glm::mat3& value) const;
+
+	CORE_API void SetMat4(const char* name, const glm::mat4& value) const;
+
+private:
+
+#ifdef META
+	void SetUniform(const Uniform& uniform) const;
+#endif // META
 };
 
