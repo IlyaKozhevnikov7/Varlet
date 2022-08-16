@@ -7,6 +7,7 @@
 #endif // DLL_EXPORT
 
 #include <vector>
+#include <unordered_map>
 #include <stdint.h>
 #include <cassert>
 #include <string>
@@ -14,6 +15,5 @@
 #include "../../Dependencies/GLM/include/GLM/glm.hpp"
 #include "../../Dependencies/GLM/include/GLM/gtc/type_ptr.hpp"
 #include "../../Dependencies/GLM/include/GLM/gtx/matrix_decompose.hpp"
-#include "Core/Object.h"
 #include "Core/Delegate.h"
 #include "Core/Logger.h"

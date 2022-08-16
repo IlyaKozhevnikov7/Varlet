@@ -23,7 +23,9 @@ namespace Varlet
 		};
 
 	private:
-
+#ifdef META
+		static std::unordered_map<std::string, Type> _types;
+#endif // META
 		uint32_t _id;
 
 	public:
@@ -61,5 +63,9 @@ namespace Varlet
 		const uint32_t GenerateShader(const ShaderType&& type, const char* source) const;
 
 		void TryAttach(const uint32_t& id) const;
+
+#ifdef META
+		void AddUniforms(const std::string& source);
+#endif // META
 	};
 }

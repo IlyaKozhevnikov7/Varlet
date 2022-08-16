@@ -4,7 +4,19 @@
 
 namespace Varlet
 {
-	struct CORE_API ShaderInitializer final
+	enum class Type : uint8_t;
+}
+
+struct Uniform
+{
+	const char* name;
+	Varlet::Type type;
+	std::shared_ptr<void> value;
+};
+
+namespace Varlet
+{
+	struct ShaderInitializer final
 	{
 	public:
 
@@ -17,7 +29,10 @@ namespace Varlet
 	{
 	public:
 
-		Shader(const ShaderInitializer& initializer);
+#ifdef META
+		std::vector<Uniform> uniforms;
+#endif // META
+	public:
 
 		virtual ~Shader() = default;
 

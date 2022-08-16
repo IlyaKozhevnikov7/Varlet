@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "ComponentType.h"
 
 Varlet::TypeInfo Object::GetType()
 {

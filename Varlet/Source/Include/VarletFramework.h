@@ -8,6 +8,7 @@
 #include "Core/Delegate.h"
 #include "Core/Logger.h"
 #include "Core/ComponentType.h"
+#include "Core/Object.h"
 
 // components
 #include "Scene/Entity.h"

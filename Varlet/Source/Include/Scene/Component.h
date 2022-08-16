@@ -2,11 +2,7 @@
 
 #include "VarletCore.h"
 #include "Core/ComponentType.h"
-
-namespace Varlet
-{
-	struct TypeInfo;
-}
+#include "Core/Object.h"
 
 class Entity;
 

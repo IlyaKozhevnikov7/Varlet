@@ -46,6 +46,14 @@ project "Varlet"
 		"VARLET_DLL_EXPORT"
 	}
 
+	filter "configurations:Editor"
+		defines {
+			"EDITOR",
+			"DEBUG",
+			"META"
+		}
+		symbols "On"
+
 	filter "configurations:Debug"
 		defines {
 			"DEBUG",
@@ -54,6 +62,6 @@ project "Varlet"
 
 	filter "configurations:Release"
 		defines {
-			"RELEASE"
+			"RELEASE",
 		}
-		optimize "On"
+		symbols "On"

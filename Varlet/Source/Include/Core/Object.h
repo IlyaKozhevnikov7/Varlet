@@ -1,9 +1,13 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Core/ComponentType.h"
 
-class Object
+namespace Varlet
+{
+	struct TypeInfo;
+}
+
+class CORE_API Object
 {
 public:
 	
@@ -12,4 +16,3 @@ public:
 
 	virtual Varlet::TypeInfo GetType();
 };
-
