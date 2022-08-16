@@ -1,7 +1,13 @@
 #include "Material.h"
 #include "Shader.h"
 
-Material::Material(const Varlet::Shader* shader)
+START_PROPERTY_BLOCK(Material)
+PROPERTY("Activity", isActive)
+for (auto uniform : _shader->uniforms)
+TYPED_PROPERTY(uniform.name, uniform.value.get(), uniform.type);
+END_PROPERTY_BLOCK;
+
+Material::Material(Varlet::Shader* shader)
 {
 	isActive = true;
 	settings.stencilTest.enable = false;

@@ -5,7 +5,10 @@
 namespace Varlet
 {
 	struct Property;
+	struct Array;
 }
+
+class Object;
 
 class PropertyPanel final : public Panel
 {
@@ -15,5 +18,9 @@ public:
 
 private:
 
-	void DisplayProperty(const Varlet::Property& property) const;
+	void DisplayProperty(const Varlet::Property* property) const;
+
+	void DispalyObject(Object* object, const int32_t& id = -1) const;
+
+	void DispalyArray(const Varlet::Array* property) const;
 };

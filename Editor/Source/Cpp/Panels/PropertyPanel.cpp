@@ -13,14 +13,7 @@ void PropertyPanel::Update()
 		for (auto component : components)
 		{
 			ImGui::PushID(component);
-
-			auto type = component->GetType();
-			if (ImGui::CollapsingHeader(type.name))
-			{
-				for (auto property : type.properties)
-					DisplayProperty(property);
-			}
-
+			DispalyObject(component);
 			ImGui::PopID();
 		};
 	}
@@ -28,66 +21,233 @@ void PropertyPanel::Update()
 	ImGui::End();
 }
 
-void PropertyPanel::DisplayProperty(const Varlet::Property& property) const
+void PropertyPanel::DisplayProperty(const Varlet::Property* property) const
 {
 	constexpr float speed = 0.33f;
 
-	switch (property.type)
+	switch (property->type)
 	{
 	case Varlet::Type::Bool:
-		ImGui::Checkbox(property.name, reinterpret_cast<bool*>(property.value));
+		ImGui::Checkbox(property->name, reinterpret_cast<bool*>(property->value));
 		break;
 
 	case Varlet::Type::Int8:
-		ImGui::DragScalar(property.name, ImGuiDataType_S8, reinterpret_cast<int8_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_S8, property->value, speed);
 		break;
 
 	case Varlet::Type::UInt8:
-		ImGui::DragScalar(property.name, ImGuiDataType_U8, reinterpret_cast<uint8_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_U8, property->value, speed);
 		break;
 
 	case Varlet::Type::Int16:
-		ImGui::DragScalar(property.name, ImGuiDataType_S16, reinterpret_cast<int16_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_S16, property->value, speed);
 		break;
 
 	case Varlet::Type::UInt16:
-		ImGui::DragScalar(property.name, ImGuiDataType_U16, reinterpret_cast<uint16_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_U16, property->value, speed);
 		break;
 
 	case Varlet::Type::Int32:
-		ImGui::DragScalar(property.name, ImGuiDataType_S32, reinterpret_cast<int32_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_S32, property->value, speed);
 		break;
 
 	case Varlet::Type::UInt32:
-		ImGui::DragScalar(property.name, ImGuiDataType_U32, reinterpret_cast<uint32_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_U32, property->value, speed);
 		break;
 
 	case Varlet::Type::Int64:
-		ImGui::DragScalar(property.name, ImGuiDataType_S64, reinterpret_cast<int64_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_S64, property->value, speed);
 		break;
 
 	case Varlet::Type::UInt64:
-		ImGui::DragScalar(property.name, ImGuiDataType_U64, reinterpret_cast<uint64_t*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_U64, property->value, speed);
 		break;
 
 	case Varlet::Type::Float:
-		ImGui::DragScalar(property.name, ImGuiDataType_Float, reinterpret_cast<float*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_Float, property->value, speed);
 		break;
 
 	case Varlet::Type::Double:
-		ImGui::DragScalar(property.name, ImGuiDataType_Double, reinterpret_cast<double*>(property.value), speed);
+		ImGui::DragScalar(property->name, ImGuiDataType_Double, property->value, speed);
 		break;
 
 	case Varlet::Type::Vector2:
-		ImGui::DragFloat2(property.name, reinterpret_cast<float*>(property.value), speed);
+		ImGui::DragScalarN(property->name, ImGuiDataType_Float, property->value, 2, speed);
 		break;
 
 	case Varlet::Type::Vector3:
-		ImGui::DragFloat3(property.name, reinterpret_cast<float*>(property.value), speed);
+		ImGui::DragScalarN(property->name, ImGuiDataType_Float, property->value, 3, speed);
 		break;
 
 	case Varlet::Type::Vector4:
-		ImGui::DragFloat4(property.name, reinterpret_cast<float*>(property.value), speed);
+		ImGui::DragScalarN(property->name, ImGuiDataType_Float, property->value, 4, speed);
 		break;
+
+		// TODO
+	case Varlet::Type::BoolVector2:
+	case Varlet::Type::BoolVector3:
+	case Varlet::Type::BoolVector4:
+		break;
+
+	case Varlet::Type::Int32Vector2:
+		ImGui::DragScalarN(property->name, ImGuiDataType_S32, property->value, 2, speed);
+		break;
+
+	case Varlet::Type::Int32Vector3:
+		ImGui::DragScalarN(property->name, ImGuiDataType_S32, property->value, 3, speed);
+		break;
+
+	case Varlet::Type::Int32Vector4:
+		ImGui::DragScalarN(property->name, ImGuiDataType_S32, property->value, 4, speed);
+		break;
+
+	case Varlet::Type::UInt32Vector2:
+		ImGui::DragScalarN(property->name, ImGuiDataType_U32, property->value, 2, speed);
+		break;
+
+	case Varlet::Type::UInt32Vector3:
+		ImGui::DragScalarN(property->name, ImGuiDataType_U32, property->value, 3, speed);
+		break;
+
+	case Varlet::Type::UInt32Vector4:
+		ImGui::DragScalarN(property->name, ImGuiDataType_U32, property->value, 4, speed);
+		break;
+
+	case Varlet::Type::DoubleVector2:
+		ImGui::DragScalarN(property->name, ImGuiDataType_Double, property->value, 2, speed);
+		break;
+
+	case Varlet::Type::DoubleVector3:
+		ImGui::DragScalarN(property->name, ImGuiDataType_Double, property->value, 3, speed);
+		break;
+
+	case Varlet::Type::DoubleVector4:
+		ImGui::DragScalarN(property->name, ImGuiDataType_Double, property->value, 4, speed);
+		break;
+
+	case Varlet::Type::Object:
+		DispalyObject(static_cast<Object*>(property->value));
+		break;
+
+	case Varlet::Type::Array:
+		DispalyArray(static_cast<const Varlet::Array*>(property));
+		break;
+
+	case Varlet::Type::Color3:
+		ImGui::ColorEdit3(property->name, reinterpret_cast<float*>(property->value), ImGuiColorEditFlags_Float);
+		break;
+
+	case Varlet::Type::Color4:
+		ImGui::ColorEdit4(property->name, reinterpret_cast<float*>(property->value), ImGuiColorEditFlags_Float);
+		break;
+
+		// TODO
+	case Varlet::Type::Sampler2D:
+	case Varlet::Type::SamplerCube:
+		break;
+
+	default:
+		break;
+	}
+}
+
+void PropertyPanel::DispalyObject(Object* object, const int32_t& id) const
+{
+	auto type = object->GetType();
+	std::string name(type.name);
+
+	if (id > -1)
+		name.append(": " + std::to_string(id));
+
+	if (ImGui::TreeNode(name.c_str()))
+	{
+		for (auto property : type.properties)
+			DisplayProperty(property);
+
+		ImGui::TreePop();
+	}
+}
+
+void PropertyPanel::DispalyArray(const Varlet::Array* property) const
+{
+#define DISPLAY_ELEMENTS(T) \
+	{ \
+		std::vector<T>* elements = reinterpret_cast<std::vector<T>*>(property->value); \
+		for (auto& element : *elements) \
+		{ \
+			ImGui::PushID(&element); \
+			const std::string name("Element: " + std::to_string(elementId)); \
+			Varlet::Property property(name.c_str(), element); \
+			DisplayProperty(&property); \
+			ImGui::PopID(); \
+			++elementId; \
+		} \
+	} \
+
+	if (ImGui::TreeNode(property->name))
+	{
+		int32_t elementId = 0;
+
+		switch (property->contentType)
+		{
+		case Varlet::Type::Object:
+		{
+			std::vector<Object*>* elements = reinterpret_cast<std::vector<Object*>*>(property->value);
+
+			for (auto element : *elements)
+			{
+				ImGui::PushID(element);
+				DispalyObject(element, elementId);
+				ImGui::PopID();
+				++elementId;
+			}
+		}
+		break;
+
+		case Varlet::Type::Bool:
+			break;
+
+		case Varlet::Type::Int8:			DISPLAY_ELEMENTS(int8_t);		break;
+		case Varlet::Type::UInt8:			DISPLAY_ELEMENTS(uint8_t);		break;
+		case Varlet::Type::Int16:			DISPLAY_ELEMENTS(int16_t);		break;
+		case Varlet::Type::UInt16:			DISPLAY_ELEMENTS(uint16_t);		break;
+		case Varlet::Type::Int32:			DISPLAY_ELEMENTS(int32_t);		break;
+		case Varlet::Type::UInt32:			DISPLAY_ELEMENTS(uint32_t);		break;
+		case Varlet::Type::Int64:			DISPLAY_ELEMENTS(int64_t);		break;
+		case Varlet::Type::UInt64:			DISPLAY_ELEMENTS(uint64_t);		break;
+		case Varlet::Type::Float:			DISPLAY_ELEMENTS(float);		break;
+		case Varlet::Type::Double:			DISPLAY_ELEMENTS(double);		break;
+		case Varlet::Type::Vector2:			DISPLAY_ELEMENTS(glm::vec2);	break;
+		case Varlet::Type::Vector3:			DISPLAY_ELEMENTS(glm::vec3);	break;
+		case Varlet::Type::Vector4:			DISPLAY_ELEMENTS(glm::vec4);	break;
+		case Varlet::Type::BoolVector2:		DISPLAY_ELEMENTS(glm::bvec2);	break;
+		case Varlet::Type::BoolVector3:		DISPLAY_ELEMENTS(glm::bvec3);	break;
+		case Varlet::Type::BoolVector4:		DISPLAY_ELEMENTS(glm::bvec4);	break;
+		case Varlet::Type::Int32Vector2:	DISPLAY_ELEMENTS(glm::ivec2);	break;
+		case Varlet::Type::Int32Vector3:	DISPLAY_ELEMENTS(glm::ivec3);	break;
+		case Varlet::Type::Int32Vector4:	DISPLAY_ELEMENTS(glm::ivec4);	break;
+		case Varlet::Type::UInt32Vector2:	DISPLAY_ELEMENTS(glm::uvec2);	break;
+		case Varlet::Type::UInt32Vector3:	DISPLAY_ELEMENTS(glm::uvec3);	break;
+		case Varlet::Type::UInt32Vector4:	DISPLAY_ELEMENTS(glm::uvec4);	break;
+		case Varlet::Type::DoubleVector2:	DISPLAY_ELEMENTS(glm::dvec2);	break;
+		case Varlet::Type::DoubleVector3:	DISPLAY_ELEMENTS(glm::dvec3);	break;
+		case Varlet::Type::DoubleVector4:	DISPLAY_ELEMENTS(glm::dvec4);	break;
+		
+		case Varlet::Type::Matrix2:
+		case Varlet::Type::Matrix3:
+		case Varlet::Type::Matrix4:
+
+		case Varlet::Type::Color3:
+		case Varlet::Type::Color4:
+
+		case Varlet::Type::Sampler2D:
+		case Varlet::Type::SamplerCube:
+			break;
+
+		default:
+			break;
+		}
+
+		ImGui::TreePop();
 	}
 }

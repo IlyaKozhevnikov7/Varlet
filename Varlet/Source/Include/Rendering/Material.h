@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VarletCore.h"
+#include "VarletFramework.h"
 
 enum StensilFunction : uint8_t
 {
@@ -26,7 +27,7 @@ enum StensilOp : uint8_t
 	Invert
 };
 
-struct CORE_API MaterialSettings
+struct MaterialSettings final
 {
 	struct
 	{
@@ -50,8 +51,10 @@ namespace Varlet
 	class Shader;
 }
 
-class CORE_API Material
+class CORE_API Material final : public Object
 {
+	TYPE_GENERATION(Material, Object)
+
 public:
 
 	bool isActive;
@@ -59,11 +62,11 @@ public:
 
 private:
 
-	const Varlet::Shader* _shader;
+	Varlet::Shader* _shader;
 
 public:
 
-	Material(const  Varlet::Shader* shader);
+	Material(Varlet::Shader* shader);
 
 	void Activate() const;
 
