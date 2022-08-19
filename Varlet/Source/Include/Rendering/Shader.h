@@ -11,7 +11,9 @@ struct Uniform
 {
 	const char* name;
 	Varlet::Type type;
+#ifdef META
 	std::shared_ptr<void> value;
+#endif // META
 };
 
 namespace Varlet
@@ -27,16 +29,17 @@ namespace Varlet
 
 	class CORE_API Shader
 	{
-	public:
+	protected:
 
-#ifdef META
-		std::vector<Uniform> uniforms;
-#endif // META
+		std::vector<Uniform> _uniforms;
+
 	public:
 
 		virtual ~Shader() = default;
 
 		virtual void Use() const = 0;
+
+		const std::vector<Uniform>& GetUniforms() const;
 
 		virtual void SetBool(const char* name, const bool& value) = 0;
 

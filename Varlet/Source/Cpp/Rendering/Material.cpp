@@ -1,9 +1,10 @@
 #include "Material.h"
 #include "Shader.h"
+#include "Texture.h"
 
 START_PROPERTY_BLOCK(Material)
 PROPERTY("Activity", isActive)
-for (auto uniform : _shader->uniforms)
+for (auto uniform : _shader->GetUniforms())
 TYPED_PROPERTY(uniform.name, uniform.value.get(), uniform.type);
 END_PROPERTY_BLOCK;
 
@@ -12,6 +13,10 @@ Material::Material(Varlet::Shader* shader)
 	isActive = true;
 	settings.stencilTest.enable = false;
 	_shader = shader;
+
+	for (const auto uniform : _shader->GetUniforms())
+		if (uniform.type == Varlet::Type::Sampler2D || uniform.type == Varlet::Type::SamplerCube)
+			_textures[uniform.name] = nullptr;
 }
 
 void Material::Activate() const
@@ -20,8 +25,17 @@ void Material::Activate() const
 
 	_shader->Use();
 
+	int32_t unit = 0;
+	for (const auto texture : _textures)
+	{
+		if (texture.second != nullptr)
+			texture.second->Activate(unit);
+
+		++unit;
+	}
+
 #ifdef META
-	for (auto uniform : _shader->uniforms)
+	for (auto uniform : _shader->GetUniforms())
 		SetUniform(uniform);
 #endif // META
 }
@@ -71,6 +85,15 @@ void Material::SetMat4(const char* name, const glm::mat4& value) const
 	_shader->SetMat4(name, value);
 }
 
+void Material::SetSampler2D(const char* name, const Varlet::Texture* value)
+{
+	if (_textures.contains(name))
+	{
+		_textures[name] = value;
+		_shader->SetUInt32(name, value->GetId());
+	}
+}
+
 #ifdef META
 void Material::SetUniform(const Uniform& uniform) const
 {
@@ -113,6 +136,10 @@ void Material::SetUniform(const Uniform& uniform) const
 		break;
 
 	case Varlet::Type::Matrix4:
+		_shader->SetMat4(uniform.name, UNIFORM_CASTED_VALUE(glm::mat4));
+		break;
+
+	case Varlet::Type::Sampler2D:
 		_shader->SetMat4(uniform.name, UNIFORM_CASTED_VALUE(glm::mat4));
 		break;
 

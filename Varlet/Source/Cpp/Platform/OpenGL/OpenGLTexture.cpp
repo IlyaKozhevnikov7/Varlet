@@ -65,7 +65,7 @@ namespace Varlet
 
 	void OpenGLTexture::Configurate(const TextureConfiguration& configuration) const
 	{
-		int32_t wraptype;
+		int32_t wraptype = GL_REPEAT;
 		
 		switch (configuration.wrapType)
 		{
@@ -92,7 +92,7 @@ namespace Varlet
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wraptype);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wraptype);
 
-		int32_t filter;
+		int32_t filter = GL_LINEAR;
 
 		switch (configuration.filter)
 		{

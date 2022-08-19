@@ -27,7 +27,7 @@ struct TextureConfiguration
 
 struct LoadableTextureConfiguration : public TextureConfiguration
 {
-	char* path;
+	const char* path;
 	bool flipUV;
 };
 

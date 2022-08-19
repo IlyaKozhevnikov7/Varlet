@@ -63,6 +63,7 @@ public:
 private:
 
 	Varlet::Shader* _shader;
+	std::unordered_map<std::string, const Varlet::Texture*> _textures;
 
 public:
 
@@ -87,6 +88,8 @@ public:
 	CORE_API void SetMat3(const char* name, const glm::mat3& value) const;
 
 	CORE_API void SetMat4(const char* name, const glm::mat4& value) const;
+
+	CORE_API void SetSampler2D(const char* name, const Varlet::Texture* value);
 
 private:
 
