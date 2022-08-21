@@ -85,7 +85,7 @@ void Material::SetMat4(const char* name, const glm::mat4& value) const
 	_shader->SetMat4(name, value);
 }
 
-void Material::SetSampler2D(const char* name, const Varlet::Texture* value)
+void Material::SetSampler2D(const char* name, const std::shared_ptr<Varlet::Texture>& value)
 {
 	if (_textures.contains(name))
 	{

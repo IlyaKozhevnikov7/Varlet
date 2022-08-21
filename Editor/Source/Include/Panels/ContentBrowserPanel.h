@@ -23,7 +23,7 @@ private:
 	std::filesystem::path _rootCatalog;
 	std::filesystem::path _currentCatalog;
 
-	std::unordered_map<ContentType, const Varlet::Texture*> _icons;
+	std::unordered_map<ContentType, std::shared_ptr<Varlet::Texture>> _icons;
 
 public:
 
