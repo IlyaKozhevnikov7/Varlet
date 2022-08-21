@@ -122,8 +122,6 @@ void EditViewport::UpdateSelect() const
 void EditViewport::UpdateContent(const ImVec2& contentSize) const
 {
 	const auto texture = _camera->GetRendereTexture();
-	texture->Activate(0);
-
 	ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetId()), contentSize, ImVec2(0, 1), ImVec2(1, 0));
 }
 
