@@ -63,13 +63,19 @@ public:
 private:
 
 	Varlet::Shader* _shader;
-	std::unordered_map<std::string, std::shared_ptr<Varlet::Texture>> _textures;
+	mutable std::unordered_map<std::string, Varlet::Texture*> _textures;
+
+#ifdef META
+	mutable std::vector<void*> _uniformValues;
+#endif // META
 
 public:
 
 	CORE_API Material(Varlet::Shader* shader);
 
 	void Activate() const;
+
+	CORE_API void SetShader(Varlet::Shader* newShader);
 
 	CORE_API void SetBool(const char* name, const bool& value) const;
 
@@ -89,12 +95,12 @@ public:
 
 	CORE_API void SetMat4(const char* name, const glm::mat4& value) const;
 
-	CORE_API void SetSampler2D(const char* name, const std::shared_ptr<Varlet::Texture>& value);
+	CORE_API void SetSampler2D(const char* name, Varlet::Texture* value) const;
 
 private:
 
 #ifdef META
-	void SetUniform(const Uniform& uniform) const;
+	void SetUniform(const char* name, void* value, const Varlet::Type& type) const;
 #endif // META
 };
 

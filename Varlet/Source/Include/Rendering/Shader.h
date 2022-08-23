@@ -7,14 +7,7 @@ namespace Varlet
 	enum class Type : uint8_t;
 }
 
-struct Uniform
-{
-	const char* name;
-	Varlet::Type type;
-#ifdef META
-	std::shared_ptr<void> value;
-#endif // META
-};
+class Material;
 
 namespace Varlet
 {
@@ -29,17 +22,17 @@ namespace Varlet
 
 	class CORE_API Shader
 	{
+		friend class Material;
+
 	protected:
 
-		std::vector<Uniform> _uniforms;
+		std::vector<std::pair<const char*, Varlet::Type>> _uniformDeclarations;
 
 	public:
 
 		virtual ~Shader() = default;
 
 		virtual void Use() const = 0;
-
-		const std::vector<Uniform>& GetUniforms() const;
 
 		virtual void SetBool(const char* name, const bool& value) = 0;
 

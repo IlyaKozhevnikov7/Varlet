@@ -223,45 +223,6 @@ namespace Varlet
 			glUniformMatrix4fv(_uniformLocations[name], 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-#ifdef META
-	static std::shared_ptr<void> GetValue(const Type& type)
-	{
-#define MAKE_SHARED(T, Value) std::make_shared<T>(Value);
-
-		switch (type)
-		{
-		case Type::Bool: return MAKE_SHARED(bool, false);
-		case Type::Int32: return MAKE_SHARED(int32_t, 0);
-		case Type::UInt32: return MAKE_SHARED(uint32_t, 0);
-		case Type::Float: return MAKE_SHARED(float, 0);
-		case Type::Double: return MAKE_SHARED(double, 0);
-		case Type::BoolVector2: return MAKE_SHARED(glm::bvec2, 1);
-		case Type::BoolVector3: return MAKE_SHARED(glm::bvec3, 1);
-		case Type::BoolVector4: return MAKE_SHARED(glm::bvec4, 1);
-		case Type::Int32Vector2: return MAKE_SHARED(glm::ivec2, 1);
-		case Type::Int32Vector3: return MAKE_SHARED(glm::ivec3, 1);
-		case Type::Int32Vector4: return MAKE_SHARED(glm::ivec4, 1);
-		case Type::UInt32Vector2: return MAKE_SHARED(glm::uvec2, 1);
-		case Type::UInt32Vector3: return MAKE_SHARED(glm::uvec3, 1);
-		case Type::UInt32Vector4: return MAKE_SHARED(glm::uvec4, 1);
-		case Type::Vector2: return MAKE_SHARED(glm::vec2, 1);
-		case Type::Vector3:
-		case Type::Color3: return MAKE_SHARED(glm::vec3, 1);
-		case Type::Vector4:
-		case Type::Color4: return MAKE_SHARED(glm::vec4, 1);
-		case Type::DoubleVector2: return MAKE_SHARED(glm::dvec2, 1);
-		case Type::DoubleVector3: return MAKE_SHARED(glm::dvec3, 1);
-		case Type::DoubleVector4: return MAKE_SHARED(glm::dvec4, 1);
-		case Type::Matrix2: return MAKE_SHARED(glm::mat2, 1);
-		case Type::Matrix3: return MAKE_SHARED(glm::mat3, 1);
-		case Type::Matrix4: return MAKE_SHARED(glm::mat4, 1);
-		case Type::Sampler2D:
-		case Type::SamplerCube:
-		default: return std::make_shared<bool>(nullptr);
-		}
-	}
-#endif // META
-
 	void OpenGLShader::SetupUniforms(const std::string& source)
 	{
 		const std::regex reg("uniform\\s+(bool|int|uint|float|double|bvec2|bvec3|bvec4|ivec2|ivec3|ivec4|uvec2|uvec3|uvec4|vec2|vec3|vec4|dvec2|dvec3|dvec4|mat2|mat3|mat4|samplerCube|sampler2D)\\s+(\\w*)", std::regex_constants::ECMAScript);
@@ -275,14 +236,7 @@ namespace Varlet
 			const char* uniformName = strdup(matches[2].str().c_str());
 
 			if (_types.contains(typeName))
-			{
-				const auto type = _types[typeName];
-#if META
-				_uniforms.push_back({ uniformName, type, GetValue(type) });
-#else
-				_uniforms.push_back({ uniformName, type, nullptr });
-#endif // META
-			}
+				_uniformDeclarations.push_back({ uniformName, _types[typeName] });
 
 			if (const int32_t location = glGetUniformLocation(_id, uniformName) != -1)
 			{
@@ -290,7 +244,7 @@ namespace Varlet
 			}
 			else
 			{
-				VARLET_LOG(LevelType::Warning, "Uniform variable " + *uniformName + *"is not used");
+				VARLET_LOG(LevelType::Warning, "Uniform variable " + *uniformName + *" is not used");
 			}
 
 			if (!strcmp(typeName, "sampler2D") || !strcmp(typeName, "samplerCube"))
