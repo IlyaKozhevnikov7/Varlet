@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "Core/ComponentType.h"
+#include "Core/Reflection.h"
 
 #include "glad/glad.h"
 
@@ -238,7 +238,8 @@ namespace Varlet
 			if (_types.contains(typeName))
 				_uniformDeclarations.push_back({ uniformName, _types[typeName] });
 
-			if (const int32_t location = glGetUniformLocation(_id, uniformName) != -1)
+			const int32_t location = glGetUniformLocation(_id, uniformName);
+			if (location != -1)
 			{
 				_uniformLocations[uniformName] = location;
 			}

@@ -11,4 +11,4 @@
 
 #include "../../Dependencies/ImGui/ImGuizmo.h"
 
-#define CONTENT_BROWSER_PAYLOAD "CONTENT_BROWSER_PAYLOAD"
+#define TEXTURE_FILE_PAYLOAD "TEXTURE_FILE_PAYLOAD"

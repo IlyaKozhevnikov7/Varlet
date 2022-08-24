@@ -1,5 +1,5 @@
 #include "Component.h"
-#include "ComponentType.h"
+#include "Reflection.h"
 
 EMPTY_PROPERTY_BLOCK(Component);
 

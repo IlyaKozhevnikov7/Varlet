@@ -1,4 +1,4 @@
-#include "ComponentType.h"
+#include "Reflection.h"
 
 namespace Varlet
 {
@@ -36,24 +36,6 @@ namespace Varlet
 		{ typeid(glm::dvec3).hash_code(),	Type::DoubleVector3 },
 		{ typeid(glm::dvec4).hash_code(),	Type::DoubleVector4 },
 	};
-
-	Property::Property(const char* name, Object* value)
-	{
-		assert(value != nullptr && "Value must to be not nullptr");
-
-		this->name = name;
-		this->value = value;
-		type = Type::Object;
-	}
-
-	Property::Property(const char* name, void* value, const Type& type)
-	{
-		assert(value != nullptr && "Value must to be not nullptr");
-
-		this->name = name;
-		this->value = value;
-		this->type = type;
-	}
 
 	TypeInfo::TypeInfo(const char* name)
 	{

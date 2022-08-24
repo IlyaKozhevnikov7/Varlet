@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Core/ComponentType.h"
+#include "Core/Reflection.h"
 #include "Core/Object.h"
 
 class Entity;

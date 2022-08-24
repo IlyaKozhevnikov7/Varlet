@@ -53,20 +53,18 @@ namespace Varlet
 		Unknown
 	};
 
+#define IS_REFERENCE_TYPE(T) ((T == Type::Object) || (T == Type::Sampler2D) || (T == Type::SamplerCube))
+
 	struct CORE_API Property
 	{
 		const char* name;
 		void* value;
 		Type type;
 
-		Property(const char* name, Object* value);
-
-		Property(const char* name, void* value, const Type& type);
-
 		template<typename T>
 		Property(const char* name, T& value)
 		{
-			const auto hash = typeid(T).hash_code();
+			const size_t hash = typeid(T).hash_code();
 
 			if (_hashesOfType.contains(hash) == false)
 			{
@@ -81,15 +79,36 @@ namespace Varlet
 			this->type = _hashesOfType[hash];
 		}
 
-	protected:
-
 		template<typename T>
 		Property(const char* name, T& value, const Type& type)
 		{
 			this->name = name;
-			this->value = reinterpret_cast<void*>(&value);
 			this->type = type;
+			this->value = &value;
 		}
+
+		template<> Property(const char* name, void*& value, const Type& type)
+		{
+			this->name = name;
+
+			if (IS_REFERENCE_TYPE(type))
+			{
+				this->value = &value;
+				this->type = type;
+			}
+			else if (value != nullptr)
+			{
+				this->value = value;
+				this->type = type;
+			}
+			else
+			{
+				this->value = nullptr;
+				this->type = Type::Unknown;
+			}
+		}
+
+	protected:
 
 		static std::unordered_map<size_t, Type> _hashesOfType;
 	};
@@ -105,7 +124,7 @@ namespace Varlet
 		{
 			size = value.size();
 
-			if constexpr (std::is_base_of<Object, std::remove_pointer_t<T>>::value)
+			if constexpr (std::is_base_of_v<Object, std::remove_pointer_t<T>>)
 			{
 				contentType = Type::Object;
 				return;

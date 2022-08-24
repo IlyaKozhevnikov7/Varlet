@@ -7,7 +7,7 @@
 // utils
 #include "Core/Delegate.h"
 #include "Core/Logger.h"
-#include "Core/ComponentType.h"
+#include "Core/Reflection.h"
 #include "Core/Object.h"
 
 // components

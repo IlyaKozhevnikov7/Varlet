@@ -6,15 +6,15 @@ using namespace std::filesystem;
 
 void ContentBrowserPanel::Init()
 {
-	_rootCatalog = "..\\..\\Varlet\\Sandbox\\Assets";
+	_rootCatalog = "W:\\Varlet\\Sandbox\\Assets";
 	_currentCatalog = _rootCatalog;
 
 	LoadableTextureConfiguration configuration;
 
-	configuration.path = "..\\..\\Varlet\\Editor\\Assets\\document.png";
+	configuration.path = "W:\\Varlet\\Editor\\Assets\\document.png";
 	_icons[ContentType::File] = Varlet::RendererAPI::LoadTexture(configuration);
 
-	configuration.path = "..\\..\\Varlet\\Editor\\Assets\\folder.png";
+	configuration.path = "W:\\Varlet\\Editor\\Assets\\folder.png";
 	_icons[ContentType::Folder] = Varlet::RendererAPI::LoadTexture(configuration);
 }
 
@@ -22,20 +22,15 @@ void ContentBrowserPanel::Update()
 {
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, { 0.1f, 0.1f, 0.1f, 1.f });
 
-	static float leftW = 200.f;
+	if (ImGui::Begin("Content Browser"))
+	{
+		ImGui::Columns(2, "Outer", true);
+		DrawLeftSide();
+		ImGui::NextColumn();
+		DrawRightSide();
 
-	ImGui::Begin("Content Browser");
-
-	ImGui::Columns(2, "Outer", true);
-
-	leftW = ImGui::GetColumnWidth(0);
-	ImGui::SetColumnWidth(0, leftW);
-
-	DrawLeftSide();
-	ImGui::NextColumn();
-	DrawRightSide();
-
-	ImGui::End();
+		ImGui::End();
+	}
 
 	ImGui::PopStyleColor();
 }
@@ -73,14 +68,17 @@ void ContentBrowserPanel::DrawRightSide()
 				ImGui::SetColumnWidth(-1, itemWedth);
 
 			const std::string itemName = std::filesystem::path(path).filename().string();
+			const std::string pathString = std::filesystem::path(path).string();
 			const bool isDirectory = path.is_directory();
+
+			ImGui::PushID(itemName.c_str());
 
 			const auto texture = _icons[isDirectory ? ContentType::Folder : ContentType::File];
 			ImGui::ImageButton(reinterpret_cast<ImTextureID>(texture->GetId()), { iconSize, iconSize }, { 0, 1 }, { 1, 0 }, 1, { 0.15f, 0.15f, 0.15f, 1.f });
 
 			if (isDirectory == false && ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 			{
-				ImGui::SetDragDropPayload(CONTENT_BROWSER_PAYLOAD, itemName.c_str(), itemName.size());
+				ImGui::SetDragDropPayload(TEXTURE_FILE_PAYLOAD, pathString.c_str(), (pathString.size() + 1));
 				ImGui::EndDragDropSource();
 			}
 
@@ -91,11 +89,12 @@ void ContentBrowserPanel::DrawRightSide()
 			}
 
 			ImGui::TextWrapped(itemName.c_str());
+			ImGui::PopID();
 			ImGui::NextColumn();
 		}
-
-		ImGui::EndChild();
 	}
+
+	ImGui::EndChild();
 }
 
 void ContentBrowserPanel::ProccessFolderNode(const std::filesystem::path& path) const

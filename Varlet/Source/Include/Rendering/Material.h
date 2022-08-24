@@ -99,6 +99,8 @@ public:
 
 private:
 
+	void BindTextures() const;
+
 #ifdef META
 	void SetUniform(const char* name, void* value, const Varlet::Type& type) const;
 #endif // META

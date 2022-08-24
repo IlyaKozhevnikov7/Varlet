@@ -26,14 +26,7 @@ void Material::Activate() const
 		SetUniform(_shader->_uniformDeclarations[i].first, _uniformValues[i], _shader->_uniformDeclarations[i].second);
 #endif // META
 
-	int32_t unit = 0;
-	for (const auto& texture : _textures)
-	{
-		if (texture.second != nullptr)
-			texture.second->Activate(unit);
-
-		++unit;
-	}
+	BindTextures();
 }
 
 void Material::SetShader(Varlet::Shader* newShader)
@@ -51,37 +44,37 @@ void Material::SetShader(Varlet::Shader* newShader)
 #ifdef META
 #define SET_UNIFORM_DATA(T, Value) _uniformValues.push_back(new T(Value)); break;
 
-			switch (newShader->_uniformDeclarations[i].second)
-			{
-			case Varlet::Type::Bool: SET_UNIFORM_DATA(bool, true);
-			case Varlet::Type::Int32: SET_UNIFORM_DATA(int32_t, 0);
-			case Varlet::Type::UInt32: SET_UNIFORM_DATA(uint32_t, 0);
-			case Varlet::Type::Float: SET_UNIFORM_DATA(float, 0);
-			case Varlet::Type::Double: SET_UNIFORM_DATA(double, 0);
-			case Varlet::Type::BoolVector2: SET_UNIFORM_DATA(glm::bvec2, true);
-			case Varlet::Type::BoolVector3: SET_UNIFORM_DATA(glm::bvec3, true);
-			case Varlet::Type::BoolVector4: SET_UNIFORM_DATA(glm::bvec4, true);
-			case Varlet::Type::Int32Vector2: SET_UNIFORM_DATA(glm::ivec2, 1);
-			case Varlet::Type::Int32Vector3: SET_UNIFORM_DATA(glm::ivec3, 1);
-			case Varlet::Type::Int32Vector4: SET_UNIFORM_DATA(glm::ivec4, 1);
-			case Varlet::Type::UInt32Vector2: SET_UNIFORM_DATA(glm::uvec2, 1);
-			case Varlet::Type::UInt32Vector3: SET_UNIFORM_DATA(glm::uvec3, 1);
-			case Varlet::Type::UInt32Vector4: SET_UNIFORM_DATA(glm::uvec4, 1);
-			case Varlet::Type::Vector2: SET_UNIFORM_DATA(glm::vec2, 1);
-			case Varlet::Type::Vector3:
-			case Varlet::Type::Color3: SET_UNIFORM_DATA(glm::vec3, 1);
-			case Varlet::Type::Vector4:
-			case Varlet::Type::Color4: SET_UNIFORM_DATA(glm::vec4, 1);
-			case Varlet::Type::DoubleVector2: SET_UNIFORM_DATA(glm::dvec2, 1);
-			case Varlet::Type::DoubleVector3: SET_UNIFORM_DATA(glm::dvec3, 1);
-			case Varlet::Type::DoubleVector4: SET_UNIFORM_DATA(glm::dvec4, 1);
-			case Varlet::Type::Matrix2: SET_UNIFORM_DATA(glm::mat2, 1);
-			case Varlet::Type::Matrix3: SET_UNIFORM_DATA(glm::mat3, 1);
-			case Varlet::Type::Matrix4: SET_UNIFORM_DATA(glm::mat4, 1);
-			case Varlet::Type::Sampler2D:
-			case Varlet::Type::SamplerCube: _uniformValues.push_back(nullptr); break;
-			default: _uniformValues.push_back(nullptr); break;
-			}
+		switch (newShader->_uniformDeclarations[i].second)
+		{
+		case Varlet::Type::Bool: SET_UNIFORM_DATA(bool, true);
+		case Varlet::Type::Int32: SET_UNIFORM_DATA(int32_t, 0);
+		case Varlet::Type::UInt32: SET_UNIFORM_DATA(uint32_t, 0);
+		case Varlet::Type::Float: SET_UNIFORM_DATA(float, 0);
+		case Varlet::Type::Double: SET_UNIFORM_DATA(double, 0);
+		case Varlet::Type::BoolVector2: SET_UNIFORM_DATA(glm::bvec2, true);
+		case Varlet::Type::BoolVector3: SET_UNIFORM_DATA(glm::bvec3, true);
+		case Varlet::Type::BoolVector4: SET_UNIFORM_DATA(glm::bvec4, true);
+		case Varlet::Type::Int32Vector2: SET_UNIFORM_DATA(glm::ivec2, 1);
+		case Varlet::Type::Int32Vector3: SET_UNIFORM_DATA(glm::ivec3, 1);
+		case Varlet::Type::Int32Vector4: SET_UNIFORM_DATA(glm::ivec4, 1);
+		case Varlet::Type::UInt32Vector2: SET_UNIFORM_DATA(glm::uvec2, 1);
+		case Varlet::Type::UInt32Vector3: SET_UNIFORM_DATA(glm::uvec3, 1);
+		case Varlet::Type::UInt32Vector4: SET_UNIFORM_DATA(glm::uvec4, 1);
+		case Varlet::Type::Vector2: SET_UNIFORM_DATA(glm::vec2, 1);
+		case Varlet::Type::Vector3:
+		case Varlet::Type::Color3: SET_UNIFORM_DATA(glm::vec3, 1);
+		case Varlet::Type::Vector4:
+		case Varlet::Type::Color4: SET_UNIFORM_DATA(glm::vec4, 1);
+		case Varlet::Type::DoubleVector2: SET_UNIFORM_DATA(glm::dvec2, 1);
+		case Varlet::Type::DoubleVector3: SET_UNIFORM_DATA(glm::dvec3, 1);
+		case Varlet::Type::DoubleVector4: SET_UNIFORM_DATA(glm::dvec4, 1);
+		case Varlet::Type::Matrix2: SET_UNIFORM_DATA(glm::mat2, 1);
+		case Varlet::Type::Matrix3: SET_UNIFORM_DATA(glm::mat3, 1);
+		case Varlet::Type::Matrix4: SET_UNIFORM_DATA(glm::mat4, 1);
+		case Varlet::Type::Sampler2D:
+		case Varlet::Type::SamplerCube: _uniformValues.push_back(nullptr); break;
+		default: _uniformValues.push_back(nullptr); break;
+		}
 #endif // META
 	}
 }
@@ -113,7 +106,7 @@ void Material::SetVec2(const char* name, const glm::vec2& value) const
 
 void Material::SetVec3(const char* name, const glm::vec3& value) const
 {
-	_shader->SetVec2(name, value);
+	_shader->SetVec3(name, value);
 }
 
 void Material::SetVec4(const char* name, const glm::vec4& value) const
@@ -136,7 +129,6 @@ void Material::SetSampler2D(const char* name, Varlet::Texture* value) const
 	if (_textures.contains(name))
 	{
 		_textures[name] = value;
-		_shader->SetUInt32(name, value->GetId());
 
 #ifdef META
 		for (int32_t i = 0; i < _shader->_uniformDeclarations.size(); i++)
@@ -149,8 +141,22 @@ void Material::SetSampler2D(const char* name, Varlet::Texture* value) const
 	}
 }
 
+void Material::BindTextures() const
+{
+	int32_t unit = 0;
+	for (const auto& texture : _textures)
+	{
+		if (texture.second != nullptr)
+			texture.second->Activate(unit);
+		//else
+		// unbind texure unit
+			
+		++unit;
+	}
+}
+
 #ifdef META
-void Material::SetUniform(const char* name, void* value, const Varlet::Type& type) const
+void Material::SetUniform(const char* name, void* value, const Varlet::Type & type) const
 {
 #define UNIFORM_CASTED_VALUE(T) *static_cast<T*>(value)
 
@@ -196,8 +202,8 @@ void Material::SetUniform(const char* name, void* value, const Varlet::Type& typ
 
 	case Varlet::Type::Sampler2D:
 	{
-		if (value != nullptr)
-			SetSampler2D(name, static_cast<Varlet::Texture*>(value));
+		if (_textures.contains(name))
+			_textures[name] = static_cast<Varlet::Texture*>(value);
 	}
 	break;
 
