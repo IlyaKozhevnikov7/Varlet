@@ -141,9 +141,44 @@ void PropertyPanel::DisplayProperty(const Varlet::Property* property) const
 		ImGui::ColorEdit4(property->name, reinterpret_cast<float*>(property->value), ImGuiColorEditFlags_Float);
 		break;
 
-		// TODO
 	case Varlet::Type::Sampler2D:
+	{
+		constexpr float buttonSize = 75.f;
+
+		auto texturePtr = static_cast<Varlet::Texture**>(property->value);
+		const uint32_t previewTextureId = *texturePtr == nullptr ? 0 : static_cast<Varlet::Texture*>(*texturePtr)->GetId();
+
+		ImGui::ImageButton(reinterpret_cast<ImTextureID>(previewTextureId), { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 }, 1);
+
+		if (ImGui::BeginPopupContextItem("TextureContext"))
+		{
+			if (ImGui::Selectable("Clear"))
+				*texturePtr = nullptr;
+
+			ImGui::EndPopup();
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(TEXTURE_FILE_PAYLOAD))
+			{
+				auto path = static_cast<const char*>(payload->Data);
+
+				LoadableTextureConfiguration configuration;
+				configuration.path = path;
+				auto newTexture = Varlet::RendererAPI::LoadTexture(configuration);
+
+				*texturePtr = newTexture.get();
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::SameLine();
+		ImGui::Text(property->name);
+	}
+		break;
 	case Varlet::Type::SamplerCube:
+
 		break;
 
 	default:
