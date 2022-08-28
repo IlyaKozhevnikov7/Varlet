@@ -45,4 +45,9 @@ namespace Varlet
 	{
 		return _api->CreateVertexArray(configuration);
 	}
+	
+	void RendererAPI::UnbindTexure(const int32_t& unit)
+	{
+		_api->UnbindTexure(unit);
+	}
 }

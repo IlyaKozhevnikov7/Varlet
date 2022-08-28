@@ -5,6 +5,8 @@
 #include "OpenGLTexture.h"
 #include "OpenGLVertexArray.h"
 
+#include <glad/glad.h>
+
 namespace Varlet
 {
 	Shader* OpenGLRendererAPI::CreateShader(const ShaderInitializer& initializer) const
@@ -38,5 +40,11 @@ namespace Varlet
 	VertexArray* OpenGLRendererAPI::CreateVertexArray(const VertexArrayData& data) const
 	{
 		return new OpenGLVertexArray(data);
+	}
+
+	void OpenGLRendererAPI::UnbindTexure(const int32_t& unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }

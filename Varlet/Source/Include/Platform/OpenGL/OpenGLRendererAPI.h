@@ -24,5 +24,7 @@ namespace Varlet
 		UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
 
 		VertexArray* CreateVertexArray(const VertexArrayData& data) const override;
+
+		void UnbindTexure(const int32_t& unit) override;
 	};
 }

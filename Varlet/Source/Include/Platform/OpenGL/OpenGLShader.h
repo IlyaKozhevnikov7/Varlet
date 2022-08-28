@@ -24,7 +24,7 @@ namespace Varlet
 
 	private:
 
-		std::unordered_map<const char*, int32_t> _uniformLocations;
+		std::unordered_map<std::string, int32_t> _uniformLocations;
 		uint32_t _id;
 
 	public:

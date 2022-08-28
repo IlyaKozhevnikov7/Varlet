@@ -9,7 +9,6 @@
 
 namespace Varlet
 {
-#ifdef META
 	static std::unordered_map<std::string, Type> _types =
 	{
 		{ "bool",			Type::Bool },
@@ -38,7 +37,6 @@ namespace Varlet
 		{ "sampler2D",		Type::Sampler2D },
 		{ "samplerCube",	Type::SamplerCube }
 	};
-#endif // META
 
 	OpenGLShader::OpenGLShader(const ShaderInitializer&
 		initializer)
@@ -124,7 +122,7 @@ namespace Varlet
 		}
 		else
 		{
-			VARLET_LOG(LevelType::Warning, "Failed load shader: " + *path);
+			VARLET_LOG(LevelType::Warning, "Failed load shader: " + std::string(path));
 			return std::string();
 		}
 	}

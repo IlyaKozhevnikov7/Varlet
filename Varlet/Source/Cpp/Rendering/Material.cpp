@@ -148,15 +148,15 @@ void Material::BindTextures() const
 	{
 		if (texture.second != nullptr)
 			texture.second->Activate(unit);
-		//else
-		// unbind texure unit
+		else
+			Varlet::RendererAPI::UnbindTexure(unit);
 			
 		++unit;
 	}
 }
 
 #ifdef META
-void Material::SetUniform(const char* name, void* value, const Varlet::Type & type) const
+void Material::SetUniform(const char* name, void* value, const Varlet::Type& type) const
 {
 #define UNIFORM_CASTED_VALUE(T) *static_cast<T*>(value)
 
