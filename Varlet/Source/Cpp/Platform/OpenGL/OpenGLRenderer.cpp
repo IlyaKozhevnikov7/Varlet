@@ -69,6 +69,11 @@ static int32_t ConvertToGlOp(const StensilOp& op)
 	}
 }
 
+static void DebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	VARLET_LOG(LevelType::Error, "[" + std::to_string(id) + "]" + message);
+}
+
 namespace Varlet
 {
 	const OpenGLSettings& OpenGLRenderer::GetSettings()
@@ -101,12 +106,19 @@ namespace Varlet
 			glCullFace(GL_BACK);
 		}
 
+#ifdef DEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(DebugMessage, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+#endif // DEBUG
+
 		return Renderer::Init();
 	}
 
 	void OpenGLRenderer::Update()
 	{
-		for (const auto camera : _cameras)
+		for (const auto& camera : _cameras)
 		{
 			if (camera->IsActive() == false)
 				continue;
@@ -125,9 +137,9 @@ namespace Varlet
 			glClearColor(0.f, 0.5f, 0.5f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-			const auto shader = camera->GetRenderShader();
+			const auto& shader = camera->GetRenderShader();
 
-			for (const auto data : _rendererData)
+			for (const auto& data : _rendererData)
 				Render(data, shader);
 
 			camera->UnBind();
@@ -182,7 +194,7 @@ namespace Varlet
 		}
 		else
 		{
-			for (const auto material : rendererData.meshRenderer->GetMaterials())
+			for (const auto& material : rendererData.meshRenderer->GetMaterials())
 			{
 				if (material->isActive == false)
 					continue;
@@ -197,7 +209,7 @@ namespace Varlet
 
 	void OpenGLRenderer::Draw(const Mesh* mesh) const
 	{
-		for (const auto subMesh : mesh->GetSubMeshes())
+		for (const auto& subMesh : mesh->GetSubMeshes())
 		{
 			glBindVertexArray(subMesh->GetVAO());
 

@@ -13,7 +13,7 @@ void PropertyPanel::Update()
 		for (auto component : components)
 		{
 			ImGui::PushID(component);
-			DispalyObject(component);
+			DisplayObject(component);
 			ImGui::PopID();
 		};
 	}
@@ -126,11 +126,11 @@ void PropertyPanel::DisplayProperty(const Varlet::Property* property) const
 		break;
 
 	case Varlet::Type::Object:
-		DispalyObject(static_cast<Object*>(property->value));
+		DisplayObject(static_cast<Object*>(property->value));
 		break;
 
 	case Varlet::Type::Array:
-		DispalyArray(static_cast<const Varlet::Array*>(property));
+		DisplayArray(static_cast<const Varlet::Array*>(property));
 		break;
 
 	case Varlet::Type::Color3:
@@ -142,41 +142,9 @@ void PropertyPanel::DisplayProperty(const Varlet::Property* property) const
 		break;
 
 	case Varlet::Type::Sampler2D:
-	{
-		constexpr float buttonSize = 75.f;
-
-		auto texturePtr = static_cast<Varlet::Texture**>(property->value);
-		const uint32_t previewTextureId = *texturePtr == nullptr ? 0 : static_cast<Varlet::Texture*>(*texturePtr)->GetId();
-
-		ImGui::ImageButton(reinterpret_cast<ImTextureID>(previewTextureId), { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 }, 1);
-
-		if (ImGui::BeginPopupContextItem("TextureContext"))
-		{
-			if (ImGui::Selectable("Clear"))
-				*texturePtr = nullptr;
-
-			ImGui::EndPopup();
-		}
-
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(TEXTURE_FILE_PAYLOAD))
-			{
-				auto path = static_cast<const char*>(payload->Data);
-
-				LoadableTextureConfiguration configuration;
-				configuration.path = path;
-				auto newTexture = Varlet::RendererAPI::LoadTexture(configuration);
-
-				*texturePtr = newTexture.get();
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::SameLine();
-		ImGui::Text(property->name);
-	}
+		DisplaySampler2DProperty(property);
 		break;
+
 	case Varlet::Type::SamplerCube:
 
 		break;
@@ -186,7 +154,7 @@ void PropertyPanel::DisplayProperty(const Varlet::Property* property) const
 	}
 }
 
-void PropertyPanel::DispalyObject(Object* object, const int32_t& id) const
+void PropertyPanel::DisplayObject(Object* object, const int32_t& id) const
 {
 	auto type = object->GetType();
 	std::string name(type.name);
@@ -203,7 +171,7 @@ void PropertyPanel::DispalyObject(Object* object, const int32_t& id) const
 	}
 }
 
-void PropertyPanel::DispalyArray(const Varlet::Array* property) const
+void PropertyPanel::DisplayArray(const Varlet::Array* property) const
 {
 #define DISPLAY_ELEMENTS(T) \
 	{ \
@@ -232,7 +200,7 @@ void PropertyPanel::DispalyArray(const Varlet::Array* property) const
 			for (auto element : *elements)
 			{
 				ImGui::PushID(element);
-				DispalyObject(element, elementId);
+				DisplayObject(element, elementId);
 				ImGui::PopID();
 				++elementId;
 			}
@@ -285,4 +253,44 @@ void PropertyPanel::DispalyArray(const Varlet::Array* property) const
 
 		ImGui::TreePop();
 	}
+}
+
+void PropertyPanel::DisplaySampler2DProperty(const Varlet::Property* property) const
+{
+	constexpr float buttonSize = 75.f;
+
+	auto texturePtr = static_cast<Varlet::Texture**>(property->value);
+	const uint32_t previewTextureId = *texturePtr == nullptr ? 0 : static_cast<Varlet::Texture*>(*texturePtr)->GetId();
+
+	ImGui::PushID(texturePtr);
+
+	ImGui::ImageButton(reinterpret_cast<ImTextureID>(previewTextureId), { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 }, 1);
+
+	if (ImGui::BeginPopupContextItem("TextureContext"))
+	{
+		if (ImGui::Selectable("Clear"))
+			*texturePtr = nullptr;
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(TEXTURE_FILE_PAYLOAD))
+		{
+			auto path = static_cast<const char*>(payload->Data);
+
+			LoadableTextureConfiguration configuration;
+			configuration.path = path;
+			auto newTexture = Varlet::RendererAPI::LoadTexture(configuration);
+
+			*texturePtr = newTexture.get();
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopID();
+
+	ImGui::SameLine();
+	ImGui::Text(property->name);
 }

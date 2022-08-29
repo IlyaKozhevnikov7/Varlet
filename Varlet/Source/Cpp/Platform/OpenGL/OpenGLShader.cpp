@@ -45,9 +45,9 @@ namespace Varlet
 		std::string fragmentShaderSource = Load(initializer.fragmentPath.c_str());
 		std::string geomtryShaderSource = Load(initializer.geomtryPath.c_str());
 
-		uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertexShaderSource.c_str());
-		uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource.c_str());
-		uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource.c_str());
+		const uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertexShaderSource.c_str());
+		const uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource.c_str());
+		const uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource.c_str());
 
 		_id = glCreateProgram();
 
@@ -59,14 +59,15 @@ namespace Varlet
 		Compile(_id, ObjectType::Program);
 
 		if (vertexShaderId != 0)
-			glDeleteProgram(vertexShaderId);
+			glDeleteShader(vertexShaderId);
 
 		if (fragmentShaderId != 0)
-			glDeleteProgram(fragmentShaderId);
+			glDeleteShader(fragmentShaderId);
 
 		if (geomtryShaderId != 0)
-			glDeleteProgram(geomtryShaderId);
+			glDeleteShader(geomtryShaderId);
 
+		Use();
 		SetupUniforms(vertexShaderSource);
 		SetupUniforms(fragmentShaderSource);
 		SetupUniforms(geomtryShaderSource);
@@ -93,7 +94,7 @@ namespace Varlet
 
 			if (isSuccess == 0)
 			{
-				glGetProgramInfoLog(objId, 512, NULL, errorLog);
+				glGetProgramInfoLog(objId, sizeof(errorLog), NULL, errorLog);
 				VARLET_LOG(LevelType::Warning, "Shader program link error [program id" + std::to_string(objId) + "] " + errorLog);
 			}
 		}
@@ -226,7 +227,7 @@ namespace Varlet
 		const std::regex reg("uniform\\s+(bool|int|uint|float|double|bvec2|bvec3|bvec4|ivec2|ivec3|ivec4|uvec2|uvec3|uvec4|vec2|vec3|vec4|dvec2|dvec3|dvec4|mat2|mat3|mat4|samplerCube|sampler2D)\\s+(\\w*)", std::regex_constants::ECMAScript);
 		std::smatch matches;
 		std::string suffix = source;
-		int32_t samplerCounter = 0;
+		int32_t textureUnit = 0;
 
 		while (std::regex_search(suffix, matches, reg))
 		{
@@ -247,9 +248,9 @@ namespace Varlet
 			}
 
 			if (!strcmp(typeName, "sampler2D") || !strcmp(typeName, "samplerCube"))
-			{
-				SetUInt32(uniformName, samplerCounter);
-				++samplerCounter;
+			{	
+				glUniform1i(location, textureUnit);
+				textureUnit++;
 			}
 
 			suffix = matches.suffix();

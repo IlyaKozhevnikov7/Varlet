@@ -5,7 +5,7 @@
 START_PROPERTY_BLOCK(Material)
 PROPERTY("Activity", isActive)
 for (int32_t i = 0; i < _shader->_uniformDeclarations.size(); i++)
-TYPED_PROPERTY(_shader->_uniformDeclarations[i].first, _uniformValues[i], _shader->_uniformDeclarations[i].second);
+	TYPED_PROPERTY(_shader->_uniformDeclarations[i].first, _uniformValues[i], _shader->_uniformDeclarations[i].second);
 END_PROPERTY_BLOCK;
 
 Material::Material(Varlet::Shader* shader)
@@ -143,14 +143,14 @@ void Material::SetSampler2D(const char* name, Varlet::Texture* value) const
 
 void Material::BindTextures() const
 {
-	int32_t unit = 0;
+	uint32_t unit = 0;
 	for (const auto& texture : _textures)
 	{
 		if (texture.second != nullptr)
 			texture.second->Activate(unit);
 		else
 			Varlet::RendererAPI::UnbindTexure(unit);
-			
+	
 		++unit;
 	}
 }
@@ -203,7 +203,9 @@ void Material::SetUniform(const char* name, void* value, const Varlet::Type& typ
 	case Varlet::Type::Sampler2D:
 	{
 		if (_textures.contains(name))
-			_textures[name] = static_cast<Varlet::Texture*>(value);
+			_textures[name] = value == nullptr
+				? nullptr
+				: static_cast<Varlet::Texture*>(value);
 	}
 	break;
 

@@ -25,6 +25,6 @@ namespace Varlet
 
 		VertexArray* CreateVertexArray(const VertexArrayData& data) const override;
 
-		void UnbindTexure(const int32_t& unit) override;
+		void UnbindTexure(const uint32_t& unit) override;
 	};
 }

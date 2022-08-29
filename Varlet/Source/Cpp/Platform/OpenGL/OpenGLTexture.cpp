@@ -83,7 +83,7 @@ namespace Varlet
 		
 		case WrapType::ClampToBorder:
 			wraptype = GL_CLAMP_TO_BORDER;
-			const float borderColor[] = { 1.f, 0.f, 1.f, 1.f };
+			constexpr float borderColor[] = { 1.f, 0.f, 1.f, 1.f };
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 			break;
 		}

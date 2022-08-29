@@ -42,7 +42,7 @@ namespace Varlet
 		return new OpenGLVertexArray(data);
 	}
 
-	void OpenGLRendererAPI::UnbindTexure(const int32_t& unit)
+	void OpenGLRendererAPI::UnbindTexure(const uint32_t& unit)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, 0);
