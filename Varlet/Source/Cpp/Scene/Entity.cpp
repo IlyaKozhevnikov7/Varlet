@@ -6,17 +6,17 @@ Event<Entity*, Component*> Entity::NewComponentCreatedEvent;
 
 void Entity::Update()
 {
-	for (auto script : _scripts)
+	for (auto& script : _scripts)
 		if (script->IsActive())
 			script->Update();
 }
 
 void Entity::OnDestroyed()
 {
-	for (auto script : _scripts)
+	for (auto& script : _scripts)
 		script->SetActive(false);
 
-	for (auto component : _components)
+	for (auto& component : _components)
 	{
 		component->OnDestroyed();
 		delete component;

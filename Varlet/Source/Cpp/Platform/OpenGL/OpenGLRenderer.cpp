@@ -155,9 +155,7 @@ namespace Varlet
 
 		_illuminationData->Bind();
 
-		const int32_t lightAmount = _lightSources.pointLights.size();
-
-		for (int32_t i = 0; i < lightAmount; i++)
+		for (int32_t i = 0; i < _lightSources.pointLights.size(); i++)
 		{
 			const int32_t offset = sizeOfPointLight * i;
 			const auto& light = _lightSources.pointLights[i].first;
