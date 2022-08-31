@@ -18,6 +18,7 @@
 #include "Scene/Camera.h"
 #include "Scene/MeshRenderer.h"
 #include "Scene/Transform.h"
+#include "Scene/PointLight.h"
 
 // input
 #include "Input/Input.h"

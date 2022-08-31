@@ -1,9 +1,9 @@
 #include "OpenGLRenderer.h"
 #include "OpenGLShader.h"
+#include "OpenGLVertexArray.h"
 #include "VarletAPI.h"
 #include "Transform.h"
 #include "Mesh.h"
-#include "OpenGLVertexArray.h"
 #include "Material.h"
 
 #include "glad/glad.h"
@@ -118,6 +118,8 @@ namespace Varlet
 
 	void OpenGLRenderer::Update()
 	{
+		UpdateIllumination();
+
 		for (const auto& camera : _cameras)
 		{
 			if (camera->IsActive() == false)
@@ -133,8 +135,9 @@ namespace Varlet
 			_globalData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
 			_globalData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
 			_globalData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
+			_globalData->SetData(sizeof(glm::mat4) * 4, sizeof(glm::vec3), glm::value_ptr(camera->GetOwner()->GetComponent<Transform>()->position));
 
-			glClearColor(0.f, 0.5f, 0.5f, 1.f);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 			const auto& shader = camera->GetRenderShader();
@@ -143,6 +146,32 @@ namespace Varlet
 				Render(data, shader);
 
 			camera->UnBind();
+		}
+	}
+
+	void OpenGLRenderer::UpdateIllumination() const
+	{
+		constexpr int32_t sizeOfPointLight = sizeof(int32_t) * 2 + sizeof(glm::vec4) * 2 + sizeof(float) * 2;
+
+		_illuminationData->Bind();
+
+		const int32_t lightAmount = _lightSources.pointLights.size();
+
+		for (int32_t i = 0; i < lightAmount; i++)
+		{
+			const int32_t offset = sizeOfPointLight * i;
+			const auto& light = _lightSources.pointLights[i].first;
+		
+			const int32_t isActive = light->IsActive();
+			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float) * 2, sizeof(int32_t), &isActive);
+		
+			if (isActive == false)
+				continue;
+		
+			_illuminationData->SetData(offset,											sizeof(glm::vec4), glm::value_ptr(light->color));
+			_illuminationData->SetData(offset + sizeof(glm::vec4),						sizeof(glm::vec4), glm::value_ptr(_lightSources.pointLights[i].second->position));
+			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2,					sizeof(float), &light->linear);
+			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float),	sizeof(float), &light->quadratic);
 		}
 	}
 
@@ -185,7 +214,7 @@ namespace Varlet
 		model = glm::scale(model, rendererData.transform->scale);
 
 		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(model));
-		_globalData->SetData(sizeof(glm::mat4) * 4, sizeof(int32_t), &rendererData.meshRenderer->GetRenderId());
+		_globalData->SetData(sizeof(glm::mat4) * 4 + sizeof(glm::vec3), sizeof(int32_t), &rendererData.meshRenderer->GetRenderId());
 
 		if (customShader)
 		{
