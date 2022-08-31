@@ -4,7 +4,14 @@
 
 namespace Varlet
 {
-	struct CORE_API ShaderInitializer final
+	enum class Type : uint8_t;
+}
+
+class Material;
+
+namespace Varlet
+{
+	struct ShaderInitializer final
 	{
 	public:
 
@@ -15,9 +22,13 @@ namespace Varlet
 
 	class CORE_API Shader
 	{
-	public:
+		friend class Material;
 
-		Shader(const ShaderInitializer& initializer);
+	protected:
+
+		std::vector<std::pair<const char*, Varlet::Type>> _uniformDeclarations;
+
+	public:
 
 		virtual ~Shader() = default;
 

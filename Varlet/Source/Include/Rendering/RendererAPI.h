@@ -29,9 +29,11 @@ namespace Varlet
 
 		virtual Texture* CreateTexture(const TextureConfiguration& configuration) const = 0;
 
-		virtual Texture* LoadTexture(const LoadableTextureConfiguration& configuration) const = 0;
+		virtual std::shared_ptr<Texture> LoadTexture(const LoadableTextureConfiguration& configuration) const = 0;
 
 		virtual VertexArray* CreateVertexArray(const VertexArrayData& configuration) const = 0;
+
+		virtual void UnbindTexure(const uint32_t& unit) = 0;
 	};
 
 	class RendererAPI final
@@ -50,11 +52,13 @@ namespace Varlet
 
 		CORE_API static Texture* CreateTexture(const TextureConfiguration& configuration);
 
-		CORE_API static Texture* LoadTexture(const LoadableTextureConfiguration& configuration);
+		CORE_API static std::shared_ptr<Texture> LoadTexture(const LoadableTextureConfiguration& configuration);
 
 		CORE_API static UniformBuffer* CreateUniformBuffer(const int64_t& size);
 
 		CORE_API static VertexArray* CreateVertexArray(const VertexArrayData& configuration);
+
+		CORE_API static void UnbindTexure(const uint32_t& unit);
 	};
 
 	class IRendererAPIInitializerBase

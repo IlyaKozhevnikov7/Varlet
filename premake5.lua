@@ -4,11 +4,12 @@ workspace "Varlet"
 	architecture "x64"
 
 	configurations {
+		"Editor",
 		"Debug",
 		"Release"
 	}
 
-	startproject "Editor"
+	startproject "Sandbox"
 
 	entryPointPath = "%{wks.location}/Varlet/Source/Include/EntryPoint"
 

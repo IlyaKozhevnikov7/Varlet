@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VarletCore.h"
+#include "VarletFramework.h"
 
 enum StensilFunction : uint8_t
 {
@@ -26,7 +27,7 @@ enum StensilOp : uint8_t
 	Invert
 };
 
-struct CORE_API MaterialSettings
+struct MaterialSettings final
 {
 	struct
 	{
@@ -50,8 +51,10 @@ namespace Varlet
 	class Shader;
 }
 
-class CORE_API Material
+class Material final : public Object
 {
+	TYPE_GENERATION(Material, Object)
+
 public:
 
 	bool isActive;
@@ -59,15 +62,47 @@ public:
 
 private:
 
-	const Varlet::Shader* _shader;
+	Varlet::Shader* _shader;
+	mutable std::unordered_map<std::string, Varlet::Texture*> _textures;
+
+#ifdef META
+	mutable std::vector<void*> _uniformValues;
+#endif // META
 
 public:
 
-	Material(const  Varlet::Shader* shader);
+	CORE_API Material(Varlet::Shader* shader);
 
 	void Activate() const;
 
-	// TODO remove
-	Varlet::Shader* GetShader();
+	CORE_API void SetShader(Varlet::Shader* newShader);
+
+	CORE_API void SetBool(const char* name, const bool& value) const;
+
+	CORE_API void SetUInt32(const char* name, const uint32_t& value) const;
+
+	CORE_API void SetInt32(const char* name, const int32_t& value) const;
+
+	CORE_API void SetFloat(const char* name, const float& value) const;
+
+	CORE_API void SetVec2(const char* name, const glm::vec2& value) const;
+
+	CORE_API void SetVec3(const char* name, const glm::vec3& value) const;
+
+	CORE_API void SetVec4(const char* name, const glm::vec4& value) const;
+
+	CORE_API void SetMat3(const char* name, const glm::mat3& value) const;
+
+	CORE_API void SetMat4(const char* name, const glm::mat4& value) const;
+
+	CORE_API void SetSampler2D(const char* name, Varlet::Texture* value) const;
+
+private:
+
+	void BindTextures() const;
+
+#ifdef META
+	void SetUniform(const char* name, void* value, const Varlet::Type& type) const;
+#endif // META
 };
 

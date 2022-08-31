@@ -24,6 +24,7 @@ namespace Varlet
 
 	private:
 
+		std::unordered_map<std::string, int32_t> _uniformLocations;
 		uint32_t _id;
 
 	public:
@@ -61,5 +62,7 @@ namespace Varlet
 		const uint32_t GenerateShader(const ShaderType&& type, const char* source) const;
 
 		void TryAttach(const uint32_t& id) const;
+
+		void SetupUniforms(const std::string& source);
 	};
 }

@@ -10,7 +10,7 @@ namespace Varlet
 
 	int32_t Module::Init()
 	{
-		InitDependencies(_dependencies);
+		InitDependencies(_dependencies);		
 
 		return SUCCESSFUL_INITIALIZATION;
 	}
@@ -40,7 +40,7 @@ namespace Varlet
 		VARLET_LOG(LevelType::Normal, "GameModule init");
 		return SUCCESSFUL_INITIALIZATION;
 	}
-
+	
 	void GameModule::Update()
 	{
 		Scene::Update();

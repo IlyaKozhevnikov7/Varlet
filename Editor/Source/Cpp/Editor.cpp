@@ -1,10 +1,13 @@
 #include "Editor.h"
+#include "Utils.h"
+#include "VarletFramework.h"
 
 #include "EditorCore.h"
 #include "EditViewport.h"
 #include "DockSpace.h"
 #include "SceneTree.h"
 #include "PropertyPanel.h"
+#include "ContentBrowserPanel.h"
 
 #include "glad/glad.h"
 
@@ -23,7 +26,8 @@ Editor::Editor(Varlet::GameModule* module)
 		new DockSpace(),
 		new EditViewport(),
 		new SceneTree(),
-		new PropertyPanel()
+		new PropertyPanel(),
+		new ContentBrowserPanel()
 	};
 
 	_window = nullptr;
@@ -73,6 +77,8 @@ void Editor::InitImGui()
 
 	ImGui_ImplGlfw_InitForOpenGL(_window, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
+
+	glfwSetDropCallback(_window, Utils::DropCallback);
 }
 
 int32_t Editor::PostInit()
@@ -94,17 +100,15 @@ void Editor::Update()
 {
 	ImGuiIO io = ImGui::GetIO();
 
-	static bool show_demo_window = true;
-	static bool show_another_window = false;
-
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	for (auto panel : _panels)
 		panel->Update();
 
-	ImGui::ShowDemoWindow(&show_demo_window);
+	ImGui::ShowDemoWindow();
 
 	// Rendering
 	ImGui::Render();

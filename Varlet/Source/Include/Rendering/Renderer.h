@@ -8,6 +8,7 @@ class Component;
 class MeshRenderer;
 class Transform;
 class Camera;
+class PointLight;
 
 namespace Varlet
 {
@@ -19,14 +20,23 @@ namespace Varlet
 		Transform* transform;
 	};
 
+	struct LightSourceData
+	{
+		std::vector<std::pair<PointLight*, Transform*>> pointLights;
+		// Directional lights
+		// Spotlights
+	};
+
 	class Renderer : public Module, public IUpdatebleModule
 	{
 	protected:
 
 		std::vector<Camera*> _cameras;
 		std::vector<RendererData> _rendererData;
+		LightSourceData _lightSources;
 
 		UniformBuffer* _globalData;
+		UniformBuffer* _illuminationData;
 
 	public:
 

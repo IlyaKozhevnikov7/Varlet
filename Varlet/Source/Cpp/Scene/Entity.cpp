@@ -1,20 +1,23 @@
 #include "Entity.h"
 #include "Component.h"
+#include "Script.h"
 
 Event<Entity*, Component*> Entity::NewComponentCreatedEvent;
 
 void Entity::Update()
 {
-	for (auto component : _components)
-		if (component->IsActive())
-			component->Update();
+	for (auto& script : _scripts)
+		if (script->IsActive())
+			script->Update();
 }
 
 void Entity::OnDestroyed()
 {
-	for (auto component : _components)
+	for (auto& script : _scripts)
+		script->SetActive(false);
+
+	for (auto& component : _components)
 	{
-		component->SetActive(false);
 		component->OnDestroyed();
 		delete component;
 	}

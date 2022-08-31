@@ -2,7 +2,7 @@
 
 #include "VarletFramework.h"
 
-class EditorCamera final : public Component
+class EditorCamera final : public Script
 {
 private:
 
@@ -29,6 +29,8 @@ public:
 	void SetControl(const bool&& control);
 
 	bool IsControlled() const;
+
+	const Camera* GetCore() const;
 
 	const Varlet::Texture* GetRendereTexture() const;
 

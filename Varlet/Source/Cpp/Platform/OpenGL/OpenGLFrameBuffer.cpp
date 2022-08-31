@@ -31,6 +31,8 @@ namespace Varlet
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
+		delete _texture;
+
 		glDeleteFramebuffers(1, &_id);
 		glDeleteRenderbuffers(1, &_renderbufferId);
 	}

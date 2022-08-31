@@ -87,6 +87,6 @@ Varlet::VertexArray* Mesh::ConstructSubMesh(const aiScene* scene, aiMesh* mesh)
         for (int32_t j = 0; j < face.mNumIndices; j++)
             indices.push_back(face.mIndices[j]);
     }
-
+    
     return Varlet::RendererAPI::CreateVertexArray({ vertices ,indices });
 }

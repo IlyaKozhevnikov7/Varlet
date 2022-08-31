@@ -8,11 +8,11 @@ namespace Varlet
 	class CORE_API OpenGLVertexArray : public VertexArray
 	{
 	private:
-
+		
 		uint32_t _vao;
 		uint32_t _vbo;
 		uint32_t _ebo;
-		
+
 		std::vector<Vertex> _vertices;
 		std::vector<uint32_t> _indices;
 

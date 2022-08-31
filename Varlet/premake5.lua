@@ -17,38 +17,42 @@ project "Varlet"
 	includedirs {
 		"%{includeDir}",
 		"%{includeDir}/Core",
-<<<<<<< HEAD
-		"%{includeDir}/Platform",
+		"%{includeDir}/Gameplay",
+		"%{includeDir}/Input",
+		"%{includeDir}/Rendering",
+		"%{includeDir}/Scene",
 		"%{includeDir}/Platform/Windows",
 		"%{includeDir}/Platform/OpenGL",
-		"%{includeDir}/Rendering",
-
-		"%{prj.location}/Dependencies"
-
-		"%{includeDirs.GLFW}",
-		"%{includeDirs.GLAD}"
-=======
-		"%{includeDir}/Rendering",
-		"%{includeDir}/Platform/Windows",
-		"%{includeDir}/Platform/OpenGL",
+		"%{includeDir}/Time",
 
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}",
-		"%{includeDirs.GLM}"
->>>>>>> dev
+		"%{includeDirs.GLM}",
+		"%{includeDirs.STB}",
+		"%{includeDirs.ASSIMP}"
 	}
 
 	links {
-		"glfw3dll"
+		"glfw3dll",
+		"assimp-vc143-mt"
 	}
 
 	libdirs {
-		"%{libraryDirs.GLFW}"
+		"%{libraryDirs.GLFW}",
+		"%{libraryDirs.ASSIMP}"
 	}
 
 	defines {
-		"DLL_EXPORT"
+		"VARLET_DLL_EXPORT"
 	}
+
+	filter "configurations:Editor"
+		defines {
+			"EDITOR",
+			"DEBUG",
+			"META"
+		}
+		symbols "On"
 
 	filter "configurations:Debug"
 		defines {
@@ -58,6 +62,6 @@ project "Varlet"
 
 	filter "configurations:Release"
 		defines {
-			"RELEASE"
+			"RELEASE",
 		}
-		optimize "On"
+		symbols "On"

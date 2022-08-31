@@ -31,7 +31,7 @@ namespace Varlet
 		return _api->CreateTexture(configuration);
 	}
 
-	Texture* RendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration)
+	std::shared_ptr<Texture> RendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration)
 	{
 		return _api->LoadTexture(configuration);
 	}
@@ -44,5 +44,10 @@ namespace Varlet
 	VertexArray* RendererAPI::CreateVertexArray(const VertexArrayData& configuration)
 	{
 		return _api->CreateVertexArray(configuration);
+	}
+	
+	void RendererAPI::UnbindTexure(const uint32_t& unit)
+	{
+		_api->UnbindTexure(unit);
 	}
 }

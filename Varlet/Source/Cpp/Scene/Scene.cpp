@@ -7,7 +7,7 @@ Scene* Scene::_current;
 
 void Scene::Update()
 {
-	for (auto entity : _current->_entities)
+	for (auto& entity : _current->_entities)
 		entity->Update();
 }
 
@@ -37,13 +37,14 @@ void Scene::Destroy(Entity* entity)
 {
 	std::remove(_current->_entities.begin(), _current->_entities.end(), entity);
 	entity->OnDestroyed();
+	delete entity;
 }
 
 void Scene::Shutdown()
 {
-	for (auto entity : _current->_entities)
+	for (auto& entity : _current->_entities)
 	{
-		Scene::Destroy(entity);
+		entity->OnDestroyed();
 		delete entity;
 	}
 }

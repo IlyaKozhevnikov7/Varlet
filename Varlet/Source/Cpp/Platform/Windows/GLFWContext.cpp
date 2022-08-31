@@ -13,7 +13,7 @@ namespace Varlet
 		{
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-			_window = glfwCreateWindow(640, 480, "Varlet", NULL, NULL);
+			_window = glfwCreateWindow(1280, 720, "Varlet", NULL, NULL);
 
 			if (_window == nullptr)
 			{
@@ -51,7 +51,7 @@ namespace Varlet
 		int32_t glfwState;
 
 		switch (state)
-		{
+		{	
 		case CursorState::Visible:
 			glfwState = GLFW_CURSOR_NORMAL;
 			break;

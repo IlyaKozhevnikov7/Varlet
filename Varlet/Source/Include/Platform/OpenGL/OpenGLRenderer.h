@@ -35,6 +35,8 @@ namespace Varlet
 
 	private:
 
+		void UpdateIllumination() const;
+
 		void SetupMaterial(const Material* material) const;
 
 		void Render(const RendererData& rendererData, const Shader* customShader = nullptr) const;

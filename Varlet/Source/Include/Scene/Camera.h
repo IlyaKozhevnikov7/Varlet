@@ -1,10 +1,10 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Component.h"
+#include "Script.h"
 #include "Rendering/RenderingCore.h"
 
-class Camera final : public Component
+class Camera final : public Script
 {
 private:
 
@@ -16,6 +16,7 @@ private:
 
 	Varlet::Framebuffer* _framebuffer;
 	Varlet::Shader* _renderShader;
+
 	FramebufferConfiguration _framebufferConfiguration;
 
 public:
@@ -25,12 +26,6 @@ public:
 	~Camera();
 
 	CORE_API void Update() override;
-
-	void Bind() const;
-
-	void UnBind() const;
-
-	Varlet::Shader* GetRenderShader();
 
 	CORE_API const Varlet::Framebuffer* GetFramebuffer() const;
 
@@ -50,9 +45,14 @@ public:
 
 	CORE_API void SetRenderShader(Varlet::Shader* shader);
 
+	void Bind() const;
+
+	void UnBind() const;
+
+	Varlet::Shader* GetRenderShader();
+
 private:
 
 	void CulculateView(const glm::vec3& position, const glm::quat& rotation);
 
 };
-

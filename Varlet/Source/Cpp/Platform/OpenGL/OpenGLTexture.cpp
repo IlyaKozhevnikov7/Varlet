@@ -65,34 +65,34 @@ namespace Varlet
 
 	void OpenGLTexture::Configurate(const TextureConfiguration& configuration) const
 	{
-		int32_t wraptype;
-
+		int32_t wraptype = GL_REPEAT;
+		
 		switch (configuration.wrapType)
 		{
 		case WrapType::Repeat:
 			wraptype = GL_REPEAT;
 			break;
-
+		
 		case WrapType::MirroredRepeat:
 			wraptype = GL_MIRRORED_REPEAT;
 			break;
-
+		
 		case WrapType::ClampToEdge:
 			wraptype = GL_CLAMP_TO_EDGE;
 			break;
-
+		
 		case WrapType::ClampToBorder:
 			wraptype = GL_CLAMP_TO_BORDER;
-			const float borderColor[] = { 1.f, 0.f, 1.f, 1.f };
+			constexpr float borderColor[] = { 1.f, 0.f, 1.f, 1.f };
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 			break;
 		}
-
+		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wraptype);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wraptype);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wraptype);
 
-		int32_t filter;
+		int32_t filter = GL_LINEAR;
 
 		switch (configuration.filter)
 		{

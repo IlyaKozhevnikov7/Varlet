@@ -7,6 +7,10 @@ project "Editor"
 	targetdir("%{wks.location}/Build/Bin/%{cfg.buildcfg}")
 	objdir("%{wks.location}/Build/Obj/%{prj.name}/%{cfg.buildcfg}")
 
+	defines {
+		"EDITOR_DLL_EXPORT"
+	}
+
 	files {
 		"%{sourceIncludeFiles}",
 		"%{sourceCppFiles}",
@@ -18,6 +22,7 @@ project "Editor"
 	includedirs {
 		"%{wks.location}/Varlet/Source/Include",
 		"%{includeDir}",
+		"%{includeDir}/Panels",
 
 		"%{prj.location}/Dependencies",
 		"%{includeDirs.GLAD}",
@@ -34,9 +39,13 @@ project "Editor"
 		"%{libraryDirs.GLFW}"
 	}
 
-	defines {
-		"DLL_EXPORT"
-	}
+	filter "configurations:Editor"
+		defines {
+			"EDITOR",
+			"DEBUG",
+			"META"
+		}
+		symbols "On"
 
 	filter "configurations:Debug"
 		defines {
@@ -46,6 +55,6 @@ project "Editor"
 
 	filter "configurations:Release"
 		defines {
-			"RELEASE"
+			"RELEASE",
 		}
-		optimize "On"
+		symbols "On"

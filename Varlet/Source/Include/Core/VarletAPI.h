@@ -19,3 +19,4 @@ public:
 		Varlet::Engine::Get()->GetContext()->SetCursorState(state);
 	}
 };
+

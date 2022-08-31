@@ -1,9 +1,9 @@
 #include "OpenGLRenderer.h"
 #include "OpenGLShader.h"
+#include "OpenGLVertexArray.h"
 #include "VarletAPI.h"
 #include "Transform.h"
 #include "Mesh.h"
-#include "OpenGLVertexArray.h"
 #include "Material.h"
 
 #include "glad/glad.h"
@@ -69,6 +69,11 @@ static int32_t ConvertToGlOp(const StensilOp& op)
 	}
 }
 
+static void DebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	VARLET_LOG(LevelType::Error, "[" + std::to_string(id) + "]" + message);
+}
+
 namespace Varlet
 {
 	const OpenGLSettings& OpenGLRenderer::GetSettings()
@@ -101,12 +106,21 @@ namespace Varlet
 			glCullFace(GL_BACK);
 		}
 
+#ifdef DEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(DebugMessage, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+#endif // DEBUG
+
 		return Renderer::Init();
 	}
 
 	void OpenGLRenderer::Update()
 	{
-		for (const auto camera : _cameras)
+		UpdateIllumination();
+
+		for (const auto& camera : _cameras)
 		{
 			if (camera->IsActive() == false)
 				continue;
@@ -121,16 +135,41 @@ namespace Varlet
 			_globalData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
 			_globalData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
 			_globalData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
+			_globalData->SetData(sizeof(glm::mat4) * 4, sizeof(glm::vec3), glm::value_ptr(camera->GetOwner()->GetComponent<Transform>()->position));
 
-			glClearColor(0.f, 0.5f, 0.5f, 1.f);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-			const auto shader = camera->GetRenderShader();
+			const auto& shader = camera->GetRenderShader();
 
-			for (const auto data : _rendererData)
+			for (const auto& data : _rendererData)
 				Render(data, shader);
 
 			camera->UnBind();
+		}
+	}
+
+	void OpenGLRenderer::UpdateIllumination() const
+	{
+		constexpr int32_t sizeOfPointLight = sizeof(int32_t) * 2 + sizeof(glm::vec4) * 2 + sizeof(float) * 2;
+
+		_illuminationData->Bind();
+
+		for (int32_t i = 0; i < _lightSources.pointLights.size(); i++)
+		{
+			const int32_t offset = sizeOfPointLight * i;
+			const auto& light = _lightSources.pointLights[i].first;
+		
+			const int32_t isActive = light->IsActive();
+			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float) * 2, sizeof(int32_t), &isActive);
+		
+			if (isActive == false)
+				continue;
+		
+			_illuminationData->SetData(offset,											sizeof(glm::vec4), glm::value_ptr(light->color));
+			_illuminationData->SetData(offset + sizeof(glm::vec4),						sizeof(glm::vec4), glm::value_ptr(_lightSources.pointLights[i].second->position));
+			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2,					sizeof(float), &light->linear);
+			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float),	sizeof(float), &light->quadratic);
 		}
 	}
 
@@ -161,6 +200,9 @@ namespace Varlet
 
 	void OpenGLRenderer::Render(const RendererData& rendererData, const Shader* customShader) const
 	{
+		if (rendererData.meshRenderer->isVisible == false)
+			return;
+
 		const Mesh* mesh = rendererData.meshRenderer->GetMesh();
 		if (mesh == nullptr)
 			return;
@@ -170,7 +212,7 @@ namespace Varlet
 		model = glm::scale(model, rendererData.transform->scale);
 
 		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(model));
-		_globalData->SetData(sizeof(glm::mat4) * 4, sizeof(int32_t), &rendererData.meshRenderer->GetRenderId());
+		_globalData->SetData(sizeof(glm::mat4) * 4 + sizeof(glm::vec3), sizeof(int32_t), &rendererData.meshRenderer->GetRenderId());
 
 		if (customShader)
 		{
@@ -179,7 +221,7 @@ namespace Varlet
 		}
 		else
 		{
-			for (const auto material : rendererData.meshRenderer->GetMaterials())
+			for (const auto& material : rendererData.meshRenderer->GetMaterials())
 			{
 				if (material->isActive == false)
 					continue;
@@ -194,7 +236,7 @@ namespace Varlet
 
 	void OpenGLRenderer::Draw(const Mesh* mesh) const
 	{
-		for (const auto subMesh : mesh->GetSubMeshes())
+		for (const auto& subMesh : mesh->GetSubMeshes())
 		{
 			glBindVertexArray(subMesh->GetVAO());
 

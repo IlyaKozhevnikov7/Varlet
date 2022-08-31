@@ -7,15 +7,18 @@
 // utils
 #include "Core/Delegate.h"
 #include "Core/Logger.h"
-#include "Core/ComponentType.h"
+#include "Core/Reflection.h"
+#include "Core/Object.h"
 
 // components
 #include "Scene/Entity.h"
 #include "Scene/Scene.h"
 #include "Scene/Component.h"
+#include "Scene/Script.h"
 #include "Scene/Camera.h"
 #include "Scene/MeshRenderer.h"
 #include "Scene/Transform.h"
+#include "Scene/PointLight.h"
 
 // input
 #include "Input/Input.h"

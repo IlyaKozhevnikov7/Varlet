@@ -1,11 +1,7 @@
 #include "Component.h"
-#include "ComponentType.h"
+#include "Reflection.h"
 
-Component::Component()
-{
-	_owner = nullptr;
-	_isActive = true;
-}
+EMPTY_PROPERTY_BLOCK(Component);
 
 Entity* Component::GetOwner()
 {
@@ -18,51 +14,15 @@ void Component::SetOwner(Entity* owner)
 	_owner = owner;
 }
 
-void Component::SetActive(const bool& activeState)
-{
-	if (_isActive == activeState)
-		return;
-
-	_isActive = activeState;
-
-	if (_isActive)
-		OnActivated();
-	else
-		OnDeactivated();
-}
-
-bool Component::IsActive() const
-{
-	return _isActive;
-}
-
 void Component::OnConstructed()
 {
+	_owner = nullptr;
 }
 
 void Component::Start()
 {
 }
 
-void Component::Update()
-{
-}
-
-Varlet::TypeInfo Component::GetType()
-{
-	Varlet::TypeInfo info("Component");
-	info.properties.push_back(Varlet::Property("Activity", _isActive));
-	return info;
-}
-
-void Component::OnActivated()
-{
-}
-
 void Component::OnDestroyed()
-{
-}
-
-void Component::OnDeactivated()
 {
 }

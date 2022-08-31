@@ -18,7 +18,7 @@ namespace Varlet
 		void Update() override;
 
 		void Shutdown() override;
-
+	
 		void SetCursorState(const CursorState& state) const override;
 
 		~GLFWContext() override = default;
