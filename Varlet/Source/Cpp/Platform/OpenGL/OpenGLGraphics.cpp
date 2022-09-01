@@ -1,4 +1,4 @@
-#include "OpenGLRenderer.h"
+#include "OpenGLGraphics.h"
 #include "OpenGLShader.h"
 #include "OpenGLVertexArray.h"
 #include "VarletAPI.h"
@@ -76,12 +76,12 @@ static void DebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity,
 
 namespace Varlet
 {
-	const OpenGLSettings& OpenGLRenderer::GetSettings()
+	const OpenGLSettings& OpenGLGraphics::GetSettings()
 	{
 		return _settings;
 	}
 
-	int32_t OpenGLRenderer::Init()
+	int32_t OpenGLGraphics::Init()
 	{
 		if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == false)
 		{
@@ -113,10 +113,10 @@ namespace Varlet
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 #endif // DEBUG
 
-		return Renderer::Init();
+		return Graphics::Init();
 	}
 
-	void OpenGLRenderer::Update()
+	void OpenGLGraphics::Update()
 	{
 		UpdateIllumination();
 
@@ -149,7 +149,7 @@ namespace Varlet
 		}
 	}
 
-	void OpenGLRenderer::UpdateIllumination() const
+	void OpenGLGraphics::UpdateIllumination() const
 	{
 		constexpr int32_t sizeOfPointLight = sizeof(int32_t) * 2 + sizeof(glm::vec4) * 2 + sizeof(float) * 2;
 
@@ -173,7 +173,7 @@ namespace Varlet
 		}
 	}
 
-	void OpenGLRenderer::SetupMaterial(const Material* material) const
+	void OpenGLGraphics::SetupMaterial(const Material* material) const
 	{
 		material->Activate();
 
@@ -198,13 +198,13 @@ namespace Varlet
 			glDisable(GL_DEPTH_TEST);
 	}
 
-	void OpenGLRenderer::Render(const RendererData& rendererData, const Shader* customShader) const
+	void OpenGLGraphics::Render(const RendererData& rendererData, const Shader* customShader) const
 	{
-		if (rendererData.meshRenderer->isVisible == false)
+		if (rendererData.renderer->isVisible == false)
 			return;
-
-		const Mesh* mesh = rendererData.meshRenderer->GetMesh();
-		if (mesh == nullptr)
+		
+		const auto vertices = rendererData.renderer->GetVertices();
+		if (vertices == nullptr || vertices->size() == 0)
 			return;
 
 		glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->position);
@@ -212,31 +212,31 @@ namespace Varlet
 		model = glm::scale(model, rendererData.transform->scale);
 
 		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(model));
-		_globalData->SetData(sizeof(glm::mat4) * 4 + sizeof(glm::vec3), sizeof(int32_t), &rendererData.meshRenderer->GetRenderId());
+		_globalData->SetData(sizeof(glm::mat4) * 4 + sizeof(glm::vec3), sizeof(int32_t), &rendererData.renderer->GetRenderId());
 
-		if (customShader)
+		if (customShader != nullptr)
 		{
 			customShader->Use();
-			Draw(mesh);
+			Draw(*vertices);
 		}
 		else
 		{
-			for (const auto& material : rendererData.meshRenderer->GetMaterials())
+			for (const auto& material : rendererData.renderer->GetMaterials())
 			{
 				if (material->isActive == false)
 					continue;
 
 				SetupMaterial(material);
 
-				Draw(mesh);
+				Draw(*vertices);
 				PostDraw();
 			}
 		}
 	}
 
-	void OpenGLRenderer::Draw(const Mesh* mesh) const
+	void OpenGLGraphics::Draw(const std::vector<VertexArray*>& vertices) const
 	{
-		for (const auto& subMesh : mesh->GetSubMeshes())
+		for (const auto& subMesh : vertices)
 		{
 			glBindVertexArray(subMesh->GetVAO());
 
@@ -247,7 +247,7 @@ namespace Varlet
 		}
 	}
 
-	void OpenGLRenderer::PostDraw() const
+	void OpenGLGraphics::PostDraw() const
 	{
 		glStencilMask(0xFF);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);

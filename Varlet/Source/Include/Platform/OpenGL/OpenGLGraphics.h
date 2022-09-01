@@ -17,7 +17,7 @@ namespace Varlet
 		bool cullFace = true;
 	};
 
-	class OpenGLRenderer final : public Renderer, public IRendererAPIInitializer<OpenGLRendererAPI>
+	class OpenGLGraphics final : public Graphics, public IRendererAPIInitializer<OpenGLRendererAPI>
 	{
 	private:
 
@@ -25,7 +25,7 @@ namespace Varlet
 
 	public:
 
-		~OpenGLRenderer() override = default;
+		~OpenGLGraphics() override = default;
 
 		const OpenGLSettings& GetSettings();
 
@@ -41,7 +41,7 @@ namespace Varlet
 
 		void Render(const RendererData& rendererData, const Shader* customShader = nullptr) const;
 
-		void Draw(const Mesh* mesh) const;
+		void Draw(const std::vector<VertexArray*>& vertices) const;
 
 		void PostDraw() const;
 	};

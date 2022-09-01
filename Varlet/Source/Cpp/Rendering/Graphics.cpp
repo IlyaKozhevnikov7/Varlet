@@ -1,25 +1,23 @@
-#include "Renderer.h"
-#include "RendererAPI.h"
 #include "RenderingCore.h"
 
 #include "Entity.h"
 #include "Component.h"
-#include "MeshRenderer.h"
+#include "Renderer.h"
 #include "Transform.h"
 #include "Camera.h"
 #include "PointLight.h"
 
 namespace Varlet
 {
-	Renderer::~Renderer()
+	Graphics::~Graphics()
 	{
 		delete _globalData;
 		delete _illuminationData;
 	}
 
-	int32_t Renderer::Init()
+	int32_t Graphics::Init()
 	{
-		Entity::NewComponentCreatedEvent.Bind(this, &Renderer::OnNewComponentCreated);
+		Entity::NewComponentCreatedEvent.Bind(this, &Graphics::OnNewComponentCreated);
 
 		if (auto rendererAPIInitializer = dynamic_cast<IRendererAPIInitializerBase*>(this))
 		{
@@ -40,22 +38,22 @@ namespace Varlet
 		return FAILED_INITIALIZATION;
 	}
 
-	void Renderer::Update()
+	void Graphics::Update()
 	{
 		VARLET_LOG(LevelType::Normal, "Renderer::Update()");
 	}
 
-	void Renderer::OnNewComponentCreated(Entity* entity, Component* ñomponent)
+	void Graphics::OnNewComponentCreated(Entity* entity, Component* ñomponent)
 	{
-		if (auto meshRenderer = dynamic_cast<MeshRenderer*>(ñomponent))
+		if (const auto renderer = dynamic_cast<Renderer*>(ñomponent))
 		{
 			assert(entity->HasComponent<Transform>());
-			_rendererData.push_back({ meshRenderer, entity->GetComponent<Transform>() });
-			VARLET_LOG(LevelType::Normal, "Entity added new mesh renderer");
+			_rendererData.push_back({ renderer, entity->GetComponent<Transform>() });
+			VARLET_LOG(LevelType::Normal, "Entity added new renderer");
 			return;
 		}
 
-		if (auto camera = dynamic_cast<Camera*>(ñomponent))
+		if (const auto camera = dynamic_cast<Camera*>(ñomponent))
 		{
 			assert(entity->HasComponent<Transform>());
 			_cameras.push_back(camera);

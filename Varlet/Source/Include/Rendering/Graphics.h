@@ -6,6 +6,8 @@
 class Entity;
 class Component;
 class MeshRenderer;
+class TextureRenderer;
+class Renderer;
 class Transform;
 class Camera;
 class PointLight;
@@ -16,7 +18,7 @@ namespace Varlet
 
 	struct RendererData
 	{
-		MeshRenderer* meshRenderer;
+		Renderer* renderer;
 		Transform* transform;
 	};
 
@@ -27,7 +29,7 @@ namespace Varlet
 		// Spotlights
 	};
 
-	class Renderer : public Module, public IUpdatebleModule
+	class Graphics : public Module, public IUpdatebleModule
 	{
 	protected:
 
@@ -40,7 +42,7 @@ namespace Varlet
 
 	public:
 
-		~Renderer() override;
+		~Graphics() override;
 
 		virtual int32_t Init() override;
 

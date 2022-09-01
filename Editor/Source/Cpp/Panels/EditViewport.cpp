@@ -1,10 +1,8 @@
-#include "Panels/EditViewport.h"
+#include "EditViewport.h"
 #include "EditorCore.h"
 #include "VarletFramework.h"
-
 #include "EditorCamera.h"
 #include "Rendering/Texture.h"
-#include "EditViewport.h"
 
 EditViewport::~EditViewport()
 {
@@ -107,10 +105,10 @@ void EditViewport::UpdateSelect() const
 		int8_t* pixelInfo = _camera->ReadSelectedPixel(pixelPos.x, pixelPos.y);
 		int32_t id = pixelInfo[0] + pixelInfo[1] * 256 + pixelInfo[2] * 256 * 256;
 
-		auto find = Scene::Find([&id](const Entity* entity)
+		auto find = Scene::Find([&id](Entity* entity)
 			{
-				if (auto meshRenderer = entity->GetComponent<MeshRenderer>())
-					return meshRenderer->GetRenderId() == id;
+				if (const auto renderer = entity->GetComponent<Renderer>())
+					return renderer->GetRenderId() == id;
 
 				return false;
 			});

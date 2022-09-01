@@ -1,37 +1,26 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Component.h"
+#include "Renderer.h"
 
 class Mesh;
 class Material;
 
-class CORE_API MeshRenderer final : public Component
+class CORE_API MeshRenderer final : public Renderer
 {
-	TYPE_GENERATION(MeshRenderer, Component)
-
-public:
-
-	bool isVisible;
+	TYPE_GENERATION(MeshRenderer, Renderer)
 
 private:
 
-	static int32_t _idCounter;
-
-	int32_t _renderId;
 	Mesh* _mesh;
-	std::vector<Material*> _materials;
 	std::string modelPath;
 
 public:
-
-	const int32_t& GetRenderId() const;
 
 	void OnConstructed() override;
 
 	void SetMesh(Mesh* mesh);
 
-	const Mesh* GetMesh() const;
+	const std::vector<Varlet::VertexArray*>* GetVertices() const override;
 
-	std::vector<Material*>& GetMaterials();
 };
