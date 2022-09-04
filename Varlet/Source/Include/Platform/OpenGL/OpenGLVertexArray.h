@@ -13,9 +13,6 @@ namespace Varlet
 		uint32_t _vbo;
 		uint32_t _ebo;
 
-		std::vector<Vertex> _vertices;
-		std::vector<uint32_t> _indices;
-
 	public:
 
 		OpenGLVertexArray(const VertexArrayData& data);
@@ -23,6 +20,10 @@ namespace Varlet
 		~OpenGLVertexArray() override;
 
 		const uint32_t& GetVAO() const override;
+
+		void Bind() const override;
+
+		void SetData(int64_t offset, int64_t size, const void* data) const override;
 
 		bool IsIndexed() const override;
 

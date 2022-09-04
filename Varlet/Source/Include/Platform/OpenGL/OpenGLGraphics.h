@@ -14,7 +14,7 @@ namespace Varlet
 	public:
 
 		bool blending = true;
-		bool cullFace = true;
+		bool cullFace = false;
 	};
 
 	class OpenGLGraphics final : public Graphics, public IRendererAPIInitializer<OpenGLRendererAPI>

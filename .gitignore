@@ -1,6 +1,9 @@
 /Build
 /Sandbox
 
+/Varlet/Source/Include/Platform/Vulkan
+/Varlet/Source/Cpp/Platform/Vulkan
+
 # Visual Studio files
 .vs
 **.sln

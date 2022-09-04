@@ -10,8 +10,10 @@ namespace Varlet
 	{
 		glGenTextures(1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);
+		_width = configuration.width;
+		_height = configuration.height;
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, configuration.width, configuration.height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 		Configurate(configuration);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -39,18 +41,18 @@ namespace Varlet
 		glBindTexture(GL_TEXTURE_2D, _id);
 	}
 
-	void OpenGLTexture::Load(const LoadableTextureConfiguration& configuration) const
+	void OpenGLTexture::Load(const LoadableTextureConfiguration& configuration)
 	{
 		stbi_set_flip_vertically_on_load(configuration.flipUV);
 
-		int32_t width, height, nrChannels;
-		uint8_t* data = stbi_load(configuration.path, &width, &height, &nrChannels, 0);
+		int32_t nrChannels;
+		uint8_t* data = stbi_load(configuration.path, &_width, &_height, &nrChannels, 0);
 
 		const uint16_t format = nrChannels == 4 ? GL_RGBA : GL_RGB;
 
 		if (data != nullptr)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, format, _width, _height, 0, format, GL_UNSIGNED_BYTE, data);
 
 			if (configuration.mipmap)
 				glGenerateMipmap(GL_TEXTURE_2D);

@@ -5,29 +5,47 @@ namespace Varlet
 {
 	OpenGLVertexArray::OpenGLVertexArray(const VertexArrayData& data)
 	{
-		_vertices = data.vertices;
-		_indices = data.indices;
+		vertices = data.vertices;
+		indices = data.indices;
+
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec3> normals;
+		std::vector<glm::vec2> textureCoordinates;
+
+		for (const auto& value : vertices)
+		{
+			positions.push_back(value.position);
+			normals.push_back(value.normal);
+			textureCoordinates.push_back(value.textureCoordinate);
+		}
 
 		glGenVertexArrays(1, &_vao);
-		glGenBuffers(1, &_ebo);
 		glGenBuffers(1, &_vbo);
 
 		glBindVertexArray(_vao);
 
 		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-		glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), &_vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), nullptr, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(uint32_t), &_indices[0], GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0,											vertices.size() * sizeof(glm::vec3), &positions[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3),		vertices.size() * sizeof(glm::vec3), &normals[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) * 2,	vertices.size() * sizeof(glm::vec2), &textureCoordinates[0]);
+
+		if (indices.size() > 0)
+		{
+			glGenBuffers(1, &_ebo);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
+		}
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
-
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)(vertices.size() * sizeof(glm::vec3)));
+		
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)(vertices.size() * sizeof(glm::vec3) * 2));
 
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -46,15 +64,25 @@ namespace Varlet
 		return _vao;
 	}
 
+	void OpenGLVertexArray::Bind() const
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	}
+
+	void OpenGLVertexArray::SetData(int64_t offset, int64_t size, const void* data) const
+	{
+		glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+	}
+
 	bool OpenGLVertexArray::IsIndexed() const
 	{
-		return _indices.size() > 0;
+		return indices.size() > 0;
 	}
 
 	const int32_t& OpenGLVertexArray::GetElementsCount() const
 	{
 		return IsIndexed()
-			? _indices.size()
-			: _vertices.size();
+			? indices.size()
+			: vertices.size();
 	}
 }

@@ -19,7 +19,7 @@ namespace Varlet
 
 	private:
 
-		void Load(const LoadableTextureConfiguration& configuration) const;
+		void Load(const LoadableTextureConfiguration& configuration);
 
 		void Configurate(const TextureConfiguration& configuration) const;
 	};

@@ -23,13 +23,15 @@ project "Varlet"
 		"%{includeDir}/Scene",
 		"%{includeDir}/Platform/Windows",
 		"%{includeDir}/Platform/OpenGL",
+		"%{includeDir}/Platform/Vulkan",
 		"%{includeDir}/Time",
 
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}",
 		"%{includeDirs.GLM}",
 		"%{includeDirs.STB}",
-		"%{includeDirs.ASSIMP}"
+		"%{includeDirs.ASSIMP}",
+		"%{includeDirs.VULKAN}"
 	}
 
 	links {
@@ -39,7 +41,8 @@ project "Varlet"
 
 	libdirs {
 		"%{libraryDirs.GLFW}",
-		"%{libraryDirs.ASSIMP}"
+		"%{libraryDirs.ASSIMP}",
+		"%{libraryDirs.VULKAN}"
 	}
 
 	defines {

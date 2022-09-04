@@ -207,10 +207,13 @@ namespace Varlet
 		if (vertices == nullptr || vertices->size() == 0)
 			return;
 
+		rendererData.renderer->OnPreRender();
+
 		glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->position);
 		model = model * glm::mat4_cast(rendererData.transform->rotation);
 		model = glm::scale(model, rendererData.transform->scale);
 
+		_globalData->Bind();
 		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(model));
 		_globalData->SetData(sizeof(glm::mat4) * 4 + sizeof(glm::vec3), sizeof(int32_t), &rendererData.renderer->GetRenderId());
 
@@ -221,7 +224,7 @@ namespace Varlet
 		}
 		else
 		{
-			for (const auto& material : rendererData.renderer->GetMaterials())
+			for (const auto& material : rendererData.renderer->materials)
 			{
 				if (material->isActive == false)
 					continue;

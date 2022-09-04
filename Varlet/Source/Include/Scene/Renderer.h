@@ -16,13 +16,13 @@ class CORE_API Renderer : public Component
 public:
 
 	bool isVisible;
+	std::vector<Material*> materials;
 
 private:
 
 	static int32_t _idCounter;
 
 	int32_t _renderId;
-	std::vector<Material*> _materials;
 
 public:
 
@@ -30,8 +30,8 @@ public:
 
 	const int32_t& GetRenderId() const;
 
-	std::vector<Material*>& GetMaterials();
-
 	virtual const std::vector<Varlet::VertexArray*>* GetVertices() const = 0;
+
+	virtual void OnPreRender();
 };
 

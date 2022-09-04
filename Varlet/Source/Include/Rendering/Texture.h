@@ -38,6 +38,8 @@ namespace Varlet
 	protected:
 
 		uint32_t _id;
+		int32_t _width;
+		int32_t _height;
 
 	public:
 
@@ -48,5 +50,7 @@ namespace Varlet
 		virtual void Activate(const uint32_t& unit) const = 0;
 
 		const uint32_t& GetId() const;
+
+		void GetResolution(int32_t* width, int32_t* height) const;
 	};
 }

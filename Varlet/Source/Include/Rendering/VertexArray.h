@@ -25,11 +25,20 @@ namespace Varlet
 	{
 	public:
 
+		std::vector<Vertex> vertices;
+		std::vector<uint32_t> indices;
+
+	public:
+
 		VertexArray() = default;
 
 		virtual ~VertexArray() = default;
 
 		virtual const uint32_t& GetVAO() const = 0;
+
+		virtual void Bind() const = 0;
+
+		virtual void SetData(int64_t offset, int64_t size, const void* data) const = 0;
 
 		virtual bool IsIndexed() const = 0;
 

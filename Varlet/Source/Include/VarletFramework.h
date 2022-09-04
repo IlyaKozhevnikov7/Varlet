@@ -17,6 +17,8 @@
 #include "Scene/Script.h"
 #include "Scene/Camera.h"
 #include "Scene/MeshRenderer.h"
+#include "Scene/TextureRenderer.h"
+#include "Scene/Renderer.h"
 #include "Scene/Transform.h"
 #include "Scene/PointLight.h"
 
