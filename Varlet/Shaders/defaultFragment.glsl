@@ -47,7 +47,7 @@ vec3 CalculatePointLightFactors(in vec3 deffuseColor, in vec3 specularColor, in 
 		if (u_pointsLight[i].isActive == false)
 			continue;
 
-		const vec3 ambient = u_Ambient * deffuseColor * u_pointsLight[i].color.rbg;
+		const vec3 ambient = u_Ambient * deffuseColor * u_pointsLight[i].color.rgb;
 	
 		const vec3 directionToLight = normalize(u_pointsLight[i].position.xyz - fragPos);
 		const float angle = max(dot(directionToLight, normal), 0.f);
@@ -69,8 +69,8 @@ vec3 CalculatePointLightFactors(in vec3 deffuseColor, in vec3 specularColor, in 
 
 void main()
 {
-	vec3 deffuseColor = texture(u_Deffuse, texCoord).rbg;
-	vec3 specularColor = texture(u_Specular, texCoord).rbg;
+	vec3 deffuseColor = texture(u_Deffuse, texCoord).rgb;
+	vec3 specularColor = texture(u_Specular, texCoord).rgb;
 	vec3 normalizedNormal = normalize(normal);
 
 	vec3 pointLightFactor = CalculatePointLightFactors(deffuseColor, specularColor, normalizedNormal);

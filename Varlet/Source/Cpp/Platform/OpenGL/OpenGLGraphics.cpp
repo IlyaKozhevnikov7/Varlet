@@ -125,17 +125,26 @@ namespace Varlet
 			if (camera->IsActive() == false)
 				continue;
 
-			camera->Bind();
-
-			int32_t width, height;
-			camera->GetResolution(width, height);
-			glViewport(0, 0, width, height);
-
 			_globalData->Bind();
 			_globalData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
 			_globalData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
 			_globalData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
 			_globalData->SetData(sizeof(glm::mat4) * 4, sizeof(glm::vec3), glm::value_ptr(camera->GetOwner()->GetComponent<Transform>()->position));
+
+			int32_t width, height;
+			camera->GetResolution(width, height);
+			glViewport(0, 0, width, height);
+
+			const bool withPostProcessing = camera->postProcessing.enable && camera->postProcessing.material != nullptr;
+			uint32_t postProcessingTexture;
+
+			camera->Bind();
+
+			if (withPostProcessing)
+			{
+				postProcessingTexture = OpenGLUtils::CreateStackTexture(width, height);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
+			}
 
 			glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -144,6 +153,26 @@ namespace Varlet
 
 			for (const auto& data : _rendererData)
 				Render(data, shader);
+
+			if (withPostProcessing)
+			{
+				glDisable(GL_DEPTH_TEST);
+
+				const static auto screenVAO = OpenGLUtils::CreateScreenVAO();
+		
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, camera->GetTargetTexture()->GetId(), 0);
+
+				camera->postProcessing.material->Activate();
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
+
+				glBindVertexArray(screenVAO);
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			
+				glEnable(GL_DEPTH_TEST);
+				glDeleteTextures(1, &postProcessingTexture);
+			}
 
 			camera->UnBind();
 		}
@@ -179,7 +208,7 @@ namespace Varlet
 
 		if (material->settings.stencilTest.enable)
 		{
-			const auto stencilSettings = material->settings.stencilTest;
+			const auto& stencilSettings = material->settings.stencilTest;
 
 			glStencilMask(0xFF);
 
@@ -256,5 +285,79 @@ namespace Varlet
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 
 		glEnable(GL_DEPTH_TEST);
+	}
+
+	uint32_t OpenGLUtils::CreateStackTexture(const int32_t& width, const int32_t& height)
+	{
+		uint32_t id;
+	
+		glGenTextures(1, &id);
+		glBindTexture(GL_TEXTURE_2D, id);
+	
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+		return id;
+	}
+
+	uint32_t OpenGLUtils::CreateScreenVAO()
+	{
+		uint32_t vao;
+		uint32_t vbo;
+		uint32_t ebo;
+
+		constexpr float positions[] =
+		{
+			-1.f,  1.f,
+			-1.f, -1.f,
+			 1.f, -1.f,
+			 1.f,  1.f
+		};
+
+		constexpr float textureCoordinates[]
+		{
+			0.f, 1.f,
+			0.f, 0.f,
+			1.f, 0.f,
+			1.f, 1.f
+		};
+
+		constexpr uint32_t indices[] =
+		{
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		glGenVertexArrays(1, &vao);
+		glGenBuffers(1, &vbo);
+
+		glBindVertexArray(vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(positions) + sizeof(textureCoordinates), nullptr, GL_STATIC_DRAW);
+
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(positions), &positions[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, sizeof(positions), sizeof(textureCoordinates), &textureCoordinates[0]);
+
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, reinterpret_cast<void*>(0));
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, reinterpret_cast<void*>(sizeof(positions)));
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		return vao;
 	}
 }

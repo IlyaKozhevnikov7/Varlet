@@ -4,8 +4,20 @@
 #include "Script.h"
 #include "Rendering/RenderingCore.h"
 
-class Camera final : public Script
+struct PostProcessing final
 {
+	bool enable;
+	Material* material;
+};
+
+class CORE_API Camera final : public Script
+{
+	TYPE_GENERATION(Camera, Script)
+
+public:
+
+	PostProcessing postProcessing;
+
 private:
 
 	glm::mat4 _view;
@@ -21,29 +33,29 @@ private:
 
 public:
 
-	CORE_API Camera();
+	void OnConstructed() override;
 
-	~Camera();
+	void OnDestroyed() override;	
 
-	CORE_API void Update() override;
+	void Update() override;
 
-	CORE_API const Varlet::Framebuffer* GetFramebuffer() const;
+	const Varlet::Framebuffer* GetFramebuffer() const;
 
-	CORE_API const glm::mat4& GetView() const;
+	const glm::mat4& GetView() const;
 
-	CORE_API const glm::mat4& GetProjection() const;
+	const glm::mat4& GetProjection() const;
 
-	CORE_API const glm::mat4 GetViewProjection() const;
+	const glm::mat4 GetViewProjection() const;
 
-	CORE_API const Varlet::Texture* GetTargetTexture() const;
+	const Varlet::Texture* GetTargetTexture() const;
+	
+	void SetFramebufferConfiguration(const FramebufferConfiguration& configuration);
 
-	CORE_API void SetFramebufferConfiguration(const FramebufferConfiguration& configuration);
+	void ResizeView(const int32_t& width, const int32_t& height);
 
-	CORE_API void ResizeView(const int32_t& width, const int32_t& height);
+	void GetResolution(int32_t& width, int32_t& height) const;
 
-	CORE_API void GetResolution(int32_t& width, int32_t& height) const;
-
-	CORE_API void SetRenderShader(Varlet::Shader* shader);
+	void SetRenderShader(Varlet::Shader* shader);
 
 	void Bind() const;
 

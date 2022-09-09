@@ -42,12 +42,12 @@ namespace Varlet
 		return _texture;
 	}
 
-	void OpenGLFramebuffer::Bind()
+	void OpenGLFramebuffer::Bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _id);
 	}
 
-	void OpenGLFramebuffer::UnBind()
+	void OpenGLFramebuffer::UnBind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

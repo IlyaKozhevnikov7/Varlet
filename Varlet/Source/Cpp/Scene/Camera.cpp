@@ -4,7 +4,12 @@
 #include "Transform.h"
 #include "Entity.h"
 
-Camera::Camera()
+START_PROPERTY_BLOCK(Camera)
+PROPERTY("Enable post-processing", postProcessing.enable)
+TYPED_PROPERTY("Material", postProcessing.material, Varlet::Type::Object)
+END_PROPERTY_BLOCK;
+
+void Camera::OnConstructed()
 {
 	_fov = 45.f;
 	_projection = glm::perspective(glm::radians(_fov), 960.f / 540.f, 0.1f, 250.f);
@@ -26,7 +31,7 @@ Camera::Camera()
 	_framebuffer = Varlet::RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
 }
 
-Camera::~Camera()
+void Camera::OnDestroyed()
 {
 	delete _framebuffer;
 

@@ -51,7 +51,7 @@ namespace Varlet
 	class Shader;
 }
 
-class Material final : public Object
+class CORE_API Material final : public Object
 {
 	TYPE_GENERATION(Material, Object)
 
@@ -71,31 +71,31 @@ private:
 
 public:
 
-	CORE_API Material(Varlet::Shader* shader);
+	Material(Varlet::Shader* shader);
 
 	void Activate() const;
 
-	CORE_API void SetShader(Varlet::Shader* newShader);
+	void SetShader(Varlet::Shader* newShader);
 
-	CORE_API void SetBool(const char* name, const bool& value) const;
+	void SetBool(const char* name, const bool& value) const;
 
-	CORE_API void SetUInt32(const char* name, const uint32_t& value) const;
+	void SetUInt32(const char* name, const uint32_t& value) const;
 
-	CORE_API void SetInt32(const char* name, const int32_t& value) const;
+	void SetInt32(const char* name, const int32_t& value) const;
 
-	CORE_API void SetFloat(const char* name, const float& value) const;
+	void SetFloat(const char* name, const float& value) const;
 
-	CORE_API void SetVec2(const char* name, const glm::vec2& value) const;
+	void SetVec2(const char* name, const glm::vec2& value) const;
 
-	CORE_API void SetVec3(const char* name, const glm::vec3& value) const;
+	void SetVec3(const char* name, const glm::vec3& value) const;
 
-	CORE_API void SetVec4(const char* name, const glm::vec4& value) const;
+	void SetVec4(const char* name, const glm::vec4& value) const;
 
-	CORE_API void SetMat3(const char* name, const glm::mat3& value) const;
+	void SetMat3(const char* name, const glm::mat3& value) const;
 
-	CORE_API void SetMat4(const char* name, const glm::mat4& value) const;
+	void SetMat4(const char* name, const glm::mat4& value) const;
 
-	CORE_API void SetSampler2D(const char* name, Varlet::Texture* value) const;
+	void SetSampler2D(const char* name, Varlet::Texture* value) const;
 
 private:
 

@@ -45,4 +45,13 @@ namespace Varlet
 
 		void PostDraw() const;
 	};
+
+	class OpenGLUtils
+	{
+	public:
+
+		static uint32_t CreateStackTexture(const int32_t& width, const int32_t& height);
+
+		static uint32_t CreateScreenVAO();
+	};
 }

@@ -1,11 +1,15 @@
 #include "EditorCamera.h"
+#include "Rendering/Material.h"
 
 void EditorCamera::InternalStart()
 {
 	_camera = GetOwner()->GetComponent<Camera>();
+	_camera->postProcessing.enable = true;
+	_camera->postProcessing.material = new Material(Varlet::RendererAPI::CreateShader({ "../Varlet/Shaders/defaultVertexPostProcessing.glsl", "../Varlet/Shaders/defaultFragmentPostProcessing.glsl" }));
 
 	_selectedCamera = GetOwner()->AddComponent<Camera>();
 
+	_selectedCamera->postProcessing.enable = false;
 	_selectedCamera->SetRenderShader(Varlet::RendererAPI::CreateShader({ "../Editor/Shaders/selected.vertex.glsl", "../Editor/Shaders/selected.fragment.glsl" }));
 	_selectedCamera->SetActive(true);
 

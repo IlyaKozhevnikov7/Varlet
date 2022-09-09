@@ -23,9 +23,9 @@ namespace Varlet
 
 		const Texture* GetTexture() const override;
 
-		void Bind() override;
+		void Bind() const override;
 
-		void UnBind() override;
+		void UnBind() const override;
 
 		void* ReadPixels(const int32_t& x, const int32_t& y, const int32_t& width = 1, const int32_t& height = 1) const override;
 	};
