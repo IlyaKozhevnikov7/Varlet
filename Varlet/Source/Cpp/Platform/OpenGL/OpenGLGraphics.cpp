@@ -105,6 +105,8 @@ namespace Varlet
 			glEnable(GL_CULL_FACE);
 			glCullFace(GL_BACK);
 		}
+		
+		GraphicsInfo::rendererName = glGetString(GL_RENDERER);
 
 #ifdef DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
@@ -118,6 +120,8 @@ namespace Varlet
 
 	void OpenGLGraphics::Update()
 	{
+		PROFILE_NAMED("Rendering Update");
+		
 		UpdateIllumination();
 
 		for (const auto& camera : _cameras)

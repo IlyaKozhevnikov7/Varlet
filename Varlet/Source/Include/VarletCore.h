@@ -17,3 +17,4 @@
 #include "../../Dependencies/GLM/include/GLM/gtx/matrix_decompose.hpp"
 #include "Core/Delegate.h"
 #include "Core/Logger.h"
+#include "Core/Profiler.h"

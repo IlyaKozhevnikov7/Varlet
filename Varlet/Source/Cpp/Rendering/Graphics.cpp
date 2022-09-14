@@ -7,6 +7,9 @@
 #include "Camera.h"
 #include "PointLight.h"
 
+const uint8_t* GraphicsInfo::rendererName;
+double GraphicsInfo::renderTime;
+
 namespace Varlet
 {
 	Graphics::~Graphics()
@@ -36,11 +39,6 @@ namespace Varlet
 		}
 		
 		return FAILED_INITIALIZATION;
-	}
-
-	void Graphics::Update()
-	{
-		VARLET_LOG(LevelType::Normal, "Renderer::Update()");
 	}
 
 	void Graphics::OnNewComponentCreated(Entity* entity, Component* ñomponent)

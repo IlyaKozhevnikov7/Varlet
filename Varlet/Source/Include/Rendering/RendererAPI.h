@@ -21,6 +21,8 @@ namespace Varlet
 	{
 	public:
 
+		virtual ~IRendererAPI() = default;
+
 		virtual Shader* CreateShader(const ShaderInitializer& initializer) const = 0;
 
 		virtual Framebuffer* CreateFrameBuffer(FramebufferConfiguration& configuration) const = 0;

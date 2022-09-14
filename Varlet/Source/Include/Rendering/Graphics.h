@@ -12,6 +12,12 @@ class Transform;
 class Camera;
 class PointLight;
 
+struct CORE_API GraphicsInfo
+{
+	static const uint8_t* rendererName;
+	static double renderTime;
+};
+
 namespace Varlet
 {
 	class UniformBuffer;
@@ -45,8 +51,6 @@ namespace Varlet
 		~Graphics() override;
 
 		virtual int32_t Init() override;
-
-		virtual void Update() override;
 
 	private:
 

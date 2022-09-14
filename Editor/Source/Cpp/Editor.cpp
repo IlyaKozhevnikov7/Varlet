@@ -8,6 +8,7 @@
 #include "SceneTree.h"
 #include "PropertyPanel.h"
 #include "ContentBrowserPanel.h"
+#include "ProfilingPanle.h"
 
 #include "glad/glad.h"
 
@@ -27,7 +28,8 @@ Editor::Editor(Varlet::GameModule* module)
 		new EditViewport(),
 		new SceneTree(),
 		new PropertyPanel(),
-		new ContentBrowserPanel()
+		new ContentBrowserPanel(),
+		new ProfilingPanle()
 	};
 
 	_window = nullptr;

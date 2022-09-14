@@ -12,6 +12,8 @@ namespace Varlet
 		mutable std::unordered_map<std::string, std::shared_ptr<Texture>> _textureBuffer;
 
 	public:
+		
+		~OpenGLRendererAPI() override = default;
 
 		Shader* CreateShader(const ShaderInitializer& initializer) const override;
 

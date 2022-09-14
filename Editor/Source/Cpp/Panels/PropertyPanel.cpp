@@ -15,7 +15,7 @@ void PropertyPanel::Update()
 			const auto typeInfo = component->GetType();
 
 			ImGui::PushID(component);
-			if (ImGui::CollapsingHeader(typeInfo.name))
+			if (ImGui::CollapsingHeader(typeInfo.name, ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				for (auto& property : typeInfo.properties)
 					DisplayProperty(property);
