@@ -129,9 +129,7 @@ void EditViewport::UpdateGizmo(const ImVec2& contentSize) const
 		return;
 
 	const auto transform = EditorData::selectedEntity->GetComponent<Transform>();
-	glm::mat4 model = glm::translate(glm::mat4(1.f), transform->position);
-	model = model * glm::mat4_cast(transform->rotation);
-	model = glm::scale(model, transform->scale);
+	glm::mat4 model = transform->GetModelMatrix();
 
 	ImGuizmo::SetOrthographic(false);
 	ImGuizmo::SetDrawlist();
@@ -149,7 +147,7 @@ void EditViewport::UpdateGizmo(const ImVec2& contentSize) const
 		if (glm::decompose(model, scale, rotation, translation, skew, perspective))
 		{
 			transform->position = translation;
-			transform->rotation = rotation;
+			transform->rotation = glm::degrees(glm::eulerAngles(rotation));
 			transform->scale = scale;
 		}
 	}

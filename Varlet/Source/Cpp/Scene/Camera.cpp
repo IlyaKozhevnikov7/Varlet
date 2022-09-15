@@ -42,7 +42,7 @@ void Camera::OnDestroyed()
 void Camera::Update()
 {
 	static auto transform = GetOwner()->GetComponent<Transform>();
-	CulculateView(transform->position, transform->rotation);
+	CulculateView(transform->position, transform->GetOrientation());
 }
 
 const Varlet::Framebuffer* Camera::GetFramebuffer() const
@@ -105,10 +105,10 @@ void Camera::SetRenderShader(Varlet::Shader* shader)
 		_renderShader = shader;
 }
 
-void Camera::CulculateView(const glm::vec3& position, const glm::quat& rotation)
+void Camera::CulculateView(const glm::vec3& position, const glm::quat& orientation)
 {
 	const glm::mat4 translateMat = glm::translate(glm::mat4(1.f), -position);
-	const glm::mat4 orientationMat = glm::mat4_cast(glm::inverse(rotation));
+	const glm::mat4 orientationMat = glm::mat4_cast(glm::inverse(orientation));
 
 	_view = orientationMat * translateMat;
 }

@@ -31,8 +31,7 @@ void EditorCamera::UpdateMoveAndRotation()
 	const glm::vec2 mousePos = Input::GetMousePosition();
 	const glm::vec2 delta = glm::vec2(_lastMousePos.y - mousePos.y, _lastMousePos.x - mousePos.x) * _sensitivity;
 
-	_transform->Rotate(delta.x, glm::vec3(1.f, 0.f, 0.f));
-	_transform->Rotate(delta.y, glm::vec3(0.f, 1.f, 0.f), Space::World);
+	_transform->Rotate(glm::vec3(delta, 0.f));
 
 	_lastMousePos = mousePos;
 

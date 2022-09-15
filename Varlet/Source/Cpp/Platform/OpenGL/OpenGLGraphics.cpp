@@ -120,7 +120,7 @@ namespace Varlet
 
 	void OpenGLGraphics::Update()
 	{
-		PROFILE_NAMED("Rendering Update");
+		PROFILE_OUT(GraphicsInfo::renderTime);
 		
 		UpdateIllumination();
 
@@ -242,12 +242,8 @@ namespace Varlet
 
 		rendererData.renderer->OnPreRender();
 
-		glm::mat4 model = glm::translate(glm::mat4(1.f), rendererData.transform->position);
-		model = model * glm::mat4_cast(rendererData.transform->rotation);
-		model = glm::scale(model, rendererData.transform->scale);
-
 		_globalData->Bind();
-		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(model));
+		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(rendererData.transform->GetModelMatrix()));
 		_globalData->SetData(sizeof(glm::mat4) * 4 + sizeof(glm::vec3), sizeof(int32_t), &rendererData.renderer->GetRenderId());
 
 		if (customShader != nullptr)
@@ -311,6 +307,7 @@ namespace Varlet
 
 	uint32_t OpenGLUtils::CreateScreenVAO()
 	{
+		// todo destroy when exit
 		uint32_t vao;
 		uint32_t vbo;
 		uint32_t ebo;

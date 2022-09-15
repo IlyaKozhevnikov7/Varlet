@@ -16,7 +16,7 @@ class CORE_API Transform final : public Component
 public:
 
 	glm::vec3 position = glm::vec3(1.f);
-	glm::quat rotation = glm::quat(1.f, 0.f, 0.f, 0.f);
+	glm::vec3 rotation = glm::vec3(0.f);
 	glm::vec3 scale = glm::vec3(1.f);
 
 public:
@@ -24,7 +24,7 @@ public:
 	// TODO translate in local space
 	void Translate(const glm::vec3& delta);
 
-	void Rotate(const float& angle, glm::vec3 axis, const Space& relativeTo = Space::Local);
+	void Rotate(const glm::vec3& delta);
 
 	glm::vec3 GetForward() const;
 
@@ -32,6 +32,8 @@ public:
 
 	glm::vec3 GetUp() const;
 
-	glm::vec3 GetEulerAngles() const;
+	glm::quat GetOrientation() const;
+
+	glm::mat4 GetModelMatrix() const;
 };
 

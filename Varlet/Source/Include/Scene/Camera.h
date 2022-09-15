@@ -65,7 +65,7 @@ public:
 
 private:
 
-	void CulculateView(const glm::vec3& position, const glm::quat& rotation);
+	void CulculateView(const glm::vec3& position, const glm::quat& orientation);
 
 };
 
