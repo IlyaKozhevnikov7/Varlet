@@ -19,7 +19,7 @@ std::vector<Varlet::Shader*>& Mesh::GetShaders() const
 Mesh* Mesh::LoadModel(const std::string& path)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || scene->mRootNode == nullptr)
     {
@@ -76,6 +76,12 @@ Varlet::VertexArray* Mesh::ConstructSubMesh(const aiScene* scene, aiMesh* mesh)
         {
             vertex.textureCoordinate = glm::vec2(0.f, 0.f);
         }
+
+        vertex.tangent = glm::vec3(
+            mesh->mTangents[i].x,
+            mesh->mTangents[i].y,
+            mesh->mTangents[i].z
+        );
 
         vertices.push_back(vertex);
     }

@@ -1,9 +1,9 @@
-#include "ProfilingPanle.h"
+#include "ProfilingPanel.h"
 
 #include "EditorCore.h"
 #include "VarletFramework.h"
 
-void ProfilingPanle::Update()
+void ProfilingPanel::Update()
 {
 	ImGui::Begin("Stats");
 
@@ -14,7 +14,7 @@ void ProfilingPanle::Update()
 
 	if (ImGui::CollapsingHeader("Graphics", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text("Graphics card: %s", GraphicsInfo::rendererName);
+		//ImGui::Text("Graphics card: %s", GraphicsInfo::rendererName);
 		ImGui::Text("FPS: %f", 1.f / Time::GetDeltaTime());
 		ImGui::Text("Render time: %.3f ms", GraphicsInfo::renderTime);
 	}

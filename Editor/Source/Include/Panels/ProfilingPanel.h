@@ -2,11 +2,11 @@
 
 #include "Panel.h"
 
-class ProfilingPanle final : public Panel
+class ProfilingPanel final : public Panel
 {
 public:
 
-	~ProfilingPanle() = default;
+	~ProfilingPanel() = default;
 
 	void Update() override;
 };
