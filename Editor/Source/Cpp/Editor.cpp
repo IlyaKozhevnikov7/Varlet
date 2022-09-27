@@ -1,5 +1,5 @@
 #include "Editor.h"
-#include "Utils.h"
+#include "EditorUtils.h"
 #include "VarletFramework.h"
 
 #include "EditorCore.h"
@@ -18,6 +18,7 @@
 #include <iostream>
 
 Varlet::GameModule* EditorData::context;
+Entity* EditorData::editorCamera;
 const Entity* EditorData::selectedEntity;
 
 Editor::Editor(Varlet::GameModule* module)
@@ -80,7 +81,7 @@ void Editor::InitImGui()
 	ImGui_ImplGlfw_InitForOpenGL(_window, true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	glfwSetDropCallback(_window, Utils::DropCallback);
+	//glfwSetDropCallback(_window, Utils::DropCallback);
 }
 
 int32_t Editor::PostInit()

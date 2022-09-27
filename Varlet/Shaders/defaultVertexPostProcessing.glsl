@@ -5,6 +5,13 @@ layout(location = 1) in vec2 aTexCoord;
 
 out vec2 uv;
 
+out gl_PerVertex
+{
+	vec4 gl_Position;
+	float gl_PointSize;
+	float gl_ClipDistance[];
+};
+
 void main()
 {
 	uv = aTexCoord;

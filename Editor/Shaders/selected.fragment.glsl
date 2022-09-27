@@ -7,17 +7,17 @@ layout(std140, binding = 0) uniform Camera
     mat4 u_ProjectionView;
     mat4 u_Model;
     vec3 u_CameraPosition;
-    int u_renderId;
 };
+
+uniform uint u_EntityId;
 
 out vec4 fragColor;
 
 void main()
 {
-    const vec3 color = vec3(
-        (u_renderId & 0x000000FF) >> 0,
-        (u_renderId & 0x0000FF00) >> 8,
-        (u_renderId & 0x00FF0000) >> 16) / 255.f;
-
-    fragColor = vec4(color, 0.f);
+    fragColor = vec4(
+            (u_EntityId & 0x000000ff) >> 0, 
+            (u_EntityId & 0x0000ff00) >> 8,
+            (u_EntityId & 0x00ff0000) >> 16,
+            (u_EntityId & 0xff000000) >> 24) / 255.f;
 }

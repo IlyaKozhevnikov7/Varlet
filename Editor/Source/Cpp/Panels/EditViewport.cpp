@@ -14,10 +14,10 @@ void EditViewport::Init()
 	_gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 	_gizmoMode = ImGuizmo::MODE::LOCAL;
 
-	auto camera = Scene::CreateEntity();
-	camera->AddComponent<Transform>();
-	camera->AddComponent<Camera>()->SetActive(true);
-	_camera = camera->AddComponent<EditorCamera>();
+	EditorData::editorCamera = Scene::CreateEntity();
+	EditorData::editorCamera->AddComponent<Transform>();
+	EditorData::editorCamera->AddComponent<Camera>()->SetActive(true);
+	_camera = EditorData::editorCamera->AddComponent<EditorCamera>();
 
 	_camera->InternalStart();
 }
@@ -85,6 +85,7 @@ void EditViewport::UpdateControl()
 		if (ImGui::IsKeyPressed(ImGuiKey_X, false))
 			_gizmoMode = ImGuizmo::MODE::LOCAL;
 	}
+
 }
 
 void EditViewport::UpdateSelect() const
@@ -102,15 +103,15 @@ void EditViewport::UpdateSelect() const
 			ImGui::GetWindowSize().y - mousePos.y + windowPos.y
 		};
 
-		int8_t* pixelInfo = _camera->ReadSelectedPixel(pixelPos.x, pixelPos.y);
-		int32_t id = pixelInfo[0] + pixelInfo[1] * 256 + pixelInfo[2] * 256 * 256;
+		uint8_t* pixelInfo = _camera->ReadSelectedPixel(pixelPos.x, pixelPos.y);
+		uint32_t id = pixelInfo[0]
+			| pixelInfo[1] << 8
+			| pixelInfo[2] << 16
+			| pixelInfo[3] << 24;
 
 		auto find = Scene::Find([&id](Entity* entity)
 			{
-				if (const auto renderer = entity->GetComponent<Renderer>())
-					return renderer->GetRenderId() == id;
-
-				return false;
+				return entity->GetId() == id;
 			});
 
 		EditorData::selectedEntity = find;

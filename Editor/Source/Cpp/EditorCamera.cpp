@@ -10,7 +10,15 @@ void EditorCamera::InternalStart()
 	_selectedCamera = GetOwner()->AddComponent<Camera>();
 
 	_selectedCamera->postProcessing.enable = false;
-	_selectedCamera->SetRenderShader(Varlet::RendererAPI::CreateShader({ "../Editor/Shaders/selected.vertex.glsl", "../Editor/Shaders/selected.fragment.glsl" }));
+	_selectedCamera->SetRenderShader(Varlet::RendererAPI::CreateShader({ "", "../Editor/Shaders/selected.fragment.glsl" }));
+
+	FramebufferConfiguration framebufferConfiguration;
+	framebufferConfiguration.textureConfiguration.wrapType = WrapType::Repeat;
+	framebufferConfiguration.textureConfiguration.filter = FilterType::Linear;
+	framebufferConfiguration.textureConfiguration.format = TextureFormat::RGBA;
+	framebufferConfiguration.textureConfiguration.mipmap = false;
+
+	_selectedCamera->SetFramebufferConfiguration(framebufferConfiguration);
 	_selectedCamera->SetActive(true);
 
 	_transform = GetOwner()->GetComponent<Transform>();
@@ -71,9 +79,9 @@ const Varlet::Texture* EditorCamera::GetRendereTexture() const
 	return _camera->GetTargetTexture();
 }
 
-int8_t* EditorCamera::ReadSelectedPixel(const int32_t& x, const int32_t& y) const
+uint8_t* EditorCamera::ReadSelectedPixel(const int32_t& x, const int32_t& y) const
 {
-	return static_cast<int8_t*>(_selectedCamera->GetFramebuffer()->ReadPixels(x, y));
+	return static_cast<uint8_t*>(_selectedCamera->GetFramebuffer()->ReadPixels(x, y));
 }
 
 void EditorCamera::OnResize(const int32_t& width, const int32_t& height) const

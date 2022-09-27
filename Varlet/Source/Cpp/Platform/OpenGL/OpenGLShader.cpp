@@ -41,6 +41,8 @@ namespace Varlet
 	OpenGLShader::OpenGLShader(const ShaderInitializer&
 		initializer)
 	{
+		_shaderBits = 0x00000000;
+
 		std::string vertexShaderSource = Load(initializer.vertexPath.c_str());
 		std::string fragmentShaderSource = Load(initializer.fragmentPath.c_str());
 		std::string geomtryShaderSource = Load(initializer.geomtryPath.c_str());
@@ -49,41 +51,90 @@ namespace Varlet
 		const uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource.c_str());
 		const uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource.c_str());
 
-		_id = glCreateProgram();
+		GenerateProgram(vertexShaderId, ShaderBit::VertexShaderBit);
+		GenerateProgram(fragmentShaderId, ShaderBit::FragmentShaderBit);
+		GenerateProgram(geomtryShaderId, ShaderBit::GeometryShaderBit);
 
-		TryAttach(vertexShaderId);
-		TryAttach(fragmentShaderId);
-		TryAttach(geomtryShaderId);
-
-		glLinkProgram(_id);
-		Compile(_id, ObjectType::Program);
-
-		if (vertexShaderId != 0)
-			glDeleteShader(vertexShaderId);
-
-		if (fragmentShaderId != 0)
-			glDeleteShader(fragmentShaderId);
-
-		if (geomtryShaderId != 0)
-			glDeleteShader(geomtryShaderId);
-
-		Use();
-		SetupUniforms(vertexShaderSource);
-		SetupUniforms(fragmentShaderSource);
-		SetupUniforms(geomtryShaderSource);
+		SetupUniforms(vertexShaderSource, _programs[ShaderBit::VertexShaderBit]);
+		SetupUniforms(fragmentShaderSource, _programs[ShaderBit::FragmentShaderBit]);
+		SetupUniforms(geomtryShaderSource, _programs[ShaderBit::GeometryShaderBit]);
 	}
 
 	OpenGLShader::~OpenGLShader()
 	{
-		glDeleteProgram(_id);
+		for (auto& program : _programs)
+			glDeleteProgram(program.second);
 	}
 
 	void OpenGLShader::Use() const
 	{
-		glUseProgram(_id);
 	}
 
-	void OpenGLShader::Compile(const uint32_t& objId, const ObjectType& objType) const
+	void OpenGLShader::SetBool(const char* name, const bool& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniform1i(_uniformLocations[name].shaderId, _uniformLocations[name].location, static_cast<int32_t>(value));
+	}
+
+	void OpenGLShader::SetUInt32(const char* name, const uint32_t& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniform1ui(_uniformLocations[name].shaderId, _uniformLocations[name].location, value);
+	}
+
+	void OpenGLShader::SetInt32(const char* name, const int32_t& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniform1i(_uniformLocations[name].shaderId, _uniformLocations[name].location, value);
+	}
+
+	void OpenGLShader::SetFloat(const char* name, const float& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniform1f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value);
+	}
+
+	void OpenGLShader::SetVec2(const char* name, const glm::vec2& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniform2f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value.x, value.y);
+	}
+
+	void OpenGLShader::SetVec3(const char* name, const glm::vec3& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniform3f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value.x, value.y, value.z);
+	}
+
+	void OpenGLShader::SetVec4(const char* name, const glm::vec4& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniform4f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value.x, value.y, value.z, value.w);
+	}
+
+	void OpenGLShader::SetMat3(const char* name, const glm::mat3& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniformMatrix3fv(_uniformLocations[name].shaderId, _uniformLocations[name].location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void OpenGLShader::SetMat4(const char* name, const glm::mat4& value)
+	{
+		if (_uniformLocations.contains(name))
+			glProgramUniformMatrix4fv(_uniformLocations[name].shaderId, _uniformLocations[name].location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	uint32_t OpenGLShader::GetShaderBits() const
+	{
+		return _shaderBits;
+	}
+
+	uint32_t OpenGLShader::GetProgram(const uint32_t& bit)
+	{
+		return _programs[bit];
+	}
+
+	void OpenGLShader::Validate(const uint32_t& objId, const ObjectType& objType) const
 	{
 		int32_t isSuccess;
 		char errorLog[512];
@@ -95,7 +146,7 @@ namespace Varlet
 			if (isSuccess == 0)
 			{
 				glGetProgramInfoLog(objId, sizeof(errorLog), NULL, errorLog);
-				VARLET_LOG(LevelType::Warning, "Shader program link error [program id" + std::to_string(objId) + "] " + errorLog);
+				VARLET_LOG(LevelType::Warning, "Shader program link error [program id " + std::to_string(objId) + "] " + errorLog);
 			}
 		}
 		else
@@ -105,7 +156,7 @@ namespace Varlet
 			if (isSuccess == 0)
 			{
 				glGetShaderInfoLog(objId, sizeof(errorLog), NULL, errorLog);
-				VARLET_LOG(LevelType::Warning, "Shader compile error [shader " + std::to_string(objId) + "] " + errorLog);
+				VARLET_LOG(LevelType::Warning, "Shader compile error [shader id " + std::to_string(objId) + "] " + errorLog);
 			}
 		}
 	}
@@ -137,93 +188,36 @@ namespace Varlet
 		glShaderSource(vertexShaderId, 1, &source, NULL);
 		glCompileShader(vertexShaderId);
 
-		ObjectType objectType;
-
-		switch (type)
-		{
-		case ShaderType::Vertex:
-			objectType = ObjectType::VertexShader;
-			break;
-
-		case ShaderType::Fragment:
-			objectType = ObjectType::FragmentShader;
-			break;
-
-		case ShaderType::Geometry:
-			objectType = ObjectType::GeomertyShader;
-			break;
-
-		default:
-			return 0;
-		}
-
-		Compile(vertexShaderId, objectType);
+		Validate(vertexShaderId, ObjectType::Shader);
 
 		return vertexShaderId;
 	}
 
-	void OpenGLShader::TryAttach(const uint32_t& id) const
+	void OpenGLShader::GenerateProgram(const uint32_t& shaderId, const ShaderBit& bit)
 	{
-		if (id != 0)
-			glAttachShader(_id, id);
+		if (shaderId == 0)
+			return;
+
+		const uint32_t id = glCreateProgram();
+		glProgramParameteri(id, GL_PROGRAM_SEPARABLE, GL_TRUE);
+
+		glAttachShader(id, shaderId);
+		glLinkProgram(id);
+
+		Validate(id, ObjectType::Program);
+
+		glDetachShader(id, shaderId);
+		glDeleteShader(shaderId);
+
+		_programs[bit] = id;
+		_shaderBits |= bit;
 	}
 
-	void OpenGLShader::SetBool(const char* name, const bool& value)
+	void OpenGLShader::SetupUniforms(const std::string& source, const uint32_t& id)
 	{
-		if (_uniformLocations.contains(name))
-			glUniform1i(_uniformLocations[name], static_cast<int32_t>(value));
-	}
+		if (id == 0)
+			return;
 
-	void OpenGLShader::SetUInt32(const char* name, const uint32_t& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniform1ui(_uniformLocations[name], value);
-	}
-
-	void OpenGLShader::SetInt32(const char* name, const int32_t& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniform1i(_uniformLocations[name], value);
-	}
-
-	void OpenGLShader::SetFloat(const char* name, const float& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniform1f(_uniformLocations[name], value);
-	}
-
-	void OpenGLShader::SetVec2(const char* name, const glm::vec2& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniform2f(_uniformLocations[name], value.x, value.y);
-	}
-
-	void OpenGLShader::SetVec3(const char* name, const glm::vec3& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniform3f(_uniformLocations[name], value.x, value.y, value.z);
-	}
-
-	void OpenGLShader::SetVec4(const char* name, const glm::vec4& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniform4f(_uniformLocations[name], value.x, value.y, value.z, value.w);
-	}
-
-	void OpenGLShader::SetMat3(const char* name, const glm::mat3& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniformMatrix3fv(_uniformLocations[name], 1, GL_FALSE, glm::value_ptr(value));
-	}
-
-	void OpenGLShader::SetMat4(const char* name, const glm::mat4& value)
-	{
-		if (_uniformLocations.contains(name))
-			glUniformMatrix4fv(_uniformLocations[name], 1, GL_FALSE, glm::value_ptr(value));
-	}
-
-	void OpenGLShader::SetupUniforms(const std::string& source)
-	{
 		const std::regex reg("uniform\\s+(bool|int|uint|float|double|bvec2|bvec3|bvec4|ivec2|ivec3|ivec4|uvec2|uvec3|uvec4|vec2|vec3|vec4|dvec2|dvec3|dvec4|mat2|mat3|mat4|samplerCube|sampler2D)\\s+(\\w*)", std::regex_constants::ECMAScript);
 		std::smatch matches;
 		std::string suffix = source;
@@ -237,10 +231,10 @@ namespace Varlet
 			if (_types.contains(typeName))
 				_uniformDeclarations.push_back({ uniformName, _types[typeName] });
 
-			const int32_t location = glGetUniformLocation(_id, uniformName);
+			const int32_t location = glGetUniformLocation(id, uniformName);
 			if (location != -1)
 			{
-				_uniformLocations[uniformName] = location;
+				_uniformLocations[uniformName] = { id, location };
 			}
 			else
 			{
@@ -248,8 +242,8 @@ namespace Varlet
 			}
 
 			if (!strcmp(typeName, "sampler2D") || !strcmp(typeName, "samplerCube"))
-			{	
-				glUniform1i(location, textureUnit);
+			{
+				glProgramUniform1i(id, location, textureUnit);
 				textureUnit++;
 			}
 

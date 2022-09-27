@@ -15,18 +15,12 @@ void Camera::OnConstructed()
 	_projection = glm::perspective(glm::radians(_fov), 960.f / 540.f, 0.1f, 250.f);
 	_renderShader = nullptr;
 
-	_framebufferConfiguration =
-	{
-		960,
-		540,
-		{
-			960,
-			540,
-			WrapType::Repeat,
-			FilterType::Linear,
-			false
-		}
-	};
+	_framebufferConfiguration.width = 960;
+	_framebufferConfiguration.height = 540;
+	_framebufferConfiguration.textureConfiguration.wrapType = WrapType::Repeat;
+	_framebufferConfiguration.textureConfiguration.filter = FilterType::Linear;
+	_framebufferConfiguration.textureConfiguration.format = TextureFormat::RGB;
+	_framebufferConfiguration.textureConfiguration.mipmap = false;
 
 	_framebuffer = Varlet::RendererAPI::CreateFrameBuffer(_framebufferConfiguration);
 }

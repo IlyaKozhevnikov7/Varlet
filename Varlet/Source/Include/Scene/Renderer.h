@@ -32,6 +32,8 @@ public:
 
 	virtual const std::vector<Varlet::VertexArray*>* GetVertices() const = 0;
 
+	glm::mat4 GetModelMatrix();
+
 	virtual void OnPreRender();
 };
 

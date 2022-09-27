@@ -22,6 +22,9 @@
 #include "Scene/Transform.h"
 #include "Scene/PointLight.h"
 
+// graphics
+#include "Rendering/Material.h"
+
 // input
 #include "Input/Input.h"
 #include "Platform/Windows/GLFWInput.h" // for key enums

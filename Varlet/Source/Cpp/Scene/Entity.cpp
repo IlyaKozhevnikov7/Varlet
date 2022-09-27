@@ -4,6 +4,11 @@
 
 Event<Entity*, Component*> Entity::NewComponentCreatedEvent;
 
+Entity::Entity()
+{
+	_id = reinterpret_cast<uint32_t>(this);
+}
+
 void Entity::Update()
 {
 	for (auto& script : _scripts)
@@ -21,6 +26,11 @@ void Entity::OnDestroyed()
 		component->OnDestroyed();
 		delete component;
 	}
+}
+
+uint32_t Entity::GetId() const
+{
+	return _id;
 }
 
 const std::vector<Component*>& Entity::GetComponents() const

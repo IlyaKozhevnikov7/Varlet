@@ -79,6 +79,11 @@ void Material::SetShader(Varlet::Shader* newShader)
 	}
 }
 
+const Varlet::Shader* Material::GetShader() const
+{
+	return _shader;
+}
+
 void Material::SetBool(const char* name, const bool& value) const
 {
 	_shader->SetBool(name, value);

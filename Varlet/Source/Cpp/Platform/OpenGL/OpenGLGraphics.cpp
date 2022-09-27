@@ -108,6 +108,9 @@ namespace Varlet
 		
 		GraphicsInfo::rendererName = glGetString(GL_RENDERER);
 
+		glGenProgramPipelines(1, &_mainPipeline);
+		glBindProgramPipeline(_mainPipeline);
+
 #ifdef DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -121,7 +124,7 @@ namespace Varlet
 	void OpenGLGraphics::Update()
 	{
 		PROFILE_OUT(GraphicsInfo::renderTime);
-		
+
 		UpdateIllumination();
 
 		for (const auto& camera : _cameras)
@@ -166,7 +169,7 @@ namespace Varlet
 		
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, camera->GetTargetTexture()->GetId(), 0);
 
-				camera->postProcessing.material->Activate();
+				SetupProgramStages(camera->postProcessing.material);
 
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
@@ -180,6 +183,11 @@ namespace Varlet
 
 			camera->UnBind();
 		}
+	}
+
+	void OpenGLGraphics::Shutdown()
+	{
+		glDeleteProgramPipelines(1, &_mainPipeline);
 	}
 
 	void OpenGLGraphics::UpdateIllumination() const
@@ -231,7 +239,7 @@ namespace Varlet
 			glDisable(GL_DEPTH_TEST);
 	}
 
-	void OpenGLGraphics::Render(const RendererData& rendererData, const Shader* customShader) const
+	void OpenGLGraphics::Render(const RendererData& rendererData, Shader* customShader) const
 	{
 		if (rendererData.renderer->isVisible == false)
 			return;
@@ -243,13 +251,26 @@ namespace Varlet
 		rendererData.renderer->OnPreRender();
 
 		_globalData->Bind();
-		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(rendererData.transform->GetModelMatrix()));
-		_globalData->SetData(sizeof(glm::mat4) * 4 + sizeof(glm::vec3), sizeof(int32_t), &rendererData.renderer->GetRenderId());
+		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(rendererData.renderer->GetModelMatrix()));
 
 		if (customShader != nullptr)
 		{
-			customShader->Use();
-			Draw(*vertices);
+			// TODO remove casts
+			const auto& shader = static_cast<OpenGLShader*>(customShader);
+			shader->SetUInt32("u_EntityId", rendererData.renderer->GetOwner()->GetId());
+
+			const uint32_t customShaderBits = shader->GetShaderBits();
+			const uint32_t materialShaderBits = (GL_VERTEX_SHADER_BIT | GL_FRAGMENT_SHADER_BIT | GL_GEOMETRY_SHADER_BIT) ^ customShaderBits;
+
+			SetupProgramStages(customShaderBits, shader);
+
+			for (const auto& material : rendererData.renderer->materials)
+			{
+				const auto& materialShader = static_cast<OpenGLShader*>(const_cast<Shader*>(material->GetShader()));
+				SetupProgramStages(materialShaderBits, materialShader);
+
+				Draw(*vertices);
+			}
 		}
 		else
 		{
@@ -257,7 +278,10 @@ namespace Varlet
 			{
 				if (material->isActive == false)
 					continue;
+			
+				const auto& shader = static_cast<OpenGLShader*>(const_cast<Shader*>(material->GetShader()));
 
+				SetupProgramStages(shader->GetShaderBits(), shader);
 				SetupMaterial(material);
 
 				Draw(*vertices);
@@ -285,6 +309,28 @@ namespace Varlet
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 
 		glEnable(GL_DEPTH_TEST);
+	}
+
+	void OpenGLGraphics::SetupProgramStages(const uint32_t& stages, OpenGLShader* shader) const
+	{
+		for (int32_t offest = 0; offest < 3; offest++)
+		{
+			// 3 = its supported bits amount
+			// now rendering support only vertex, fragment and geometry shaders
+
+			const uint32_t current = 0x00000001 << offest;
+
+			if ((current & stages) == current)
+				glUseProgramStages(_mainPipeline, current, shader->GetProgram(current));
+		}
+	}
+
+	void OpenGLGraphics::SetupProgramStages(const Material* material) const
+	{
+		SetupMaterial(material);
+
+		const auto& shader = static_cast<OpenGLShader*>(const_cast<Shader*>(material->GetShader()));
+		SetupProgramStages(shader->GetShaderBits(), shader);
 	}
 
 	uint32_t OpenGLUtils::CreateStackTexture(const int32_t& width, const int32_t& height)

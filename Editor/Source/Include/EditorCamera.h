@@ -34,7 +34,7 @@ public:
 
 	const Varlet::Texture* GetRendereTexture() const;
 
-	int8_t* ReadSelectedPixel(const int32_t& x, const int32_t& y) const;
+	uint8_t* ReadSelectedPixel(const int32_t& x, const int32_t& y) const;
 
 	void OnResize(const int32_t& width, const int32_t& height) const;
 };

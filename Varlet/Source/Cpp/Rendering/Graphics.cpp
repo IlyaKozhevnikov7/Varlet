@@ -27,9 +27,7 @@ namespace Varlet
 			rendererAPIInitializer->InitRendererAPI();
 			_globalData = RendererAPI::CreateUniformBuffer(
 				sizeof(glm::mat4) * 4 + // view | projection | projection-view | model
-				sizeof(glm::vec3) + // camera position
-				sizeof(int32_t) // render id
-				);
+				sizeof(glm::vec3)); // camera position
 
 			_illuminationData = RendererAPI::CreateUniformBuffer(
 				(sizeof(int32_t) + sizeof(glm::vec4) * 2 + sizeof(float) * 2 + sizeof(int32_t)) * 10 // point light sizeof(isActive + position + color + linear attenuation + quadratic attenuation + padding 4 bytes) * amount (now 10)

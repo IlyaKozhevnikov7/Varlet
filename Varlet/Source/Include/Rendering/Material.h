@@ -77,6 +77,8 @@ public:
 
 	void SetShader(Varlet::Shader* newShader);
 
+	const Varlet::Shader* GetShader() const;
+
 	void SetBool(const char* name, const bool& value) const;
 
 	void SetUInt32(const char* name, const uint32_t& value) const;
