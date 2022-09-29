@@ -11,7 +11,10 @@ namespace Varlet
 {
 	Shader* OpenGLRendererAPI::CreateShader(const ShaderInitializer& initializer) const
 	{
-		return new OpenGLShader(initializer);
+		auto shader = new OpenGLShader(initializer);
+		OpenGLShaderCache::Add(shader);
+
+		return shader;
 	}
 
 	Framebuffer* OpenGLRendererAPI::CreateFrameBuffer(FramebufferConfiguration& configuration) const

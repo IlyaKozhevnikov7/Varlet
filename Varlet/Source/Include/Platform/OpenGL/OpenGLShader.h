@@ -87,4 +87,17 @@ namespace Varlet
 
 		void SetupUniforms(const std::string& source, const uint32_t& id);
 	};
+
+	class OpenGLShaderCache final
+	{
+	private:
+
+		static std::unordered_map<size_t, OpenGLShader*> cache;
+
+	public:
+
+		static void Add(OpenGLShader* shader);
+
+		static OpenGLShader* Get(const Shader* shader);
+	};
 }

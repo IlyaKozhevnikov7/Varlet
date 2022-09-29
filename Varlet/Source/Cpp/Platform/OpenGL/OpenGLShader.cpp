@@ -250,4 +250,28 @@ namespace Varlet
 			suffix = matches.suffix();
 		}
 	}
+
+	// -------------------- OpenGLShaderCache --------------------
+
+	std::unordered_map<size_t, OpenGLShader*> OpenGLShaderCache::cache;
+
+	void OpenGLShaderCache::Add(OpenGLShader* shader)
+	{
+		const size_t address = reinterpret_cast<size_t>(shader);
+		assert(cache.contains(address) == false);
+
+		cache[address] = shader;
+	}
+
+	OpenGLShader* OpenGLShaderCache::Get(const Shader* shader)
+	{
+		const size_t address = reinterpret_cast<size_t>(shader);
+
+		if (cache.contains(address))
+			return cache[address];
+
+		return nullptr;
+	}
+
+
 }

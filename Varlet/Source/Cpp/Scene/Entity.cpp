@@ -6,7 +6,7 @@ Event<Entity*, Component*> Entity::NewComponentCreatedEvent;
 
 Entity::Entity()
 {
-	_id = reinterpret_cast<uint32_t>(this);
+	_id = reinterpret_cast<size_t>(this);
 }
 
 void Entity::Update()

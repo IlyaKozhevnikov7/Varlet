@@ -255,8 +255,7 @@ namespace Varlet
 
 		if (customShader != nullptr)
 		{
-			// TODO remove casts
-			const auto& shader = static_cast<OpenGLShader*>(customShader);
+			const auto& shader = OpenGLShaderCache::Get(customShader);
 			shader->SetUInt32("u_EntityId", rendererData.renderer->GetOwner()->GetId());
 
 			const uint32_t customShaderBits = shader->GetShaderBits();
@@ -266,7 +265,7 @@ namespace Varlet
 
 			for (const auto& material : rendererData.renderer->materials)
 			{
-				const auto& materialShader = static_cast<OpenGLShader*>(const_cast<Shader*>(material->GetShader()));
+				const auto& materialShader = OpenGLShaderCache::Get(material->GetShader());
 				SetupProgramStages(materialShaderBits, materialShader);
 
 				Draw(*vertices);
@@ -278,8 +277,8 @@ namespace Varlet
 			{
 				if (material->isActive == false)
 					continue;
-			
-				const auto& shader = static_cast<OpenGLShader*>(const_cast<Shader*>(material->GetShader()));
+
+				const auto& shader = OpenGLShaderCache::Get(material->GetShader());
 
 				SetupProgramStages(shader->GetShaderBits(), shader);
 				SetupMaterial(material);

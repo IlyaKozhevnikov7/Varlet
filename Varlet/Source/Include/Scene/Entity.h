@@ -13,7 +13,7 @@ public:
 
 private:
 
-	uint32_t _id;
+	size_t _id;
 	std::vector<Component*> _components;
 	std::vector<Script*> _scripts;
 
