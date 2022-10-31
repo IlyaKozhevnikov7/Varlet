@@ -1,5 +1,6 @@
 #include "Panels/DockSpace.h"
 #include "EditorCore.h"
+#include "EditorUtils.h"
 
 void DockSpace::Update()
 {
@@ -24,13 +25,21 @@ void DockSpace::Update()
 	ImGui::Begin("DockSpace", nullptr, windowFlags);
 	ImGui::DockSpace(ImGui::GetID("DockSpace"), ImVec2(0.0f, 0.0f), dockspaceFlags);
 
+	ImGui::PopStyleVar(3);
+
 	if (ImGui::BeginMenuBar())
 	{
-		if (ImGui::BeginMenu("Scene"))
+		if (ImGui::BeginMenu("Entities"))
 		{
-			if (ImGui::MenuItem("New Scene"))
+			if (ImGui::BeginMenu("Add Light"))
 			{
-				VARLET_LOG(LevelType::Normal, "New Scene Pressed");
+				if (ImGui::MenuItem("Add Point Light"))
+				{
+					EditorUtils::CreatePointLight();
+					VARLET_LOG(LevelType::Normal, "Add Point Light");
+				}
+
+				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenu();
@@ -39,6 +48,5 @@ void DockSpace::Update()
 		ImGui::EndMenuBar();
 	}
 
-	ImGui::PopStyleVar(3);
 	ImGui::End();
 }

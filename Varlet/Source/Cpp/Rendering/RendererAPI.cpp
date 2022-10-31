@@ -31,7 +31,7 @@ namespace Varlet
 		return _api->CreateTexture(configuration);
 	}
 
-	std::shared_ptr<Texture> RendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration)
+	Texture* RendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration)
 	{
 		return _api->LoadTexture(configuration);
 	}

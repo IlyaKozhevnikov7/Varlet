@@ -3,7 +3,7 @@
 #include "Texture.h"
 #include "Material.h"
 
-EMPTY_PROPERTY_BLOCK(TextureRenderer);
+EMPTY_PROPERTY_BLOCK(TextureRenderer)
 
 std::vector<Varlet::VertexArray*> TextureRenderer::_vertices;
 

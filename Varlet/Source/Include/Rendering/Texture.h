@@ -16,12 +16,21 @@ enum class FilterType : uint8_t
 	Nearers
 };
 
+enum class TextureFormat : uint8_t
+{
+	RGB = 0,
+	RGB111110,
+	RGBA,
+	RGBA111110
+};
+
 struct TextureConfiguration
 {
 	int32_t width;
 	int32_t height;
 	WrapType wrapType;
 	FilterType filter;
+	TextureFormat format;
 	bool mipmap;
 };
 

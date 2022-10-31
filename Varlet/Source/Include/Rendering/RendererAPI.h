@@ -31,7 +31,7 @@ namespace Varlet
 
 		virtual Texture* CreateTexture(const TextureConfiguration& configuration) const = 0;
 
-		virtual std::shared_ptr<Texture> LoadTexture(const LoadableTextureConfiguration& configuration) const = 0;
+		virtual Texture* LoadTexture(const LoadableTextureConfiguration& configuration) const = 0;
 
 		virtual VertexArray* CreateVertexArray(const VertexArrayData& configuration) const = 0;
 
@@ -54,7 +54,7 @@ namespace Varlet
 
 		CORE_API static Texture* CreateTexture(const TextureConfiguration& configuration);
 
-		CORE_API static std::shared_ptr<Texture> LoadTexture(const LoadableTextureConfiguration& configuration);
+		CORE_API static Texture* LoadTexture(const LoadableTextureConfiguration& configuration);
 
 		CORE_API static UniformBuffer* CreateUniformBuffer(const int64_t& size);
 

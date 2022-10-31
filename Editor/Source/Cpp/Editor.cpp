@@ -86,7 +86,7 @@ void Editor::InitImGui()
 
 int32_t Editor::PostInit()
 {
-	for (auto panel : _panels)
+	for (auto& panel : _panels)
 		panel->Init();
 
 	return EditorData::context->PostInit();

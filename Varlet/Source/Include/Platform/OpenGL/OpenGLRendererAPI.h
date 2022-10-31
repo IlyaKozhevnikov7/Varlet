@@ -9,7 +9,7 @@ namespace Varlet
 	{
 	private:
 
-		mutable std::unordered_map<std::string, std::shared_ptr<Texture>> _textureBuffer;
+		mutable std::unordered_map<std::string, Texture*> _textureBuffer;
 
 	public:
 		
@@ -21,7 +21,7 @@ namespace Varlet
 
 		Texture* CreateTexture(const TextureConfiguration& configuration) const override;
 
-		std::shared_ptr<Texture> LoadTexture(const LoadableTextureConfiguration& configuration) const override;
+		Texture* LoadTexture(const LoadableTextureConfiguration& configuration) const override;
 
 		UniformBuffer* CreateUniformBuffer(const int64_t& size) const override;
 

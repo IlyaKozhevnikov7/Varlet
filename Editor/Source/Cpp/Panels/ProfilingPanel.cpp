@@ -14,7 +14,7 @@ void ProfilingPanel::Update()
 
 	if (ImGui::CollapsingHeader("Graphics", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		//ImGui::Text("Graphics card: %s", GraphicsInfo::rendererName);
+		ImGui::Text("Graphics card: %s", GraphicsInfo::rendererName);
 		ImGui::Text("FPS: %f", 1.f / Time::GetDeltaTime());
 		ImGui::Text("Render time: %.3f ms", GraphicsInfo::renderTime);
 	}

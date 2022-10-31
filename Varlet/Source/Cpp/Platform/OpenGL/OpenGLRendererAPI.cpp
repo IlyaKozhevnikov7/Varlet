@@ -27,10 +27,10 @@ namespace Varlet
 		return new OpenGLTexture(configuration);
 	}
 
-	std::shared_ptr<Texture> OpenGLRendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration) const
+	Texture* OpenGLRendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration) const
 	{
 		if (_textureBuffer.contains(configuration.path) == false)
-			_textureBuffer[configuration.path] = std::make_shared<OpenGLTexture>(configuration);
+			_textureBuffer[configuration.path] = new OpenGLTexture(configuration);
 
 		return _textureBuffer[configuration.path];
 	}

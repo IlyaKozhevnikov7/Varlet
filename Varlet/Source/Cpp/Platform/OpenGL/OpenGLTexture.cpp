@@ -6,6 +6,40 @@
 
 namespace Varlet
 {
+	static int32_t CalculateFormat(const TextureFormat& format)
+	{
+		switch (format)
+		{
+		case TextureFormat::RGB:
+		case TextureFormat::RGB111110:
+			return GL_RGB;
+
+		case TextureFormat::RGBA:
+		case TextureFormat::RGBA111110:
+			return GL_RGBA;
+
+		default:
+			return GL_RGB;
+		}
+	}
+
+	static int32_t CalculateType(const TextureFormat& format)
+	{
+		switch (format)
+		{
+		case TextureFormat::RGB:
+		case TextureFormat::RGBA:
+			return GL_UNSIGNED_BYTE;
+
+		case TextureFormat::RGB111110:
+		case TextureFormat::RGBA111110:
+			return GL_R11F_G11F_B10F;
+
+		default:
+			return GL_UNSIGNED_BYTE;
+		}
+	}
+
 	OpenGLTexture::OpenGLTexture(const TextureConfiguration& configuration)
 	{
 		glGenTextures(1, &_id);
@@ -13,7 +47,10 @@ namespace Varlet
 		_width = configuration.width;
 		_height = configuration.height;
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+		const int32_t format = CalculateFormat(configuration.format);
+		const int32_t type = CalculateType(configuration.format);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, format, _width, _height, 0, format, type, nullptr);
 		Configurate(configuration);
 
 		glBindTexture(GL_TEXTURE_2D, 0);

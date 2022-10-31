@@ -297,7 +297,7 @@ void PropertyPanel::DisplaySampler2DProperty(const Varlet::Property* property) c
 			configuration.path = path;
 			auto newTexture = Varlet::RendererAPI::LoadTexture(configuration);
 
-			*texturePtr = newTexture.get();
+			*texturePtr = newTexture;
 		}
 		ImGui::EndDragDropTarget();
 	}

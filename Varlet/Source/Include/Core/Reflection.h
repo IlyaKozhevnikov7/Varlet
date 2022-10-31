@@ -182,5 +182,6 @@ namespace Varlet
 	#define START_PROPERTY_BLOCK(Type)
 	#define END_PROPERTY_BLOCK
 	#define PROPERTY(Name, Value)
+	#define TYPED_PROPERTY(Name, Value, Type)
 	#define ARRAY(Name, Value)
 #endif // META

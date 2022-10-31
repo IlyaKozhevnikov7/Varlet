@@ -38,8 +38,7 @@ namespace Varlet
 		{ "samplerCube",	Type::SamplerCube }
 	};
 
-	OpenGLShader::OpenGLShader(const ShaderInitializer&
-		initializer)
+	OpenGLShader::OpenGLShader(const ShaderInitializer& initializer)
 	{
 		_shaderBits = 0x00000000;
 
