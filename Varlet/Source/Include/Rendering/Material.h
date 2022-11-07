@@ -63,11 +63,7 @@ public:
 private:
 
 	Varlet::Shader* _shader;
-	mutable std::unordered_map<std::string, Varlet::Texture*> _textures;
-
-#ifdef META
 	mutable std::vector<void*> _uniformValues;
-#endif // META
 
 public:
 
@@ -101,10 +97,6 @@ public:
 
 private:
 
-	void BindTextures() const;
-
-#ifdef META
 	void SetUniform(const char* name, void* value, const Varlet::Type& type) const;
-#endif // META
 };
 

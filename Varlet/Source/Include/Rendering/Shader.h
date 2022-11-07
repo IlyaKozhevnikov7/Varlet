@@ -8,6 +8,7 @@ namespace Varlet
 }
 
 class Material;
+class Texture;
 
 namespace Varlet
 {
@@ -51,5 +52,7 @@ namespace Varlet
 		virtual void SetMat3(const char* name, const glm::mat3& value) = 0;
 
 		virtual void SetMat4(const char* name, const glm::mat4& value) = 0;
+
+		virtual void SetTexture(const char* name, const Texture* texture) = 0;
 	};
 }

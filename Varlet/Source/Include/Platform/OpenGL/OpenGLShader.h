@@ -40,6 +40,7 @@ namespace Varlet
 	private:
 
 		std::unordered_map<std::string, UniformInfo> _uniformLocations;
+		std::unordered_map<std::string, int32_t> _textureUtits;
 		std::unordered_map<uint32_t, uint32_t> _programs;
 		uint32_t _shaderBits;
 
@@ -68,6 +69,8 @@ namespace Varlet
 		void SetMat3(const char* name, const glm::mat3& value) override;
 
 		void SetMat4(const char* name, const glm::mat4& value) override;
+
+		void SetTexture(const char* name, const Texture* texture) override;
 
 		// Internal API
 

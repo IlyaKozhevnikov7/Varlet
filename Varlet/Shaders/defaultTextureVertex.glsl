@@ -43,18 +43,22 @@ void main()
     fragPos = vec3(u_Model * vec4(aPos, 1.f));
     tbn = CalculateTBN(u_Model, aNormal, aTangent);
 
-    mat4 finalMatrix = u_ProjectionView * u_Model;
-
     if (u_FaceToCamera)
     {
-        const float d = sqrt(finalMatrix[0][0] * finalMatrix[0][0]
-                           + finalMatrix[1][1] * finalMatrix[1][1]
-                           + finalMatrix[2][2] * finalMatrix[2][2]);
+        mat4 finalMatrix = u_ProjectionView * u_Model;
 
-        finalMatrix[0] = vec4(d,  0.f,    0.f,      u_Model[0][3]);
-        finalMatrix[1] = vec4(0.f,  d,    0.f,      u_Model[1][3]);
-        finalMatrix[2] = vec4(0.f,  0.f,    d,      u_Model[2][3]);
+        const float d = sqrt(u_Model[0][0] * u_Model[0][0]
+                           + u_Model[1][1] * u_Model[1][1]
+                           + u_Model[2][2] * u_Model[2][2]);
+        
+        finalMatrix[0] = vec4(d,  0.f,    0.f,  u_Model[0][3]);
+        finalMatrix[1] = vec4(0.f,  d,    0.f,  u_Model[1][3]);
+        finalMatrix[2] = vec4(0.f,  0.f,    d,  u_Model[2][3]);
+
+        gl_Position = finalMatrix * vec4(aPos, 1.f);
     }
-
-	gl_Position = finalMatrix * vec4(aPos, 1.f);
+    else
+    {
+        gl_Position = u_ProjectionView * u_Model * vec4(aPos, 1.f);
+    }
 }

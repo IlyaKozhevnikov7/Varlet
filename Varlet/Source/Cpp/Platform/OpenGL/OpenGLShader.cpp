@@ -123,6 +123,15 @@ namespace Varlet
 			glProgramUniformMatrix4fv(_uniformLocations[name].shaderId, _uniformLocations[name].location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
+	void OpenGLShader::SetTexture(const char* name, const Texture* texture)
+	{
+		if (_textureUtits.contains(name))
+		{
+			glActiveTexture(GL_TEXTURE0 + _textureUtits[name]);
+			glBindTexture(GL_TEXTURE_2D, texture->GetId());
+		}
+	}
+
 	uint32_t OpenGLShader::GetShaderBits() const
 	{
 		return _shaderBits;
@@ -231,6 +240,8 @@ namespace Varlet
 				_uniformDeclarations.push_back({ uniformName, _types[typeName] });
 
 			const int32_t location = glGetUniformLocation(id, uniformName);
+			const bool isTexture = !strcmp(typeName, "sampler2D") || !strcmp(typeName, "samplerCube");
+
 			if (location != -1)
 			{
 				_uniformLocations[uniformName] = { id, location };
@@ -240,9 +251,10 @@ namespace Varlet
 				VARLET_LOG(LevelType::Warning, "Uniform variable " + *uniformName + *" is not used");
 			}
 
-			if (!strcmp(typeName, "sampler2D") || !strcmp(typeName, "samplerCube"))
+			if (isTexture)
 			{
 				glProgramUniform1i(id, location, textureUnit);
+				_textureUtits[uniformName] = textureUnit;
 				textureUnit++;
 			}
 
