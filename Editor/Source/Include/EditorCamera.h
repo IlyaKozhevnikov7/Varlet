@@ -8,11 +8,11 @@ private:
 
 	Camera* _camera;
 	Camera* _selectedCamera;
-
 	Transform* _transform;
 
 	float _sensitivity = 0.2f;
 	glm::vec2 _lastMousePos;
+	glm::ivec2 _contentSize;
 
 	float _speed = 10.f;
 
@@ -32,9 +32,9 @@ public:
 
 	const Camera* GetCore() const;
 
-	const Varlet::Texture* GetRendereTexture() const;
+	const void* GetRendereTexture() const;
 
-	uint8_t* ReadSelectedPixel(const int32_t& x, const int32_t& y) const;
+	std::vector<uint8_t> ReadSelectedPixel(const int32_t& x, const int32_t& y) const;
 
 	void OnResize(const int32_t& width, const int32_t& height) const;
 };

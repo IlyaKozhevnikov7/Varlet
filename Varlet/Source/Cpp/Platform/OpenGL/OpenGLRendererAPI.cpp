@@ -1,38 +1,31 @@
-#include "OpenGLRendererAPI.h"
-#include "OpenGLShader.h"
-#include "OpenGLUniformBuffer.h"
-#include "OpenGLFramebuffer.h"
-#include "OpenGLTexture.h"
-#include "OpenGLVertexArray.h"
+#include "OpenGL/OpenGLRendererAPI.h"
+#include "OpenGL/OpenGLUniformBuffer.h"
+#include "OpenGL/OpenGLVertexArray.h"
 
-#include <glad/glad.h>
+// new
+#include "OpenGL/ObjectMap.h"
+#include "OpenGL/Camera.h"
+#include "OpenGL/Utils.h"
+
+#include "OpenGL/Shader.h"
+#include "OpenGL/Texture.h"
 
 namespace Varlet
 {
 	Shader* OpenGLRendererAPI::CreateShader(const ShaderInitializer& initializer) const
 	{
-		auto shader = new OpenGLShader(initializer);
-		OpenGLShaderCache::Add(shader);
-
+		const auto& shader = new OpenGL::Shader(initializer);
+		OpenGL::ShaderCache::Add(shader);
+		
 		return shader;
 	}
 
-	Framebuffer* OpenGLRendererAPI::CreateFrameBuffer(FramebufferConfiguration& configuration) const
+	Texture* OpenGLRendererAPI::CreateTexture(const LoadableTextureConfiguration& configuration) const
 	{
-		return new OpenGLFramebuffer(configuration);
-	}
+		auto texture = new OpenGL::Texture(configuration);
+		OpenGL::ObjectMap::Register(texture);
 
-	Texture* OpenGLRendererAPI::CreateTexture(const TextureConfiguration& configuration) const
-	{
-		return new OpenGLTexture(configuration);
-	}
-
-	Texture* OpenGLRendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration) const
-	{
-		if (_textureBuffer.contains(configuration.path) == false)
-			_textureBuffer[configuration.path] = new OpenGLTexture(configuration);
-
-		return _textureBuffer[configuration.path];
+		return texture;
 	}
 
 	UniformBuffer* OpenGLRendererAPI::CreateUniformBuffer(const int64_t& size) const
@@ -43,5 +36,45 @@ namespace Varlet
 	VertexArray* OpenGLRendererAPI::CreateVertexArray(const VertexArrayData& data) const
 	{
 		return new OpenGLVertexArray(data);
+	}
+
+	Texture* OpenGLRendererAPI::GetTextureOf(Camera* camera) const
+	{
+		auto glCamera = OpenGL::ObjectMap::GetCamera(camera);
+		return OpenGL::Utils::GLTextureToVarletTexture(glCamera->framebuffer.attachments[0]);
+	}
+
+	void OpenGLRendererAPI::ChangeResolution(Camera* camera) const
+	{
+		auto glCamera = OpenGL::ObjectMap::GetCamera(camera);
+
+		int32_t width, height;
+		camera->GetResolution(width, height);
+		glCamera->Resize(width, height, camera->dynamicResolution);
+	}
+
+	void OpenGLRendererAPI::GetFramebufferSize(Camera* camera, int32_t& width, int32_t& height) const
+	{
+		auto glCamera = OpenGL::ObjectMap::GetCamera(camera);
+		width = glCamera->framebuffer.width;
+		height = glCamera->framebuffer.height;
+	}
+
+	std::vector<uint8_t> OpenGLRendererAPI::ReadRenderTexturePixels(Camera* camera, const int32_t& x, const int32_t& y, const int32_t& width, const int32_t& height, const uint32_t& attachment) const
+	{
+		auto glCamera = OpenGL::ObjectMap::GetCamera(camera);
+		return glCamera->ReadPixels(x, y, width, height, attachment);
+	}
+
+	// TODO rename NativeTextureOf
+	const void* OpenGLRendererAPI::GetNativeRenderTexture(Camera* camera, const uint32_t& attachment) const
+	{
+		auto glCamera = OpenGL::ObjectMap::GetCamera(camera);
+		return static_cast<const void*>(&glCamera->framebuffer.attachments[attachment]);
+	}
+
+	const void* OpenGLRendererAPI::GetNativeTexture(Texture* texture) const
+	{
+		return reinterpret_cast<const void*>(OpenGL::ObjectMap::GetTexture(texture));
 	}
 }

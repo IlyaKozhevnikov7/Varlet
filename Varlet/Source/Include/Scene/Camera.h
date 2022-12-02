@@ -2,7 +2,7 @@
 
 #include "VarletCore.h"
 #include "Script.h"
-#include "Rendering/RenderingCore.h"
+#include "Rendering/Shader.h"
 
 struct PostProcessing final
 {
@@ -17,6 +17,7 @@ class CORE_API Camera final : public Script
 public:
 
 	PostProcessing postProcessing;
+	bool dynamicResolution;
 
 private:
 
@@ -26,10 +27,7 @@ private:
 	float _fov;
 	glm::vec2 _resolution;
 
-	Varlet::Framebuffer* _framebuffer;
 	Varlet::Shader* _renderShader;
-
-	FramebufferConfiguration _framebufferConfiguration;
 
 public:
 
@@ -39,27 +37,19 @@ public:
 
 	void Update() override;
 
-	const Varlet::Framebuffer* GetFramebuffer() const;
-
 	const glm::mat4& GetView() const;
 
 	const glm::mat4& GetProjection() const;
 
 	const glm::mat4 GetViewProjection() const;
 
-	const Varlet::Texture* GetTargetTexture() const;
-	
-	void SetFramebufferConfiguration(const FramebufferConfiguration& configuration);
+	const Varlet::Texture* GetTargetTexture();
 
-	void ResizeView(const int32_t& width, const int32_t& height);
+	void ChangeResolution(const int32_t& width, const int32_t& height);
 
 	void GetResolution(int32_t& width, int32_t& height) const;
 
 	void SetRenderShader(Varlet::Shader* shader);
-
-	void Bind() const;
-
-	void UnBind() const;
 
 	Varlet::Shader* GetRenderShader();
 

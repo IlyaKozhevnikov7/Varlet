@@ -35,8 +35,6 @@ void Material::Activate() const
 {
 	assert(isActive);
 
-	_shader->Use();
-
 	for (int32_t i = 0; i < _shader->_uniformDeclarations.size(); i++)
 		SetUniform(_shader->_uniformDeclarations[i].first, _uniformValues[i], _shader->_uniformDeclarations[i].second);
 }
@@ -136,7 +134,7 @@ void Material::SetMat4(const char* name, const glm::mat4& value) const
 	SET_UNIFORM_VALUE(name, value, glm::mat4);
 }
 
-void Material::SetSampler2D(const char* name, Varlet::Texture* value) const
+void Material::SetTexture(const char* name, Varlet::Texture* value) const
 {
 	SET_UNIFORM_PTR(name, value);
 }
@@ -185,11 +183,8 @@ void Material::SetUniform(const char* name, void* value, const Varlet::Type& typ
 		break;
 
 	case Varlet::Type::Sampler2D:
-	{
-		if (value != nullptr)
-			_shader->SetTexture(name, static_cast<Varlet::Texture*>(value));
-	}
-	break;
+		_shader->SetTexture(name, value != nullptr ? static_cast<Varlet::Texture*>(value) : nullptr);
+		break;
 
 	default:
 		break;

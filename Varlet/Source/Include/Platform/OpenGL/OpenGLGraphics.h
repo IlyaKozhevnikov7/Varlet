@@ -2,35 +2,34 @@
 
 #include "RenderingCore.h"
 #include "OpenGLRendererAPI.h"
+#include "OpenGL/Camera.h"
 
+class Camera;
 class Mesh;
 class Material;
 
 namespace Varlet
 {
-	class OpenGLShader;
-
-	// test settings, now only for opengl
-	struct OpenGLSettings
+	namespace OpenGL
 	{
-	public:
-
-		bool blending = true;
-		bool cullFace = false;
-	};
+		class Shader;
+	}
 
 	class OpenGLGraphics final : public Graphics, public IRendererAPIInitializer<OpenGLRendererAPI>
 	{
 	private:
 
-		OpenGLSettings _settings;
+		std::vector<RendererData> _rendererData;
+		LightSourceData _lightSources;
+
+		UniformBuffer* _globalData;
+		UniformBuffer* _illuminationData;
+
 		uint32_t _mainPipeline;
 
 	public:
 
-		~OpenGLGraphics() override = default;
-
-		const OpenGLSettings& GetSettings();
+		~OpenGLGraphics() override;
 
 		int32_t Init() override;
 
@@ -50,9 +49,13 @@ namespace Varlet
 
 		void PostDraw() const;
 
-		void SetupProgramStages(const uint32_t& stages, OpenGLShader* shader) const;
+		void SetupProgramStages(const uint32_t& stages, OpenGL::Shader* shader) const;
 
 		void SetupProgramStages(const Material* material) const;
+
+		void InitWithEngine();
+
+		void OnNewComponentCreated(Entity* entity, Component* ñomponent);
 	};
 
 	class OpenGLUtils

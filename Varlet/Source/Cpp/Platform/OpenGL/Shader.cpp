@@ -1,14 +1,18 @@
-#include "OpenGLShader.h"
+#include "OpenGL/Shader.h"
 #include <regex>
 #include <fstream>
 #include <sstream>
 
 #include "Core/Reflection.h"
 
+#include "OpenGL/ObjectMap.h"
+
 #include "glad/glad.h"
 
-namespace Varlet
+namespace Varlet::OpenGL
 {
+	std::unordered_map<ShaderInitializer, Shader*> Shader::_loaded;
+
 	static std::unordered_map<std::string, Type> _types =
 	{
 		{ "bool",			Type::Bool },
@@ -38,111 +42,107 @@ namespace Varlet
 		{ "samplerCube",	Type::SamplerCube }
 	};
 
-	OpenGLShader::OpenGLShader(const ShaderInitializer& initializer)
+	Shader::Shader(const ShaderInitializer& initializer) : Varlet::Shader()
 	{
 		_shaderBits = 0x00000000;
-
+		
 		std::string vertexShaderSource = Load(initializer.vertexPath.c_str());
 		std::string fragmentShaderSource = Load(initializer.fragmentPath.c_str());
 		std::string geomtryShaderSource = Load(initializer.geomtryPath.c_str());
-
+		
 		const uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertexShaderSource.c_str());
 		const uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource.c_str());
 		const uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource.c_str());
-
+		
 		GenerateProgram(vertexShaderId, ShaderBit::VertexShaderBit);
 		GenerateProgram(fragmentShaderId, ShaderBit::FragmentShaderBit);
 		GenerateProgram(geomtryShaderId, ShaderBit::GeometryShaderBit);
-
+		
 		SetupUniforms(vertexShaderSource, _programs[ShaderBit::VertexShaderBit]);
 		SetupUniforms(fragmentShaderSource, _programs[ShaderBit::FragmentShaderBit]);
 		SetupUniforms(geomtryShaderSource, _programs[ShaderBit::GeometryShaderBit]);
 	}
 
-	OpenGLShader::~OpenGLShader()
+	Shader::~Shader()
 	{
 		for (auto& program : _programs)
 			glDeleteProgram(program.second);
 	}
 
-	void OpenGLShader::Use() const
-	{
-	}
-
-	void OpenGLShader::SetBool(const char* name, const bool& value)
+	void Shader::SetBool(const char* name, const bool& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniform1i(_uniformLocations[name].shaderId, _uniformLocations[name].location, static_cast<int32_t>(value));
 	}
 
-	void OpenGLShader::SetUInt32(const char* name, const uint32_t& value)
+	void Shader::SetUInt32(const char* name, const uint32_t& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniform1ui(_uniformLocations[name].shaderId, _uniformLocations[name].location, value);
 	}
 
-	void OpenGLShader::SetInt32(const char* name, const int32_t& value)
+	void Shader::SetInt32(const char* name, const int32_t& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniform1i(_uniformLocations[name].shaderId, _uniformLocations[name].location, value);
 	}
 
-	void OpenGLShader::SetFloat(const char* name, const float& value)
+	void Shader::SetFloat(const char* name, const float& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniform1f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value);
 	}
 
-	void OpenGLShader::SetVec2(const char* name, const glm::vec2& value)
+	void Shader::SetVec2(const char* name, const glm::vec2& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniform2f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value.x, value.y);
 	}
 
-	void OpenGLShader::SetVec3(const char* name, const glm::vec3& value)
+	void Shader::SetVec3(const char* name, const glm::vec3& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniform3f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value.x, value.y, value.z);
 	}
 
-	void OpenGLShader::SetVec4(const char* name, const glm::vec4& value)
+	void Shader::SetVec4(const char* name, const glm::vec4& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniform4f(_uniformLocations[name].shaderId, _uniformLocations[name].location, value.x, value.y, value.z, value.w);
 	}
 
-	void OpenGLShader::SetMat3(const char* name, const glm::mat3& value)
+	void Shader::SetMat3(const char* name, const glm::mat3& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniformMatrix3fv(_uniformLocations[name].shaderId, _uniformLocations[name].location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::SetMat4(const char* name, const glm::mat4& value)
+	void Shader::SetMat4(const char* name, const glm::mat4& value)
 	{
 		if (_uniformLocations.contains(name))
 			glProgramUniformMatrix4fv(_uniformLocations[name].shaderId, _uniformLocations[name].location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::SetTexture(const char* name, const Texture* texture)
+	void Shader::SetTexture(const char* name, const Varlet::Texture* texture)
 	{
 		if (_textureUtits.contains(name))
 		{
 			glActiveTexture(GL_TEXTURE0 + _textureUtits[name]);
-			glBindTexture(GL_TEXTURE_2D, texture->GetId());
+			glBindTexture(GL_TEXTURE_2D, texture != nullptr ? *ObjectMap::GetTexture(texture) : 0);
 		}
 	}
 
-	uint32_t OpenGLShader::GetShaderBits() const
+	uint32_t Shader::GetShaderBits() const
 	{
 		return _shaderBits;
 	}
 
-	uint32_t OpenGLShader::GetProgram(const uint32_t& bit)
+	uint32_t Shader::GetProgram(const uint32_t& bit)
 	{
 		return _programs[bit];
 	}
 
-	void OpenGLShader::Validate(const uint32_t& objId, const ObjectType& objType) const
+	void Shader::Validate(const uint32_t& objId, const ObjectType& objType) const
 	{
 		int32_t isSuccess;
 		char errorLog[512];
@@ -169,7 +169,7 @@ namespace Varlet
 		}
 	}
 
-	std::string OpenGLShader::Load(const char* path) const
+	std::string Shader::Load(const char* path) const
 	{
 		std::ifstream stream;
 		stream.open(path);
@@ -187,7 +187,7 @@ namespace Varlet
 		}
 	}
 
-	const uint32_t OpenGLShader::GenerateShader(const ShaderType&& type, const char* source) const
+	const uint32_t Shader::GenerateShader(const ShaderType&& type, const char* source) const
 	{
 		if (source[0] == '\0')
 			return 0;
@@ -201,7 +201,7 @@ namespace Varlet
 		return vertexShaderId;
 	}
 
-	void OpenGLShader::GenerateProgram(const uint32_t& shaderId, const ShaderBit& bit)
+	void Shader::GenerateProgram(const uint32_t& shaderId, const ShaderBit& bit)
 	{
 		if (shaderId == 0)
 			return;
@@ -221,7 +221,7 @@ namespace Varlet
 		_shaderBits |= bit;
 	}
 
-	void OpenGLShader::SetupUniforms(const std::string& source, const uint32_t& id)
+	void Shader::SetupUniforms(const std::string& source, const uint32_t& id)
 	{
 		if (id == 0)
 			return;
@@ -264,25 +264,23 @@ namespace Varlet
 
 	// -------------------- OpenGLShaderCache --------------------
 
-	std::unordered_map<size_t, OpenGLShader*> OpenGLShaderCache::cache;
-
-	void OpenGLShaderCache::Add(OpenGLShader* shader)
+	std::unordered_map<int32_t, Shader*> ShaderCache::cache;
+	
+	void ShaderCache::Add(Shader* shader)
 	{
-		const size_t address = reinterpret_cast<size_t>(shader);
-		assert(cache.contains(address) == false);
-
-		cache[address] = shader;
+		const int32_t id = shader->GetId();
+		assert(cache.contains(id) == false);
+		
+		cache[id] = shader;
 	}
-
-	OpenGLShader* OpenGLShaderCache::Get(const Shader* shader)
+	
+	Shader* ShaderCache::Get(const Varlet::Shader* shader)
 	{
-		const size_t address = reinterpret_cast<size_t>(shader);
-
-		if (cache.contains(address))
-			return cache[address];
-
+		const int32_t id = shader->GetId();
+		
+		if (cache.contains(id))
+			return cache[id];
+	
 		return nullptr;
 	}
-
-
 }

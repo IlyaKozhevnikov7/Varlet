@@ -11,7 +11,7 @@ namespace ImGuizmo
 class EditorCamera;
 struct ImVec2;
 
-class EditViewport final : public Panel
+class EditorViewport final : public Panel
 {
 private:
 
@@ -21,7 +21,7 @@ private:
 
 public:
 
-	~EditViewport() override;
+	~EditorViewport() override;
 
 	void Init() override;
 

@@ -35,25 +35,12 @@ namespace Varlet
 		// Spotlights
 	};
 
-	class Graphics : public Module, public IUpdatebleModule
+	class CORE_API Graphics : public Module, public IUpdatebleModule
 	{
-	protected:
-
-		std::vector<Camera*> _cameras;
-		std::vector<RendererData> _rendererData;
-		LightSourceData _lightSources;
-
-		UniformBuffer* _globalData;
-		UniformBuffer* _illuminationData;
-
 	public:
 
-		~Graphics() override;
+		~Graphics() override = default;
 
 		virtual int32_t Init() override;
-
-	private:
-
-		void OnNewComponentCreated(Entity* entity, Component* ñomponent);
 	};
 }

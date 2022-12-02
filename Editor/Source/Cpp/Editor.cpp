@@ -3,7 +3,7 @@
 #include "VarletFramework.h"
 
 #include "EditorCore.h"
-#include "EditViewport.h"
+#include "EditorViewport.h"
 #include "DockSpace.h"
 #include "SceneTree.h"
 #include "PropertyPanel.h"
@@ -26,7 +26,7 @@ Editor::Editor(Varlet::GameModule* module)
 	_panels =
 	{
 		new DockSpace(),
-		new EditViewport(),
+		new EditorViewport(),
 		new SceneTree(),
 		new PropertyPanel(),
 		new ContentBrowserPanel(),
@@ -77,9 +77,9 @@ void Editor::InitImGui()
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
-	
+
 	ImGui_ImplGlfw_InitForOpenGL(_window, true);
-	ImGui_ImplOpenGL3_Init("#version 460");
+	ImGui_ImplOpenGL3_Init();
 
 	//glfwSetDropCallback(_window, Utils::DropCallback);
 }
@@ -108,10 +108,10 @@ void Editor::Update()
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
 
-	for (auto panel : _panels)
+	for (auto& panel : _panels)
 		panel->Update();
 
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	// Rendering
 	ImGui::Render();
@@ -124,7 +124,7 @@ void Editor::Update()
 
 	// Update and Render additional Platform Windows
 	// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-	//  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+	// For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		GLFWwindow* backup_current_context = glfwGetCurrentContext();

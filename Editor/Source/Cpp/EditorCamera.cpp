@@ -1,25 +1,20 @@
 #include "EditorCamera.h"
 #include "Rendering/Material.h"
+#include "Rendering/RendererAPI.h"
+
+bool s = false;
 
 void EditorCamera::InternalStart()
 {
 	_camera = GetOwner()->GetComponent<Camera>();
+	_camera->dynamicResolution = true;
 	_camera->postProcessing.enable = false;
-	_camera->postProcessing.material = new Material(Varlet::RendererAPI::CreateShader({ "../Varlet/Shaders/defaultVertexPostProcessing.glsl", "../Varlet/Shaders/defaultFragmentPostProcessing.glsl" }));
+	_camera->postProcessing.material = new Material(Varlet::RendererAPI::CreateShader({ "W:/Varlet/Varlet/Shaders/defaultVertexPostProcessing.glsl", "W:/Varlet/Varlet/Shaders/defaultFragmentPostProcessing.glsl" }));
 
 	_selectedCamera = GetOwner()->AddComponent<Camera>();
-
+	_selectedCamera->dynamicResolution = true;
 	_selectedCamera->postProcessing.enable = false;
-	_selectedCamera->SetRenderShader(Varlet::RendererAPI::CreateShader({ "", "../Editor/Shaders/selected.fragment.glsl" }));
-
-	FramebufferConfiguration framebufferConfiguration;
-	framebufferConfiguration.textureConfiguration.wrapType = WrapType::Repeat;
-	framebufferConfiguration.textureConfiguration.filter = FilterType::Linear;
-	framebufferConfiguration.textureConfiguration.format = TextureFormat::RGBA;
-	framebufferConfiguration.textureConfiguration.mipmap = false;
-
-	_selectedCamera->SetFramebufferConfiguration(framebufferConfiguration);
-	_selectedCamera->SetActive(true);
+	_selectedCamera->SetRenderShader(Varlet::RendererAPI::CreateShader({ "", "W:/Varlet/Editor/Shaders/selected.fragment.glsl" }));
 
 	_transform = GetOwner()->GetComponent<Transform>();
 
@@ -54,6 +49,8 @@ void EditorCamera::UpdateMoveAndRotation()
 
 	if (Input::GetKey(Key::S, KeyState::Press))
 		_transform->Translate(_transform->GetForward() * _speed * Time::GetDeltaTime());
+
+	s = Input::GetKey(Key::Q, KeyState::Press);
 }
 
 void EditorCamera::SetControl(const bool&& control)
@@ -74,18 +71,29 @@ const Camera* EditorCamera::GetCore() const
 	return _camera;
 }
 
-const Varlet::Texture* EditorCamera::GetRendereTexture() const
+const void* EditorCamera::GetRendereTexture() const
 {
-	return _camera->GetTargetTexture();
+	return Varlet::RendererAPI::GetNativeRenderTexture(_camera);
 }
 
-uint8_t* EditorCamera::ReadSelectedPixel(const int32_t& x, const int32_t& y) const
+std::vector<uint8_t> EditorCamera::ReadSelectedPixel(const int32_t& x, const int32_t& y) const
 {
-	return static_cast<uint8_t*>(_selectedCamera->GetFramebuffer()->ReadPixels(x, y));
+	int32_t renderResolutionWidth, renderResolutionHeight, resolutionWidth, resolutionHeight;
+
+	Varlet::RendererAPI::GetFramebufferSize(_selectedCamera, renderResolutionWidth, renderResolutionHeight);
+	_selectedCamera->GetResolution(resolutionWidth, resolutionHeight);
+	
+	const glm::ivec2 correctPixel =
+	{
+		static_cast<float>(x) * (static_cast<float>(renderResolutionWidth) / static_cast<float>(resolutionWidth)),
+		static_cast<float>(y) * (static_cast<float>(renderResolutionHeight) / static_cast<float>(resolutionHeight))
+	};
+
+	return Varlet::RendererAPI::ReadRenderTexturePixels(_selectedCamera, correctPixel.x, correctPixel.y);
 }
 
 void EditorCamera::OnResize(const int32_t& width, const int32_t& height) const
 {
-	_camera->ResizeView(width, height);
-	_selectedCamera->ResizeView(width, height);
+	_camera->ChangeResolution(width, height);
+	_selectedCamera->ChangeResolution(width, height);
 }

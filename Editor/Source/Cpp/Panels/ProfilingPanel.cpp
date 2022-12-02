@@ -2,6 +2,7 @@
 
 #include "EditorCore.h"
 #include "VarletFramework.h"
+#include "Rendering/Graphics.h"
 
 void ProfilingPanel::Update()
 {

@@ -1,5 +1,4 @@
 #include "PropertyPanel.h"
-
 #include "EditorCore.h"
 #include "VarletFramework.h"
 
@@ -273,11 +272,13 @@ void PropertyPanel::DisplaySampler2DProperty(const Varlet::Property* property) c
 	if (texturePtr == nullptr)
 		return;
 
-	const uint32_t previewTextureId = *texturePtr == nullptr ? 0 : static_cast<Varlet::Texture*>(*texturePtr)->GetId();
+	const ImTextureID textureID = *texturePtr == nullptr
+		? 0 
+		: NATIVE_TEXTURE_TO_IMTEXTUREID(Varlet::RendererAPI::GetNativeTexture(*texturePtr));
 
 	ImGui::PushID(texturePtr);
 
-	ImGui::ImageButton(reinterpret_cast<ImTextureID>(previewTextureId), { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 }, 1);
+	ImGui::ImageButton(textureID, { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 }, 1);
 
 	if (ImGui::BeginPopupContextItem("TextureContext"))
 	{
@@ -292,12 +293,7 @@ void PropertyPanel::DisplaySampler2DProperty(const Varlet::Property* property) c
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(TEXTURE_FILE_PAYLOAD))
 		{
 			auto path = static_cast<const char*>(payload->Data);
-
-			LoadableTextureConfiguration configuration;
-			configuration.path = path;
-			auto newTexture = Varlet::RendererAPI::LoadTexture(configuration);
-
-			*texturePtr = newTexture;
+			*texturePtr = Varlet::Texture::Load(path);
 		}
 		ImGui::EndDragDropTarget();
 	}

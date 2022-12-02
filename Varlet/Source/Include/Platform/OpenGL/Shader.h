@@ -1,9 +1,14 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "RenderingCore.h"
+#include "Rendering/Shader.h"
 
 namespace Varlet
+{
+	class Texture;
+}
+
+namespace Varlet::OpenGL
 {
 	enum ShaderType : uint32_t
 	{
@@ -23,7 +28,7 @@ namespace Varlet
 		AllShaderBits = 0xFFFFFFFF
 	};
 
-	class OpenGLShader final : public Shader
+	class Shader final : public Varlet::Shader
 	{
 		enum class ObjectType : uint8_t
 		{
@@ -39,6 +44,8 @@ namespace Varlet
 
 	private:
 
+		static std::unordered_map<ShaderInitializer, Shader*> _loaded;
+
 		std::unordered_map<std::string, UniformInfo> _uniformLocations;
 		std::unordered_map<std::string, int32_t> _textureUtits;
 		std::unordered_map<uint32_t, uint32_t> _programs;
@@ -46,11 +53,9 @@ namespace Varlet
 
 	public:
 
-		OpenGLShader(const ShaderInitializer& initializer);
+		Shader(const ShaderInitializer& initializer);
 
-		~OpenGLShader() override;
-
-		void Use() const override;
+		~Shader() override;
 
 		void SetBool(const char* name, const bool& value) override;
 
@@ -70,7 +75,7 @@ namespace Varlet
 
 		void SetMat4(const char* name, const glm::mat4& value) override;
 
-		void SetTexture(const char* name, const Texture* texture) override;
+		void SetTexture(const char* name, const Varlet::Texture* texture) override;
 
 		// Internal API
 
@@ -91,16 +96,16 @@ namespace Varlet
 		void SetupUniforms(const std::string& source, const uint32_t& id);
 	};
 
-	class OpenGLShaderCache final
+	struct ShaderCache final
 	{
 	private:
-
-		static std::unordered_map<size_t, OpenGLShader*> cache;
-
+	
+		static std::unordered_map<int32_t, Shader*> cache;
+	
 	public:
-
-		static void Add(OpenGLShader* shader);
-
-		static OpenGLShader* Get(const Shader* shader);
+	
+		static void Add(Shader* shader);
+	
+		static Shader* Get(const Varlet::Shader* shader);
 	};
 }

@@ -2,6 +2,8 @@
 
 #include "VarletCore.h"
 
+enum class Type : uint8_t;
+
 namespace Varlet
 {
 	struct Vertex
@@ -14,11 +16,21 @@ namespace Varlet
 		glm::vec3 tangent;
 	};
 
+	struct LayoutBinding final
+	{
+	public:
+
+		Type type;
+		uint64_t size;
+		void* data;
+	};
+
 	struct VertexArrayData
 	{
 	public:
 
-		std::vector<Varlet::Vertex> vertices;
+		std::vector<LayoutBinding> bindings;
+		std::vector<struct Vertex> vertices;
 		std::vector<uint32_t> indices;
 	};
 
@@ -26,7 +38,7 @@ namespace Varlet
 	{
 	public:
 
-		std::vector<Vertex> vertices;
+		std::vector<struct Vertex> vertices;
 		std::vector<uint32_t> indices;
 
 	public:

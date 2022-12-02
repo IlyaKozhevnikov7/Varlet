@@ -1,13 +1,20 @@
-#include "OpenGLGraphics.h"
-#include "OpenGLShader.h"
-#include "OpenGLVertexArray.h"
+#include "OpenGL/OpenGLGraphics.h"
+#include "OpenGL/OpenGLVertexArray.h"
+
 #include "VarletAPI.h"
 #include "Transform.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "Camera.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+
+// new
+#include "OpenGL/ObjectMap.h"
+#include "OpenGL/Camera.h"
+#include "OpenGL/Shader.h"
+#include "OpenGL/Texture.h"
 
 static int32_t ConvertToGlFunc(const StensilFunction& func)
 {
@@ -76,9 +83,10 @@ static void DebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity,
 
 namespace Varlet
 {
-	const OpenGLSettings& OpenGLGraphics::GetSettings()
+	OpenGLGraphics::~OpenGLGraphics()
 	{
-		return _settings;
+		delete _globalData;
+		delete _illuminationData;
 	}
 
 	int32_t OpenGLGraphics::Init()
@@ -97,16 +105,21 @@ namespace Varlet
 
 		glFrontFace(GL_CCW);
 
-		if (_settings.blending)
-			glEnable(GL_BLEND);
+		glEnable(GL_BLEND);
 
-		if (_settings.cullFace)
-		{
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
-		}
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 		
 		GraphicsInfo::rendererName = glGetString(GL_RENDERER);
+
+		GLint numberOfExtensions;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &numberOfExtensions);
+		
+		for (GLint i = 0; i < numberOfExtensions; i++)
+		{
+			const GLubyte* extension = glGetStringi(GL_EXTENSIONS, i);
+			VARLET_LOG(LevelType::Normal, (char*)extension);
+		}
 
 		glGenProgramPipelines(1, &_mainPipeline);
 		glBindProgramPipeline(_mainPipeline);
@@ -118,70 +131,72 @@ namespace Varlet
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 #endif // DEBUG
 
-		return Graphics::Init();
+		// TODO make return Graphics::Init() when redo this moduel with internal api
+		const int32_t result = Graphics::Init();
+		InitWithEngine();
+
+		return result;
 	}
 
 	void OpenGLGraphics::Update()
 	{
 		PROFILE_OUT(GraphicsInfo::renderTime);
-
+		
 		UpdateIllumination();
-
-		for (const auto& camera : _cameras)
+		
+		for (auto[cameraComponent, camera] : OpenGL::ObjectMap::GetCameras())
 		{
-			if (camera->IsActive() == false)
+			if (cameraComponent->IsActive() == false)
 				continue;
-
+		
 			_globalData->Bind();
-			_globalData->SetData(0, sizeof(glm::mat4), glm::value_ptr(camera->GetView()));
-			_globalData->SetData(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(camera->GetProjection()));
-			_globalData->SetData(sizeof(glm::mat4) * 2, sizeof(glm::mat4), glm::value_ptr(camera->GetViewProjection()));
-			_globalData->SetData(sizeof(glm::mat4) * 4, sizeof(glm::vec3), glm::value_ptr(camera->GetOwner()->GetComponent<Transform>()->position));
-
-			int32_t width, height;
-			camera->GetResolution(width, height);
-			glViewport(0, 0, width, height);
-
-			const bool withPostProcessing = camera->postProcessing.enable && camera->postProcessing.material != nullptr;
+			_globalData->SetData(0,						sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetView()));
+			_globalData->SetData(sizeof(glm::mat4),		sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetProjection()));
+			_globalData->SetData(sizeof(glm::mat4) * 2,	sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetViewProjection()));
+			_globalData->SetData(sizeof(glm::mat4) * 4,	sizeof(glm::vec3), glm::value_ptr(cameraComponent->GetOwner()->GetComponent<Transform>()->position));
+		
+			const bool withPostProcessing = cameraComponent->postProcessing.enable && cameraComponent->postProcessing.material != nullptr;
 			uint32_t postProcessingTexture;
+		
+			glViewport(0, 0, camera->framebuffer.width, camera->framebuffer.height);
 
-			camera->Bind();
-
-			if (withPostProcessing)
-			{
-				postProcessingTexture = OpenGLUtils::CreateStackTexture(width, height);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
-			}
-
+			camera->framebuffer.Bind();
+		
+			//if (withPostProcessing)
+			//{
+			//	postProcessingTexture = OpenGLUtils::CreateStackTexture(camera.width, camera.height);
+			//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
+			//}
+		
 			glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-			const auto& shader = camera->GetRenderShader();
-
+		
+			const auto& shader = cameraComponent->GetRenderShader();
+		
 			for (const auto& data : _rendererData)
 				Render(data, shader);
-
-			if (withPostProcessing)
-			{
-				glDisable(GL_DEPTH_TEST);
-
-				const static auto screenVAO = OpenGLUtils::CreateScreenVAO();
 		
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, camera->GetTargetTexture()->GetId(), 0);
-
-				SetupProgramStages(camera->postProcessing.material);
-
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
-
-				glBindVertexArray(screenVAO);
-				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			
-				glEnable(GL_DEPTH_TEST);
-				glDeleteTextures(1, &postProcessingTexture);
-			}
-
-			camera->UnBind();
+			//if (withPostProcessing)
+			//{
+			//	glDisable(GL_DEPTH_TEST);
+			//
+			//	const static auto screenVAO = OpenGLUtils::CreateScreenVAO();
+			//
+			//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, component->GetTargetTexture()->GetId(), 0);
+			//
+			//	SetupProgramStages(component->postProcessing.material);
+			//
+			//	glActiveTexture(GL_TEXTURE0);
+			//	glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
+			//
+			//	glBindVertexArray(screenVAO);
+			//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			//
+			//	glEnable(GL_DEPTH_TEST);
+			//	glDeleteTextures(1, &postProcessingTexture);
+			//}
+		
+			camera->framebuffer.UnBind();
 		}
 	}
 
@@ -255,19 +270,20 @@ namespace Varlet
 
 		if (customShader != nullptr)
 		{
-			const auto& shader = OpenGLShaderCache::Get(customShader);
+			const auto& shader = OpenGL::ShaderCache::Get(customShader);
 			shader->SetUInt32("u_EntityId", rendererData.renderer->GetOwner()->GetId());
-
+			
 			const uint32_t customShaderBits = shader->GetShaderBits();
 			const uint32_t materialShaderBits = (GL_VERTEX_SHADER_BIT | GL_FRAGMENT_SHADER_BIT | GL_GEOMETRY_SHADER_BIT) ^ customShaderBits;
-
+			
 			SetupProgramStages(customShaderBits, shader);
-
+			
 			for (const auto& material : rendererData.renderer->materials)
 			{
-				const auto& materialShader = OpenGLShaderCache::Get(material->GetShader());
+				const auto& materialShader = OpenGL::ShaderCache::Get(material->GetShader());
 				SetupProgramStages(materialShaderBits, materialShader);
-
+				SetupMaterial(material);
+			
 				Draw(*vertices);
 			}
 		}
@@ -278,7 +294,7 @@ namespace Varlet
 				if (material->isActive == false)
 					continue;
 
-				const auto& shader = OpenGLShaderCache::Get(material->GetShader());
+				const auto& shader = OpenGL::ShaderCache::Get(material->GetShader());
 
 				SetupProgramStages(shader->GetShaderBits(), shader);
 				SetupMaterial(material);
@@ -310,7 +326,8 @@ namespace Varlet
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	void OpenGLGraphics::SetupProgramStages(const uint32_t& stages, OpenGLShader* shader) const
+	// TODO make one parameter
+	void OpenGLGraphics::SetupProgramStages(const uint32_t& stages, OpenGL::Shader* shader) const
 	{
 		for (int32_t offest = 0; offest < 3; offest++)
 		{
@@ -318,7 +335,7 @@ namespace Varlet
 			// now rendering support only vertex, fragment and geometry shaders
 
 			const uint32_t current = 0x00000001 << offest;
-
+			
 			if ((current & stages) == current)
 				glUseProgramStages(_mainPipeline, current, shader->GetProgram(current));
 		}
@@ -328,8 +345,49 @@ namespace Varlet
 	{
 		SetupMaterial(material);
 
-		const auto& shader = static_cast<OpenGLShader*>(const_cast<Shader*>(material->GetShader()));
+		const auto& shader = OpenGL::ShaderCache::Get(material->GetShader());
 		SetupProgramStages(shader->GetShaderBits(), shader);
+	}
+
+	void OpenGLGraphics::InitWithEngine()
+	{
+		Entity::NewComponentCreatedEvent.Bind(this, &OpenGLGraphics::OnNewComponentCreated);
+
+		_globalData = RendererAPI::CreateUniformBuffer(
+			sizeof(glm::mat4) * 4 + // view | projection | projection-view | model
+			sizeof(glm::vec3)); // camera position
+
+		_illuminationData = RendererAPI::CreateUniformBuffer(
+			(sizeof(int32_t) + sizeof(glm::vec4) * 2 + sizeof(float) * 2 + sizeof(int32_t)) * 10 // point light sizeof(isActive + position + color + linear attenuation + quadratic attenuation + padding 4 bytes) * amount (now 10)
+		);
+	}
+
+	void OpenGLGraphics::OnNewComponentCreated(Entity* entity, Component* ñomponent)
+	{
+		if (const auto renderer = dynamic_cast<Renderer*>(ñomponent))
+		{
+			assert(entity->HasComponent<Transform>());
+			_rendererData.push_back({ renderer, entity->GetComponent<Transform>() });
+			VARLET_LOG(LevelType::Normal, "Entity added new renderer");
+			return;
+		}
+
+		if (const auto camera = dynamic_cast<Camera*>(ñomponent))
+		{
+			OpenGL::ObjectMap::Register(camera);
+			return;
+		}
+
+		if (dynamic_cast<LightSource*>(ñomponent))
+		{
+			if (const auto pointLight = dynamic_cast<PointLight*>(ñomponent))
+			{
+				assert(entity->HasComponent<Transform>());
+				_lightSources.pointLights.push_back({ pointLight, entity->GetComponent<Transform>() });
+				VARLET_LOG(LevelType::Normal, "Entity added new point light");
+				return;
+			}
+		}
 	}
 
 	uint32_t OpenGLUtils::CreateStackTexture(const int32_t& width, const int32_t& height)

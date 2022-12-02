@@ -80,8 +80,7 @@ Varlet::VertexArray* Mesh::ConstructSubMesh(const aiScene* scene, aiMesh* mesh)
         vertex.tangent = glm::vec3(
             mesh->mTangents[i].x,
             mesh->mTangents[i].y,
-            mesh->mTangents[i].z
-        );
+            mesh->mTangents[i].z);
 
         vertices.push_back(vertex);
     }
@@ -94,5 +93,7 @@ Varlet::VertexArray* Mesh::ConstructSubMesh(const aiScene* scene, aiMesh* mesh)
             indices.push_back(face.mIndices[j]);
     }
     
-    return Varlet::RendererAPI::CreateVertexArray({ vertices ,indices });
+    std::vector<Varlet::LayoutBinding> bindings;
+
+    return Varlet::RendererAPI::CreateVertexArray({ {}, vertices, indices });
 }

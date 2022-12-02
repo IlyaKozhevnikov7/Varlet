@@ -5,13 +5,13 @@
 
 namespace Varlet
 {
-	class CORE_API TimeModule : public Module
+	class CORE_API TimeModule : public Module, public IUpdatebleModule
 	{
 	public:
 
-		virtual int32_t Init() override;
+		~TimeModule() override = default;
 
-		virtual void UpdateTime() = 0;
+		virtual int32_t Init() override;
 
 		virtual float GetTime() = 0;
 

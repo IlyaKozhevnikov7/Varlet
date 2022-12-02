@@ -3,16 +3,16 @@
 
 namespace Varlet
 {
-	void GLFWTime::UpdateTime()
+	void GLFWTime::Update()
 	{
-		const float now = static_cast<float>(glfwGetTime());
-		_delta = now - _lastUpdate;
-		_lastUpdate = now;
+		_now = static_cast<float>(glfwGetTime());
+		_delta = _now - _lastUpdate;
+		_lastUpdate = _now;
 	}
 
 	float GLFWTime::GetTime()
 	{
-		return glfwGetTime();
+		return _now;
 	}
 
 	float GLFWTime::GetDeltaTime()

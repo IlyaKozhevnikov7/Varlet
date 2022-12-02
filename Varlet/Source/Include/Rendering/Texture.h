@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VarletCore.h"
+#include "Utils\IIndexed.h"
 
 enum class WrapType : uint8_t
 {
@@ -19,47 +20,57 @@ enum class FilterType : uint8_t
 enum class TextureFormat : uint8_t
 {
 	RGB = 0,
-	RGB111110,
 	RGBA,
-	RGBA111110
-};
-
-struct TextureConfiguration
-{
-	int32_t width;
-	int32_t height;
-	WrapType wrapType;
-	FilterType filter;
-	TextureFormat format;
-	bool mipmap;
-};
-
-struct LoadableTextureConfiguration : public TextureConfiguration
-{
-	const char* path;
-	bool flipUV;
+	RGB111110F,
+	RGB16F,
+	RGBA16F,
+	RGB32F,
+	RGBA32F
 };
 
 namespace Varlet
 {
-	class CORE_API Texture
+	struct LoadableTextureConfiguration final
 	{
+		int32_t width;
+		int32_t height;
+		TextureFormat format;
+		const void* data;
+		bool mipmap;
+		WrapType wrapType;
+		FilterType filter;
+	};
+
+	class CORE_API Texture : public IIndexed<Texture, uint32_t>
+	{
+	private:
+
+		static std::unordered_map<std::string, Texture*> _loaded;
+
 	protected:
 
-		uint32_t _id;
-		int32_t _width;
-		int32_t _height;
+		int32_t _width = 0;
+		int32_t _height = 0;
+		TextureFormat _format;
 
-	public:
+	protected:
 
 		Texture() = default;
 
-		virtual ~Texture() = default;
+	public:
 
-		virtual void Activate(const uint32_t& unit) const = 0;
+		static Texture* Load(const char* path, const bool& mipmap = true, const bool& flipUV = true, const WrapType& wrapType = WrapType::Repeat, const FilterType& filter = FilterType::Linear);
 
-		const uint32_t& GetId() const;
+		virtual ~Texture() override = default;
 
-		void GetResolution(int32_t* width, int32_t* height) const;
+		int32_t GetWidth() const;
+
+		int32_t GetHeight() const;
+
+		TextureFormat GetFormat() const;
+
+	private:
+
+		static void* Load(const char* path, const bool& flipUV, TextureFormat& format, int32_t& width, int32_t& height);
 	};
 }

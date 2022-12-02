@@ -1,57 +1,57 @@
-#include "EditViewport.h"
+#include "EditorViewport.h"
 #include "EditorCore.h"
 #include "VarletFramework.h"
 #include "EditorCamera.h"
 #include "Rendering/Texture.h"
 
-EditViewport::~EditViewport()
+EditorViewport::~EditorViewport()
 {
 	delete _camera;
 }
 
-void EditViewport::Init()
+void EditorViewport::Init()
 {
 	_gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 	_gizmoMode = ImGuizmo::MODE::LOCAL;
-
+	
 	EditorData::editorCamera = Scene::CreateEntity();
 	EditorData::editorCamera->AddComponent<Transform>();
-	EditorData::editorCamera->AddComponent<Camera>()->SetActive(true);
+	EditorData::editorCamera->AddComponent<Camera>();
 	_camera = EditorData::editorCamera->AddComponent<EditorCamera>();
-
+	
 	_camera->InternalStart();
 }
 
-void EditViewport::Update()
+void EditorViewport::Update()
 {
 	_camera->InternalUpdate();
 
 	UpdateView();
 }
 
-void EditViewport::UpdateView()
+void EditorViewport::UpdateView()
 {
 	constexpr ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
-
+	
 	ImGui::Begin("Viewport", nullptr, windowFlags);
-
+	
 	UpdateControl();
-
+	
 	if (_camera->IsControlled() == false && ImGuizmo::IsOver() == false)
 		UpdateSelect();
-
+	
 	const auto currentSize = ImGui::GetContentRegionAvail();
-
+	
 	UpdateContent(currentSize);
 	UpdateGizmo(currentSize);
 	UpdateCameraResolution(currentSize);
-
+	
 	ImGui::PopStyleVar();
 	ImGui::End();
 }
 
-void EditViewport::UpdateControl()
+void EditorViewport::UpdateControl()
 {
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
 	{
@@ -85,10 +85,9 @@ void EditViewport::UpdateControl()
 		if (ImGui::IsKeyPressed(ImGuiKey_X, false))
 			_gizmoMode = ImGuizmo::MODE::LOCAL;
 	}
-
 }
 
-void EditViewport::UpdateSelect() const
+void EditorViewport::UpdateSelect() const
 {
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 	{
@@ -103,28 +102,27 @@ void EditViewport::UpdateSelect() const
 			ImGui::GetWindowSize().y - mousePos.y + windowPos.y
 		};
 
-		uint8_t* pixelInfo = _camera->ReadSelectedPixel(pixelPos.x, pixelPos.y);
+		std::vector<uint8_t> pixelInfo = _camera->ReadSelectedPixel(pixelPos.x, pixelPos.y);
 		uint32_t id = pixelInfo[0]
 			| pixelInfo[1] << 8
 			| pixelInfo[2] << 16
 			| pixelInfo[3] << 24;
-
+		
 		auto find = Scene::Find([&id](Entity* entity)
 			{
 				return entity->GetId() == id;
 			});
-
+		
 		EditorData::selectedEntity = find;
 	}
 }
 
-void EditViewport::UpdateContent(const ImVec2& contentSize) const
+void EditorViewport::UpdateContent(const ImVec2& contentSize) const
 {
-	const auto texture = _camera->GetRendereTexture();
-	ImGui::Image(reinterpret_cast<ImTextureID>(texture->GetId()), contentSize, ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image(NATIVE_TEXTURE_TO_IMTEXTUREID(_camera->GetRendereTexture()), contentSize, ImVec2(0, 1), ImVec2(1, 0));
 }
 
-void EditViewport::UpdateGizmo(const ImVec2& contentSize) const
+void EditorViewport::UpdateGizmo(const ImVec2& contentSize) const
 {
 	if (EditorData::selectedEntity == nullptr)
 		return;
@@ -154,7 +152,7 @@ void EditViewport::UpdateGizmo(const ImVec2& contentSize) const
 	}
 }
 
-void EditViewport::UpdateCameraResolution(const ImVec2& resolution) const
+void EditorViewport::UpdateCameraResolution(const ImVec2& resolution) const
 {
 	static ImVec2 lastSize;
 

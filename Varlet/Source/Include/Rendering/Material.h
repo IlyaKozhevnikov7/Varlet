@@ -93,7 +93,7 @@ public:
 
 	void SetMat4(const char* name, const glm::mat4& value) const;
 
-	void SetSampler2D(const char* name, Varlet::Texture* value) const;
+	void SetTexture(const char* name, Varlet::Texture* value) const;
 
 private:
 

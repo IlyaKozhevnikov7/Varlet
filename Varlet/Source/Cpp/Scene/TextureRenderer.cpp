@@ -1,6 +1,7 @@
 #include "TextureRenderer.h"
+#include "Rendering/RendererAPI.h"
+#include "Rendering/Texture.h"
 #include "VertexArray.h"
-#include "Texture.h"
 #include "Material.h"
 
 EMPTY_PROPERTY_BLOCK(TextureRenderer)
@@ -14,7 +15,9 @@ void TextureRenderer::OnConstructed()
 	if (_vertices.size() == 0)
 	{
 		_vertices.push_back(Varlet::RendererAPI::CreateVertexArray(
+			
 		{
+			{},
 			{
 				{{ -0.5f,  0.5f, 0.f }, { 0.f, 0.f, -1.f }, { 0.f, 1.f }},
 				{{ -0.5f, -0.5f, 0.f }, { 0.f, 0.f, -1.f }, { 0.f, 0.f }},
@@ -40,12 +43,10 @@ void TextureRenderer::SetTexture(Varlet::Texture* texture)
 	{
 		_texture = texture;
 
-		int32_t width, height;
-		_texture->GetResolution(&width, &height);
-		GenerateMesh(width, height);
+		GenerateMesh(_texture->GetHeight(), _texture->GetHeight());
 
 		for (const auto& material : materials)
-			material->SetSampler2D("u_MainTexture", _texture);
+			material->SetTexture("u_MainTexture", _texture);
 	}
 }
 
