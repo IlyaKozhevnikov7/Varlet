@@ -21,6 +21,6 @@ public:
 
 	void SetMesh(Mesh* mesh);
 
-	const std::vector<Varlet::VertexArray*>* GetVertices() const override;
+	Mesh* GetMesh() const override;
 
 };

@@ -16,9 +16,9 @@ namespace Varlet
 		_api = api;
 	}
 
-	Shader* RendererAPI::CreateShader(const ShaderInitializer& initializer)
+	Shader* RendererAPI::CreateShader(const std::string& vertSource, const std::string& fragSource, const std::string& geomSource)
 	{
-		return _api->CreateShader(initializer);
+		return _api->CreateShader(vertSource, fragSource, geomSource);
 	}
 
 	Texture* RendererAPI::CreateTexture(const LoadableTextureConfiguration& configuration)
@@ -26,14 +26,9 @@ namespace Varlet
 		return _api->CreateTexture(configuration);
 	}
 
-	UniformBuffer* RendererAPI::CreateUniformBuffer(const int64_t& size)
+	void RendererAPI::RegisterMesh(const Mesh* mesh, const std::vector<MeshData>& vertices)
 	{
-		return _api->CreateUniformBuffer(size);
-	}
-
-	VertexArray* RendererAPI::CreateVertexArray(const VertexArrayData& configuration)
-	{
-		return _api->CreateVertexArray(configuration);
+		return _api->RegisterMesh(mesh, vertices);
 	}
 
 	Texture* RendererAPI::GetTextureOf(Camera* camera)
@@ -64,5 +59,10 @@ namespace Varlet
 	const void* RendererAPI::GetNativeRenderTexture(Camera* camera, const uint32_t& attachment)
 	{
 		return _api->GetNativeRenderTexture(camera, attachment);
+	}
+
+	void RendererAPI::DestroyCamera(Camera* camera)
+	{
+		return _api->DestroyCamera(camera);
 	}
 }

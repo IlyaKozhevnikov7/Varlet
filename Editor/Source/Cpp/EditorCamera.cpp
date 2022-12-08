@@ -9,12 +9,12 @@ void EditorCamera::InternalStart()
 	_camera = GetOwner()->GetComponent<Camera>();
 	_camera->dynamicResolution = true;
 	_camera->postProcessing.enable = false;
-	_camera->postProcessing.material = new Material(Varlet::RendererAPI::CreateShader({ "W:/Varlet/Varlet/Shaders/defaultVertexPostProcessing.glsl", "W:/Varlet/Varlet/Shaders/defaultFragmentPostProcessing.glsl" }));
+	_camera->postProcessing.material = new Material(Varlet::Shader::Create({ "W:/Varlet/Varlet/Shaders/defaultVertexPostProcessing.glsl", "W:/Varlet/Varlet/Shaders/defaultFragmentPostProcessing.glsl"}));
 
 	_selectedCamera = GetOwner()->AddComponent<Camera>();
 	_selectedCamera->dynamicResolution = true;
 	_selectedCamera->postProcessing.enable = false;
-	_selectedCamera->SetRenderShader(Varlet::RendererAPI::CreateShader({ "", "W:/Varlet/Editor/Shaders/selected.fragment.glsl" }));
+	_selectedCamera->SetRenderShader(Varlet::Shader::Create({ "", "W:/Varlet/Editor/Shaders/selected.fragment.glsl"}));
 
 	_transform = GetOwner()->GetComponent<Transform>();
 

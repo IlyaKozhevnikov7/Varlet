@@ -20,7 +20,7 @@ namespace Varlet::OpenGL
 
 		Framebuffer();
 
-		Framebuffer(int32_t width, int32_t height);
+		Framebuffer(const int32_t& width, const int32_t& height);
 
 		void Bind() const;
 
@@ -47,6 +47,8 @@ namespace Varlet::OpenGL
 
 		Camera(int32_t width, int32_t height);
 		
+		~Camera();
+
 		void Resize(int32_t width, int32_t height, const bool& dynamically);
 
 		void Bind() const;

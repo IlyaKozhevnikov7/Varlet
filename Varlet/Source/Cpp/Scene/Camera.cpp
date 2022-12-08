@@ -12,6 +12,9 @@ void Camera::OnConstructed()
 {
 	BaseClass::OnConstructed();
 
+	postProcessing.enable = false;
+	postProcessing.material = nullptr;
+
 	dynamicResolution = false;
 	_fov = 45.f;
 	_projection = glm::perspective(glm::radians(_fov), 960.f / 540.f, 0.1f, 250.f);
@@ -23,6 +26,8 @@ void Camera::OnDestroyed()
 {
 	if (_renderShader)
 		delete _renderShader;
+
+	Varlet::RendererAPI::DestroyCamera(this);
 }
 
 void Camera::Update()

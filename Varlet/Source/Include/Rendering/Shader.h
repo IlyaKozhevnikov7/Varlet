@@ -4,13 +4,13 @@
 
 class Material;
 
-struct ShaderInitializer final
+struct CORE_API ShaderInitializer final
 {
-public:
-
 	std::string vertexPath;
 	std::string fragmentPath;
 	std::string geomtryPath;
+
+	ShaderInitializer(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geomtryPath = "");
 };
 
 namespace Varlet
@@ -23,7 +23,11 @@ namespace Varlet
 	{
 		friend class Material;
 
+		using ShaderPath = std::tuple<std::string, std::string, std::string>;
+
 	private:
+
+		static std::map<ShaderPath, Shader*> _loaded;
 
 		static uint32_t _idCounter;
 		uint32_t _id;
@@ -34,7 +38,7 @@ namespace Varlet
 
 	protected:
 
-		Shader() = default;
+		Shader();
 
 	public:
 
@@ -63,5 +67,9 @@ namespace Varlet
 		virtual void SetTexture(const char* name, const Texture* texture) = 0;
 
 		virtual void SetMat4(const char* name, const glm::mat4& value) = 0;
+
+	private:
+
+		static std::string Load(const char* path);
 	};
 }

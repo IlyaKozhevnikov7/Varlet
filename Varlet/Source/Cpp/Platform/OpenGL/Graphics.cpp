@@ -1,95 +1,29 @@
-#include "OpenGL/OpenGLGraphics.h"
-#include "OpenGL/OpenGLVertexArray.h"
+#include "OpenGL/Graphics.h"
 
-#include "VarletAPI.h"
 #include "Transform.h"
 #include "Mesh.h"
 #include "Material.h"
-#include "Camera.h"
+#include "Scene/Camera.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
 // new
-#include "OpenGL/ObjectMap.h"
+#include "OpenGL/DescriptorPool.h"
 #include "OpenGL/Camera.h"
 #include "OpenGL/Shader.h"
 #include "OpenGL/Texture.h"
-
-static int32_t ConvertToGlFunc(const StensilFunction& func)
-{
-	switch (func)
-	{
-	case StensilFunction::Never:
-		return GL_NEVER;
-
-	case StensilFunction::Less:
-		return GL_LESS;
-
-	case StensilFunction::LessOrEqual:
-		return GL_LEQUAL;
-
-	case StensilFunction::Greater:
-		return GL_GREATER;
-
-	case StensilFunction::GreaterOrEqual:
-		return GL_GEQUAL;
-
-	case StensilFunction::Equal:
-		return GL_EQUAL;
-
-	case StensilFunction::NotEqual:
-		return GL_NOTEQUAL;
-
-	case StensilFunction::Always:
-		return GL_ALWAYS;
-	}
-}
-
-static int32_t ConvertToGlOp(const StensilOp& op)
-{
-	switch (op)
-	{
-	case StensilOp::Keep:
-		return GL_KEEP;
-
-	case StensilOp::Zero:
-		return GL_ZERO;
-
-	case StensilOp::Replace:
-		return GL_REPLACE;
-
-	case StensilOp::Incr:
-		return GL_INCR;
-
-	case StensilOp::IncrWrap:
-		return GL_INCR_WRAP;
-
-	case StensilOp::Decr:
-		return GL_DECR;
-
-	case StensilOp::DecrWrap:
-		return GL_DECR_WRAP;
-
-	case StensilOp::Invert:
-		return GL_INVERT;
-	}
-}
+#include "OpenGL/VertexBuffer.h"
+#include "OpenGL/Utils.h"
 
 static void DebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	VARLET_LOG(LevelType::Error, "[" + std::to_string(id) + "]" + message);
 }
 
-namespace Varlet
+namespace Varlet::OpenGL
 {
-	OpenGLGraphics::~OpenGLGraphics()
-	{
-		delete _globalData;
-		delete _illuminationData;
-	}
-
-	int32_t OpenGLGraphics::Init()
+	int32_t Graphics::Init()
 	{
 		if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == false)
 		{
@@ -107,8 +41,8 @@ namespace Varlet
 
 		glEnable(GL_BLEND);
 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK);
 		
 		GraphicsInfo::rendererName = glGetString(GL_RENDERER);
 
@@ -131,29 +65,32 @@ namespace Varlet
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 #endif // DEBUG
 
-		// TODO make return Graphics::Init() when redo this moduel with internal api
-		const int32_t result = Graphics::Init();
-		InitWithEngine();
+		_globalData = UniformBuffer(sizeof(glm::mat4) * 4 + // view & projection & projection-view & model
+			sizeof(glm::vec3));     // camera position
 
-		return result;
+		_illuminationData = UniformBuffer((sizeof(int32_t) + sizeof(glm::vec4) * 2 + sizeof(float) * 2 + sizeof(int32_t)) * 10);
+
+		Entity::NewComponentCreatedEvent.Bind(this, &OpenGL::Graphics::OnNewComponentCreated);
+
+		return Varlet::Graphics::Init();
 	}
 
-	void OpenGLGraphics::Update()
+	void Graphics::Update()
 	{
 		PROFILE_OUT(GraphicsInfo::renderTime);
 		
 		UpdateIllumination();
 		
-		for (auto[cameraComponent, camera] : OpenGL::ObjectMap::GetCameras())
+		for (auto[cameraComponent, camera] : OpenGL::DescriptorPool::GetCameras())
 		{
 			if (cameraComponent->IsActive() == false)
 				continue;
 		
-			_globalData->Bind();
-			_globalData->SetData(0,						sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetView()));
-			_globalData->SetData(sizeof(glm::mat4),		sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetProjection()));
-			_globalData->SetData(sizeof(glm::mat4) * 2,	sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetViewProjection()));
-			_globalData->SetData(sizeof(glm::mat4) * 4,	sizeof(glm::vec3), glm::value_ptr(cameraComponent->GetOwner()->GetComponent<Transform>()->position));
+			_globalData.Bind();
+			_globalData.SetData(0,						sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetView()));
+			_globalData.SetData(sizeof(glm::mat4),		sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetProjection()));
+			_globalData.SetData(sizeof(glm::mat4) * 2,	sizeof(glm::mat4), glm::value_ptr(cameraComponent->GetViewProjection()));
+			_globalData.SetData(sizeof(glm::mat4) * 4,	sizeof(glm::vec3), glm::value_ptr(cameraComponent->GetOwner()->GetComponent<Transform>()->position));
 		
 			const bool withPostProcessing = cameraComponent->postProcessing.enable && cameraComponent->postProcessing.material != nullptr;
 			uint32_t postProcessingTexture;
@@ -162,11 +99,11 @@ namespace Varlet
 
 			camera->framebuffer.Bind();
 		
-			//if (withPostProcessing)
-			//{
-			//	postProcessingTexture = OpenGLUtils::CreateStackTexture(camera.width, camera.height);
-			//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
-			//}
+			if (withPostProcessing)
+			{
+				postProcessingTexture = OpenGLUtils::CreateStackTexture(camera->framebuffer.width, camera->framebuffer.height);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
+			}
 		
 			glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -176,40 +113,42 @@ namespace Varlet
 			for (const auto& data : _rendererData)
 				Render(data, shader);
 		
-			//if (withPostProcessing)
-			//{
-			//	glDisable(GL_DEPTH_TEST);
-			//
-			//	const static auto screenVAO = OpenGLUtils::CreateScreenVAO();
-			//
-			//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, component->GetTargetTexture()->GetId(), 0);
-			//
-			//	SetupProgramStages(component->postProcessing.material);
-			//
-			//	glActiveTexture(GL_TEXTURE0);
-			//	glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
-			//
-			//	glBindVertexArray(screenVAO);
-			//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			//
-			//	glEnable(GL_DEPTH_TEST);
-			//	glDeleteTextures(1, &postProcessingTexture);
-			//}
+			if (withPostProcessing)
+			{
+				glDisable(GL_DEPTH_TEST);
+			
+				const static auto screenVAO = OpenGLUtils::CreateScreenVAO();
+			
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, camera->framebuffer.attachments[0], 0);
+			
+				SetupProgramStages(cameraComponent->postProcessing.material);
+			
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
+			
+				glBindVertexArray(screenVAO);
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			
+				glEnable(GL_DEPTH_TEST);
+				glDeleteTextures(1, &postProcessingTexture);
+			}
 		
 			camera->framebuffer.UnBind();
 		}
 	}
 
-	void OpenGLGraphics::Shutdown()
+	void Graphics::Shutdown()
 	{
 		glDeleteProgramPipelines(1, &_mainPipeline);
+
+		DescriptorPool::Shutdown();
 	}
 
-	void OpenGLGraphics::UpdateIllumination() const
+	void Graphics::UpdateIllumination() const
 	{
 		constexpr int32_t sizeOfPointLight = sizeof(int32_t) * 2 + sizeof(glm::vec4) * 2 + sizeof(float) * 2;
 
-		_illuminationData->Bind();
+		_illuminationData.Bind();
 
 		for (int32_t i = 0; i < _lightSources.pointLights.size(); i++)
 		{
@@ -217,19 +156,19 @@ namespace Varlet
 			const auto& light = _lightSources.pointLights[i].first;
 		
 			const int32_t isActive = light->IsActive();
-			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float) * 2, sizeof(int32_t), &isActive);
+			_illuminationData.SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float) * 2, sizeof(int32_t), &isActive);
 		
 			if (isActive == false)
 				continue;
 		
-			_illuminationData->SetData(offset,											sizeof(glm::vec4), glm::value_ptr(light->color));
-			_illuminationData->SetData(offset + sizeof(glm::vec4),						sizeof(glm::vec4), glm::value_ptr(_lightSources.pointLights[i].second->position));
-			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2,					sizeof(float), &light->linear);
-			_illuminationData->SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float),	sizeof(float), &light->quadratic);
+			_illuminationData.SetData(offset,											sizeof(glm::vec4), glm::value_ptr(light->color));
+			_illuminationData.SetData(offset + sizeof(glm::vec4),						sizeof(glm::vec4), glm::value_ptr(_lightSources.pointLights[i].second->position));
+			_illuminationData.SetData(offset + sizeof(glm::vec4) * 2,					sizeof(float), &light->linear);
+			_illuminationData.SetData(offset + sizeof(glm::vec4) * 2 + sizeof(float),	sizeof(float), &light->quadratic);
 		}
 	}
 
-	void OpenGLGraphics::SetupMaterial(const Material* material) const
+	void Graphics::SetupMaterial(const Material* material) const
 	{
 		material->Activate();
 
@@ -240,12 +179,12 @@ namespace Varlet
 			glStencilMask(0xFF);
 
 			glStencilOp(
-				ConvertToGlOp(stencilSettings.failOp),
-				ConvertToGlOp(stencilSettings.zFailOp),
-				ConvertToGlOp(stencilSettings.allPass));
+				Utils::ConvertToGLOp(stencilSettings.failOp),
+				Utils::ConvertToGLOp(stencilSettings.zFailOp),
+				Utils::ConvertToGLOp(stencilSettings.allPass));
 
 			glStencilFunc(
-				ConvertToGlFunc(stencilSettings.function),
+				Utils::ConvertToGLFunc(stencilSettings.function),
 				stencilSettings.ref,
 				stencilSettings.mask);
 		}
@@ -254,23 +193,23 @@ namespace Varlet
 			glDisable(GL_DEPTH_TEST);
 	}
 
-	void OpenGLGraphics::Render(const RendererData& rendererData, Shader* customShader) const
+	void Graphics::Render(const RendererData& rendererData, Varlet::Shader* customShader) const
 	{
 		if (rendererData.renderer->isVisible == false)
 			return;
 		
-		const auto vertices = rendererData.renderer->GetVertices();
-		if (vertices == nullptr || vertices->size() == 0)
+		const auto mesh = rendererData.renderer->GetMesh();
+		if (mesh == nullptr)
 			return;
 
 		rendererData.renderer->OnPreRender();
 
-		_globalData->Bind();
-		_globalData->SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(rendererData.renderer->GetModelMatrix()));
+		_globalData.Bind();
+		_globalData.SetData(sizeof(glm::mat4) * 3, sizeof(glm::mat4), glm::value_ptr(rendererData.renderer->GetModelMatrix()));
 
 		if (customShader != nullptr)
 		{
-			const auto& shader = OpenGL::ShaderCache::Get(customShader);
+			const auto& shader = OpenGL::DescriptorPool::GetShader(customShader);
 			shader->SetUInt32("u_EntityId", rendererData.renderer->GetOwner()->GetId());
 			
 			const uint32_t customShaderBits = shader->GetShaderBits();
@@ -280,11 +219,11 @@ namespace Varlet
 			
 			for (const auto& material : rendererData.renderer->materials)
 			{
-				const auto& materialShader = OpenGL::ShaderCache::Get(material->GetShader());
+				const auto& materialShader = OpenGL::DescriptorPool::GetShader(material->GetShader());
 				SetupProgramStages(materialShaderBits, materialShader);
 				SetupMaterial(material);
 			
-				Draw(*vertices);
+				Draw(mesh);
 			}
 		}
 		else
@@ -294,31 +233,33 @@ namespace Varlet
 				if (material->isActive == false)
 					continue;
 
-				const auto& shader = OpenGL::ShaderCache::Get(material->GetShader());
+				const auto& shader = OpenGL::DescriptorPool::GetShader(material->GetShader());
 
 				SetupProgramStages(shader->GetShaderBits(), shader);
 				SetupMaterial(material);
 
-				Draw(*vertices);
+				Draw(mesh);
 				PostDraw();
 			}
 		}
 	}
 
-	void OpenGLGraphics::Draw(const std::vector<VertexArray*>& vertices) const
+	void Graphics::Draw(const Mesh* mesh) const
 	{
-		for (const auto& subMesh : vertices)
-		{
-			glBindVertexArray(subMesh->GetVAO());
+		const auto& set = DescriptorPool::GetVertexBufferSet(mesh);
 
-			if (subMesh->IsIndexed())
-				glDrawElements(GL_TRIANGLES, subMesh->GetElementsCount(), GL_UNSIGNED_INT, 0);
+		for (const auto& buffer : set)
+		{
+			glBindVertexArray(buffer.vao);
+
+			if (buffer.ebo > 0)
+				glDrawElements(GL_TRIANGLES, buffer.verticesCount, GL_UNSIGNED_INT, 0);
 			else
-				glDrawArrays(GL_TRIANGLES, 0, subMesh->GetElementsCount());
+				glDrawArrays(GL_TRIANGLES, 0, buffer.verticesCount);
 		}
 	}
 
-	void OpenGLGraphics::PostDraw() const
+	void Graphics::PostDraw() const
 	{
 		glStencilMask(0xFF);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -327,7 +268,7 @@ namespace Varlet
 	}
 
 	// TODO make one parameter
-	void OpenGLGraphics::SetupProgramStages(const uint32_t& stages, OpenGL::Shader* shader) const
+	void Graphics::SetupProgramStages(const uint32_t& stages, OpenGL::Shader* shader) const
 	{
 		for (int32_t offest = 0; offest < 3; offest++)
 		{
@@ -341,28 +282,15 @@ namespace Varlet
 		}
 	}
 
-	void OpenGLGraphics::SetupProgramStages(const Material* material) const
+	void Graphics::SetupProgramStages(const Material* material) const
 	{
 		SetupMaterial(material);
 
-		const auto& shader = OpenGL::ShaderCache::Get(material->GetShader());
+		const auto& shader = OpenGL::DescriptorPool::GetShader(material->GetShader());
 		SetupProgramStages(shader->GetShaderBits(), shader);
 	}
 
-	void OpenGLGraphics::InitWithEngine()
-	{
-		Entity::NewComponentCreatedEvent.Bind(this, &OpenGLGraphics::OnNewComponentCreated);
-
-		_globalData = RendererAPI::CreateUniformBuffer(
-			sizeof(glm::mat4) * 4 + // view | projection | projection-view | model
-			sizeof(glm::vec3)); // camera position
-
-		_illuminationData = RendererAPI::CreateUniformBuffer(
-			(sizeof(int32_t) + sizeof(glm::vec4) * 2 + sizeof(float) * 2 + sizeof(int32_t)) * 10 // point light sizeof(isActive + position + color + linear attenuation + quadratic attenuation + padding 4 bytes) * amount (now 10)
-		);
-	}
-
-	void OpenGLGraphics::OnNewComponentCreated(Entity* entity, Component* ñomponent)
+	void Graphics::OnNewComponentCreated(Entity* entity, Component* ñomponent)
 	{
 		if (const auto renderer = dynamic_cast<Renderer*>(ñomponent))
 		{
@@ -372,9 +300,9 @@ namespace Varlet
 			return;
 		}
 
-		if (const auto camera = dynamic_cast<Camera*>(ñomponent))
+		if (const auto camera = dynamic_cast<::Camera*>(ñomponent))
 		{
-			OpenGL::ObjectMap::Register(camera);
+			OpenGL::DescriptorPool::Register(camera);
 			return;
 		}
 

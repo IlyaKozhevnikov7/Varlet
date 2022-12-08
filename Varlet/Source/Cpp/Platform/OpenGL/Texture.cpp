@@ -1,11 +1,9 @@
 #include "OpenGL/Texture.h"
 #include "OpenGL/Common.h"
 #include "OpenGL/Utils.h"
+#include "OpenGL/DescriptorPool.h"
 
-#include "glad/glad.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
+#include <glad/glad.h>
 
 namespace Varlet::OpenGL
 {
@@ -19,11 +17,11 @@ namespace Varlet::OpenGL
 		id = OpenGL::CreateTexture(
 			configuration.width,
 			configuration.height,
-			OpenGL::Utils::ConvertToGLFormat(configuration.format),
+			Utils::ConvertToGLFormat(configuration.format),
 			configuration.data,
 			configuration.mipmap,
-			OpenGL::Utils::ConvertToGLWrapType(configuration.wrapType),
-			OpenGL::Utils::ConvertToGLFilterType(configuration.filter));
+			Utils::ConvertToGLWrapType(configuration.wrapType),
+			Utils::ConvertToGLFilterType(configuration.filter));
 
 		_width = configuration.width;
 		_height = configuration.height;
@@ -31,12 +29,8 @@ namespace Varlet::OpenGL
 
 	Texture::~Texture()
 	{
-		glDeleteTextures(1, &id);
-	}
+		DescriptorPool::Unregister(this);
 
-	void Texture::Activate(const uint32_t& unit) const
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_2D, id);
+		glDeleteTextures(1, &id);
 	}
 }

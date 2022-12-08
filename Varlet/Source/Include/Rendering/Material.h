@@ -3,7 +3,7 @@
 #include "VarletCore.h"
 #include "VarletFramework.h"
 
-enum StensilFunction : uint8_t
+enum class StensilFunction : uint8_t
 {
 	Never = 0,
 	Less,
@@ -15,7 +15,7 @@ enum StensilFunction : uint8_t
 	Always
 };
 
-enum StensilOp : uint8_t
+enum class StensilOp : uint8_t
 {
 	Keep = 0,
 	Zero,

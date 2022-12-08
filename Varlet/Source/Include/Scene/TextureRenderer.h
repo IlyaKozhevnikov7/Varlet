@@ -2,6 +2,8 @@
 
 #include "Renderer.h"
 
+class Mesh;
+
 namespace Varlet
 {
 	class Texture;
@@ -14,10 +16,10 @@ class CORE_API TextureRenderer final : public Renderer
 
 private:
 
-	static std::vector<Varlet::VertexArray*> _vertices;
+	static Mesh* _mesh;
 
 	Varlet::Texture* _texture;
-	float _verticesPosition[4 * 3];
+	float _verticesPosition[4 * 2];
 
 public:
 
@@ -27,7 +29,7 @@ public:
 
 	void SetTexture(Varlet::Texture* texture);
 
-	const std::vector<Varlet::VertexArray*>* GetVertices() const override;
+	Mesh* GetMesh() const override;
 
 	void OnPreRender() override;
 

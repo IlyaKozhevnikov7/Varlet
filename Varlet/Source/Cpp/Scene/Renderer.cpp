@@ -23,7 +23,7 @@ const int32_t& Renderer::GetRenderId() const
 
 glm::mat4 Renderer::GetModelMatrix()
 {
-	Transform* transfrom = GetOwner()->GetComponent<Transform>();
+	const Transform* transfrom = GetOwner()->GetComponent<Transform>();
 	
 	glm::mat4 model = glm::translate(glm::mat4(1.f), transfrom->position);
 	model *= glm::mat4_cast(transfrom->GetOrientation());

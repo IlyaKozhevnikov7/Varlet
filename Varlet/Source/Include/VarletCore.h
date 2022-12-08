@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <stdint.h>
 #include <cassert>
 #include <string>

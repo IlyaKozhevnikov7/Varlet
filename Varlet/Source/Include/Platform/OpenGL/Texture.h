@@ -1,6 +1,5 @@
 #pragma once
 
-#include "VarletCore.h"
 #include "Rendering/Texture.h"
 
 namespace Varlet::OpenGL
@@ -18,7 +17,5 @@ namespace Varlet::OpenGL
 		Texture(const LoadableTextureConfiguration& configuration);
 
 		~Texture() override;
-
-		void Activate(const uint32_t& unit) const;
 	};
 }

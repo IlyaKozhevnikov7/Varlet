@@ -20,14 +20,6 @@ struct CORE_API GraphicsInfo
 
 namespace Varlet
 {
-	class UniformBuffer;
-
-	struct RendererData
-	{
-		Renderer* renderer;
-		Transform* transform;
-	};
-
 	struct LightSourceData
 	{
 		std::vector<std::pair<PointLight*, Transform*>> pointLights;

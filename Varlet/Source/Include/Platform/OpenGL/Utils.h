@@ -5,6 +5,8 @@
 enum class WrapType : uint8_t;
 enum class FilterType : uint8_t;
 enum class TextureFormat : uint8_t;
+enum class StensilFunction : uint8_t;
+enum class StensilOp : uint8_t;
 
 namespace Varlet
 {
@@ -26,6 +28,10 @@ namespace Varlet::OpenGL
 		static int32_t ConvertToGLWrapType(const WrapType& wrapType);
 
 		static int32_t ConvertToGLFilterType(const FilterType& filterType);
+
+		static int32_t ConvertToGLFunc(const StensilFunction& func);
+
+		static int32_t ConvertToGLOp(const StensilOp& op);
 
 		static Varlet::Texture* GLTextureToVarletTexture(const uint32_t& textureId);
 	};

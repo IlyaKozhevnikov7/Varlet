@@ -1,18 +1,17 @@
 #include "OpenGL/Shader.h"
+#include "OpenGL/Texture.h"
 #include <regex>
 #include <fstream>
 #include <sstream>
 
 #include "Core/Reflection.h"
 
-#include "OpenGL/ObjectMap.h"
+#include "OpenGL/DescriptorPool.h"
 
 #include "glad/glad.h"
 
 namespace Varlet::OpenGL
 {
-	std::unordered_map<ShaderInitializer, Shader*> Shader::_loaded;
-
 	static std::unordered_map<std::string, Type> _types =
 	{
 		{ "bool",			Type::Bool },
@@ -42,29 +41,27 @@ namespace Varlet::OpenGL
 		{ "samplerCube",	Type::SamplerCube }
 	};
 
-	Shader::Shader(const ShaderInitializer& initializer) : Varlet::Shader()
+	Shader::Shader(const std::string& vertSource, const std::string& fragSource, const std::string& geomSource)
 	{
 		_shaderBits = 0x00000000;
 		
-		std::string vertexShaderSource = Load(initializer.vertexPath.c_str());
-		std::string fragmentShaderSource = Load(initializer.fragmentPath.c_str());
-		std::string geomtryShaderSource = Load(initializer.geomtryPath.c_str());
-		
-		const uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertexShaderSource.c_str());
-		const uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragmentShaderSource.c_str());
-		const uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomtryShaderSource.c_str());
+		const uint32_t vertexShaderId = GenerateShader(ShaderType::Vertex, vertSource.c_str());
+		const uint32_t fragmentShaderId = GenerateShader(ShaderType::Fragment, fragSource.c_str());
+		const uint32_t geomtryShaderId = GenerateShader(ShaderType::Geometry, geomSource.c_str());
 		
 		GenerateProgram(vertexShaderId, ShaderBit::VertexShaderBit);
 		GenerateProgram(fragmentShaderId, ShaderBit::FragmentShaderBit);
 		GenerateProgram(geomtryShaderId, ShaderBit::GeometryShaderBit);
 		
-		SetupUniforms(vertexShaderSource, _programs[ShaderBit::VertexShaderBit]);
-		SetupUniforms(fragmentShaderSource, _programs[ShaderBit::FragmentShaderBit]);
-		SetupUniforms(geomtryShaderSource, _programs[ShaderBit::GeometryShaderBit]);
+		SetupUniforms(vertSource, _programs[ShaderBit::VertexShaderBit]);
+		SetupUniforms(fragSource, _programs[ShaderBit::FragmentShaderBit]);
+		SetupUniforms(geomSource, _programs[ShaderBit::GeometryShaderBit]);
 	}
 
 	Shader::~Shader()
 	{
+		DescriptorPool::Unregister(this);
+
 		for (auto& program : _programs)
 			glDeleteProgram(program.second);
 	}
@@ -128,7 +125,7 @@ namespace Varlet::OpenGL
 		if (_textureUtits.contains(name))
 		{
 			glActiveTexture(GL_TEXTURE0 + _textureUtits[name]);
-			glBindTexture(GL_TEXTURE_2D, texture != nullptr ? *ObjectMap::GetTexture(texture) : 0);
+			glBindTexture(GL_TEXTURE_2D, texture != nullptr ? *DescriptorPool::GetNativeTexture(texture) : 0);
 		}
 	}
 
@@ -166,24 +163,6 @@ namespace Varlet::OpenGL
 				glGetShaderInfoLog(objId, sizeof(errorLog), NULL, errorLog);
 				VARLET_LOG(LevelType::Warning, "Shader compile error [shader id " + std::to_string(objId) + "] " + errorLog);
 			}
-		}
-	}
-
-	std::string Shader::Load(const char* path) const
-	{
-		std::ifstream stream;
-		stream.open(path);
-
-		if (stream.is_open())
-		{
-			std::stringstream buffer;
-			buffer << stream.rdbuf();
-			return buffer.str();
-		}
-		else
-		{
-			VARLET_LOG(LevelType::Warning, "Failed load shader: " + std::string(path));
-			return std::string();
 		}
 	}
 
@@ -260,27 +239,5 @@ namespace Varlet::OpenGL
 
 			suffix = matches.suffix();
 		}
-	}
-
-	// -------------------- OpenGLShaderCache --------------------
-
-	std::unordered_map<int32_t, Shader*> ShaderCache::cache;
-	
-	void ShaderCache::Add(Shader* shader)
-	{
-		const int32_t id = shader->GetId();
-		assert(cache.contains(id) == false);
-		
-		cache[id] = shader;
-	}
-	
-	Shader* ShaderCache::Get(const Varlet::Shader* shader)
-	{
-		const int32_t id = shader->GetId();
-		
-		if (cache.contains(id))
-			return cache[id];
-	
-		return nullptr;
 	}
 }

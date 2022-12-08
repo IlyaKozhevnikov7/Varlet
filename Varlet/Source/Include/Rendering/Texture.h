@@ -1,7 +1,6 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Utils\IIndexed.h"
 
 enum class WrapType : uint8_t
 {
@@ -41,7 +40,7 @@ namespace Varlet
 		FilterType filter;
 	};
 
-	class CORE_API Texture : public IIndexed<Texture, uint32_t>
+	class CORE_API Texture
 	{
 	private:
 
@@ -61,7 +60,7 @@ namespace Varlet
 
 		static Texture* Load(const char* path, const bool& mipmap = true, const bool& flipUV = true, const WrapType& wrapType = WrapType::Repeat, const FilterType& filter = FilterType::Linear);
 
-		virtual ~Texture() override = default;
+		virtual ~Texture() = default;
 
 		int32_t GetWidth() const;
 

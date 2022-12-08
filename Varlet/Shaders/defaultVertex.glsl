@@ -7,8 +7,8 @@ layout(location = 3) in vec3 aTangent;
 
 layout(std140, binding = 0) uniform Camera
 {
-    mat4 u_Projection;
     mat4 u_View;
+    mat4 u_Projection;
     mat4 u_ProjectionView;
     mat4 u_Model;
     vec3 u_CameraPosition;
@@ -42,5 +42,5 @@ void main()
 
     tbn = CalculateTBN(u_Model, aNormal, aTangent);
 
-	gl_Position = u_ProjectionView * u_Model * vec4(aPos, 1.f);
+	gl_Position = u_Projection * u_View * u_Model * vec4(aPos, 1.f);
 }

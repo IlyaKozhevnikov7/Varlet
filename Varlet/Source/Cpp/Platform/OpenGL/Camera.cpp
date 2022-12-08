@@ -13,7 +13,7 @@ namespace Varlet::OpenGL
 	{
 	}
 
-	Framebuffer::Framebuffer(int32_t width, int32_t height) :
+	Framebuffer::Framebuffer(const int32_t& width, const int32_t& height) :
 		width(width), 
 		height(height)
 	{
@@ -55,10 +55,7 @@ namespace Varlet::OpenGL
 	void Framebuffer::Free(Framebuffer& framebuffer)
 	{
 		for (int32_t i = 0; i < framebuffer.attachments.size(); i++)
-		{
-			//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 0, 0);
 			glDeleteTextures(1, &framebuffer.attachments[i]);
-		}
 
 		glDeleteFramebuffers(1, &framebuffer.id);
 		glDeleteRenderbuffers(1, &framebuffer.renderbufferId);
@@ -101,6 +98,11 @@ namespace Varlet::OpenGL
 	Camera::Camera(int32_t width, int32_t height)
 	{
 		framebuffer = Framebuffer(width, height);
+	}
+
+	Camera::~Camera() 
+	{
+		Framebuffer::Free(framebuffer);
 	}
 
 	void Camera::Resize(int32_t width, int32_t height, const bool& dynamically)

@@ -1,4 +1,5 @@
-#include "RenderingCore.h"
+#include "Rendering/RendererAPI.h"
+#include "Rendering/Graphics.h"
 
 #include "Entity.h"
 #include "Component.h"

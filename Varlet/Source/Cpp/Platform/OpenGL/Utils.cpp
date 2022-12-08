@@ -1,6 +1,8 @@
-#include "Platform/OpenGL/Utils.h"
-#include "glad/glad.h"
+#include "OpenGL/Utils.h"
+#include "OpenGL/DescriptorPool.h"
+#include <glad/glad.h>
 #include "OpenGL/Texture.h"
+#include "Material.h"
 
 namespace Varlet::OpenGL
 {
@@ -75,6 +77,36 @@ namespace Varlet::OpenGL
 		{
 		case FilterType::Linear:	return GL_LINEAR;
 		case FilterType::Nearers:	return GL_NEAREST;
+		}
+	}
+
+	int32_t Utils::ConvertToGLFunc(const StensilFunction& func)
+	{
+		switch (func)
+		{
+		case StensilFunction::Never:			return GL_NEVER;
+		case StensilFunction::Less:				return GL_LESS;
+		case StensilFunction::LessOrEqual:		return GL_LEQUAL;
+		case StensilFunction::Greater:			return GL_GREATER;
+		case StensilFunction::GreaterOrEqual:	return GL_GEQUAL;
+		case StensilFunction::Equal:			return GL_EQUAL;
+		case StensilFunction::NotEqual:			return GL_NOTEQUAL;
+		case StensilFunction::Always:			return GL_ALWAYS;
+		}
+	}
+
+	int32_t Utils::ConvertToGLOp(const StensilOp& op)
+	{
+		switch (op)
+		{
+		case StensilOp::Keep:		return GL_KEEP;
+		case StensilOp::Zero:		return GL_ZERO;
+		case StensilOp::Replace:	return GL_REPLACE;
+		case StensilOp::Incr:		return GL_INCR;
+		case StensilOp::IncrWrap:	return GL_INCR_WRAP;
+		case StensilOp::Decr:		return GL_DECR;
+		case StensilOp::DecrWrap:	return GL_DECR_WRAP;
+		case StensilOp::Invert:		return GL_INVERT;
 		}
 	}
 

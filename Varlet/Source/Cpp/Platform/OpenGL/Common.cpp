@@ -1,6 +1,6 @@
 #include "Platform/OpenGL/Common.h"
 #include "Platform/OpenGL/Utils.h"
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 namespace Varlet::OpenGL
 {

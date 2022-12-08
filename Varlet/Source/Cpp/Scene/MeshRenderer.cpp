@@ -18,10 +18,8 @@ void MeshRenderer::SetMesh(Mesh* mesh)
 	_mesh = mesh;
 }
 
-const std::vector<Varlet::VertexArray*>* MeshRenderer::GetVertices() const
+Mesh* MeshRenderer::GetMesh() const
 {
-	return _mesh != nullptr
-		? &_mesh->GetSubMeshes()
-		: nullptr;
+	return _mesh;
 }
 

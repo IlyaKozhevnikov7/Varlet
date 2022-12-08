@@ -7,8 +7,8 @@ layout(location = 3) in vec3 aTangent;
 
 layout(std140, binding = 0) uniform Camera
 {
-    mat4 u_Projection;
     mat4 u_View;
+    mat4 u_Projection;
     mat4 u_ProjectionView;
     mat4 u_Model;
     vec3 u_CameraPosition;
@@ -45,17 +45,22 @@ void main()
 
     if (u_FaceToCamera)
     {
-        mat4 finalMatrix = u_ProjectionView * u_Model;
+        mat4 modelView = u_View * u_Model;
 
-        const float d = sqrt(u_Model[0][0] * u_Model[0][0]
-                           + u_Model[1][1] * u_Model[1][1]
-                           + u_Model[2][2] * u_Model[2][2]);
-        
-        finalMatrix[0] = vec4(d,  0.f,    0.f,  u_Model[0][3]);
-        finalMatrix[1] = vec4(0.f,  d,    0.f,  u_Model[1][3]);
-        finalMatrix[2] = vec4(0.f,  0.f,    d,  u_Model[2][3]);
+        modelView[0][0] = 1.f; 
+        modelView[0][1] = 0.f; 
+        modelView[0][2] = 0.f; 
 
-        gl_Position = finalMatrix * vec4(aPos, 1.f);
+        modelView[1][0] = 0.f; 
+        modelView[1][1] = 1.f; 
+        modelView[1][2] = 0.f;
+
+        modelView[2][0] = 0.f; 
+        modelView[2][1] = 0.f; 
+        modelView[2][2] = 1.f; 
+
+        const vec4 position = modelView * vec4(aPos, 1.f);
+        gl_Position = u_Projection * position;
     }
     else
     {
