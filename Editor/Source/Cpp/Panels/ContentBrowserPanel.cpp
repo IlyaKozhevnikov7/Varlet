@@ -9,13 +9,8 @@ void ContentBrowserPanel::Init()
 	_rootCatalog = "W:\\Varlet\\Sandbox\\Assets";
 	_currentCatalog = _rootCatalog;
 
-	LoadableTextureConfiguration configuration;
-
-	configuration.path = "W:\\Varlet\\Editor\\Assets\\document.png";
-	_icons[ContentType::File] = Varlet::RendererAPI::LoadTexture(configuration);
-
-	configuration.path = "W:\\Varlet\\Editor\\Assets\\folder.png";
-	_icons[ContentType::Folder] = Varlet::RendererAPI::LoadTexture(configuration);
+	_icons[ContentType::File] = Varlet::Texture::Load("W:\\Varlet\\Editor\\Assets\\document.png");
+	_icons[ContentType::Folder] = Varlet::Texture::Load("W:\\Varlet\\Editor\\Assets\\folder.png");
 }
 
 void ContentBrowserPanel::Update()
@@ -74,7 +69,7 @@ void ContentBrowserPanel::DrawRightSide()
 			ImGui::PushID(itemName.c_str());
 
 			const auto texture = _icons[isDirectory ? ContentType::Folder : ContentType::File];
-			ImGui::ImageButton(reinterpret_cast<ImTextureID>(texture->GetId()), { iconSize, iconSize }, { 0, 1 }, { 1, 0 }, 1, { 0.15f, 0.15f, 0.15f, 1.f });
+			ImGui::ImageButton(NATIVE_TEXTURE_TO_IMTEXTUREID(Varlet::RendererAPI::GetNativeTexture(texture)), {iconSize, iconSize}, {0, 1}, {1, 0}, 1, {0.15f, 0.15f, 0.15f, 1.f});
 
 			if (isDirectory == false && ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 			{

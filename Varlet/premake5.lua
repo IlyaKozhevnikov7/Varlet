@@ -21,25 +21,30 @@ project "Varlet"
 		"%{includeDir}/Input",
 		"%{includeDir}/Rendering",
 		"%{includeDir}/Scene",
+		"%{includeDir}/Platform",
 		"%{includeDir}/Platform/Windows",
-		"%{includeDir}/Platform/OpenGL",
 		"%{includeDir}/Time",
+		"%{includeDir}/Utils",
 
 		"%{includeDirs.GLFW}",
 		"%{includeDirs.GLAD}",
 		"%{includeDirs.GLM}",
 		"%{includeDirs.STB}",
-		"%{includeDirs.ASSIMP}"
+		"%{includeDirs.ASSIMP}",
+		"%{includeDirs.VULKAN}"
 	}
 
 	links {
 		"glfw3dll",
-		"assimp-vc143-mt"
+		"assimp-vc143-mt",
+		--"vulkan-1",
+		"shaderc_shared"
 	}
 
 	libdirs {
 		"%{libraryDirs.GLFW}",
-		"%{libraryDirs.ASSIMP}"
+		"%{libraryDirs.ASSIMP}",
+		"%{libraryDirs.VULKAN}"
 	}
 
 	defines {

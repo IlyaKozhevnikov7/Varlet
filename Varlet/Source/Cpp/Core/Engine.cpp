@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "GLFWContext.h"
 #include "GLFWInput.h"
-#include "OpenGLRenderer.h"
+#include "OpenGLGraphics.h"
 #include "GLFWTime.h"
 
 namespace Varlet
@@ -53,9 +53,9 @@ namespace Varlet
 
 		// temp add renderer here
 		{
-			auto openGLRenderer = new OpenGLRenderer();
-			_modules.push_back(openGLRenderer);
-			_updatebleModules.push_back(openGLRenderer);
+			auto openGLGraphics = new OpenGLGraphics();
+			_modules.push_back(openGLGraphics);
+			_updatebleModules.push_back(openGLGraphics);
 		}
 
 		// temp add input and time here

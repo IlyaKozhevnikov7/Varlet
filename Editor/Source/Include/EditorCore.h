@@ -11,4 +11,7 @@
 
 #include "../../Dependencies/ImGui/ImGuizmo.h"
 
+#define NATIVE_TEXTURE_TO_IMTEXTUREID(Texture) ((ImTextureID)NATIVE_TEXTURE_TO_SIZE_T(Texture))
+#define NATIVE_TEXTURE_TO_SIZE_T(Texture) (*(size_t*)(Texture))
+
 #define TEXTURE_FILE_PAYLOAD "TEXTURE_FILE_PAYLOAD"

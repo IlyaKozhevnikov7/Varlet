@@ -1,6 +1,7 @@
 include "Dependencies.lua"
 
 workspace "Varlet"
+	
 	architecture "x64"
 
 	configurations {
@@ -8,6 +9,8 @@ workspace "Varlet"
 		"Debug",
 		"Release"
 	}
+
+	--platforms { "Windows" }
 
 	startproject "Sandbox"
 

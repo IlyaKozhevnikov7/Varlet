@@ -17,8 +17,15 @@
 #include "Scene/Script.h"
 #include "Scene/Camera.h"
 #include "Scene/MeshRenderer.h"
+#include "Scene/TextureRenderer.h"
+#include "Scene/Renderer.h"
 #include "Scene/Transform.h"
 #include "Scene/PointLight.h"
+
+// graphics
+#include "Rendering/Material.h"
+#include "Rendering/Shader.h"
+#include "Rendering/Texture.h"
 
 // input
 #include "Input/Input.h"

@@ -16,37 +16,60 @@ enum class FilterType : uint8_t
 	Nearers
 };
 
-struct TextureConfiguration
+enum class TextureFormat : uint8_t
 {
-	int32_t width;
-	int32_t height;
-	WrapType wrapType;
-	FilterType filter;
-	bool mipmap;
-};
-
-struct LoadableTextureConfiguration : public TextureConfiguration
-{
-	const char* path;
-	bool flipUV;
+	RGB = 0,
+	RGBA,
+	RGB111110F,
+	RGB16F,
+	RGBA16F,
+	RGB32F,
+	RGBA32F
 };
 
 namespace Varlet
 {
+	struct LoadableTextureConfiguration final
+	{
+		int32_t width;
+		int32_t height;
+		TextureFormat format;
+		const void* data;
+		bool mipmap;
+		WrapType wrapType;
+		FilterType filter;
+	};
+
 	class CORE_API Texture
 	{
+	private:
+
+		static std::unordered_map<std::string, Texture*> _loaded;
+
 	protected:
 
-		uint32_t _id;
+		int32_t _width = 0;
+		int32_t _height = 0;
+		TextureFormat _format;
 
-	public:
+	protected:
 
 		Texture() = default;
 
+	public:
+
+		static Texture* Load(const char* path, const bool& mipmap = true, const bool& flipUV = true, const WrapType& wrapType = WrapType::Repeat, const FilterType& filter = FilterType::Linear);
+
 		virtual ~Texture() = default;
 
-		virtual void Activate(const uint32_t& unit) const = 0;
+		int32_t GetWidth() const;
 
-		const uint32_t& GetId() const;
+		int32_t GetHeight() const;
+
+		TextureFormat GetFormat() const;
+
+	private:
+
+		static void* Load(const char* path, const bool& flipUV, TextureFormat& format, int32_t& width, int32_t& height);
 	};
 }

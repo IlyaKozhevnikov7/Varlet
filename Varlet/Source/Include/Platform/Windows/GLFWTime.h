@@ -5,16 +5,19 @@
 
 namespace Varlet
 {
-	class GLFWTime : public TimeModule
+	class CORE_API GLFWTime final : public TimeModule
 	{
 	private:
 
+		float _now;
 		float _lastUpdate;
 		float _delta;
 
 	public:
 
-		virtual void UpdateTime() override;
+		~GLFWTime() override = default;
+
+		void Update() override;
 
 		virtual float GetTime() override;
 

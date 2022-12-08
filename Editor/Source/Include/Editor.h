@@ -16,6 +16,7 @@ class Panel;
 struct EditorData
 {
 	static Varlet::GameModule* context;
+	static Entity* editorCamera;
 	static const Entity* selectedEntity;
 };
 

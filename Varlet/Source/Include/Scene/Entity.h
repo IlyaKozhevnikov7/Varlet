@@ -13,14 +13,19 @@ public:
 
 private:
 
+	size_t _id;
 	std::vector<Component*> _components;
 	std::vector<Script*> _scripts;
 
 public:
 
+	Entity();
+
 	void Update();
 
 	void OnDestroyed();
+
+	CORE_API uint32_t GetId() const;
 
 	CORE_API const std::vector<Component*>& GetComponents() const;
 

@@ -6,11 +6,15 @@
 
 #ifdef DEBUG
 	#define VARLET_LOG(LevelType, Message) Varlet::Logger::ConsoleLog(LevelType, Message);
+	#define VARLET_ASSERT(Expression, Message) assert(Expression && Message);
+	#define VARLET_ERROR(Message) assert(false && Message);
 #else
 	#define VARLET_LOG(LevelType, Message)
+	#define VARLET_ASSERT(Expression, Message)
+	#define VARLET_ERROR(Message)
 #endif // DEBUG
 
-enum class LevelType : uint8_t
+enum LevelType : uint8_t
 {
 	Normal = 0,
 	Warning,

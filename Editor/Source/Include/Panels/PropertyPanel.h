@@ -20,7 +20,7 @@ private:
 
 	void DisplayProperty(const Varlet::Property* property) const;
 
-	void DisplayObject(Object* object, const int32_t& id = -1) const;
+	void DisplayObject(Object** object, const int32_t& id = -1) const;
 
 	void DisplayArray(const Varlet::Array* property) const;
 

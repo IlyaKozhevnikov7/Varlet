@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <stdint.h>
 #include <cassert>
 #include <string>
@@ -17,3 +18,4 @@
 #include "../../Dependencies/GLM/include/GLM/gtx/matrix_decompose.hpp"
 #include "Core/Delegate.h"
 #include "Core/Logger.h"
+#include "Core/Profiler.h"

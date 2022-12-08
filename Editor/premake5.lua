@@ -39,6 +39,8 @@ project "Editor"
 		"%{libraryDirs.GLFW}"
 	}
 
+	-- configurations
+	
 	filter "configurations:Editor"
 		defines {
 			"EDITOR",
@@ -58,3 +60,10 @@ project "Editor"
 			"RELEASE",
 		}
 		symbols "On"
+
+	-- platforms
+
+	filter "platforms:Windows"
+		defines {
+			"VRT_WINDOWS"
+		}

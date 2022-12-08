@@ -1,5 +1,4 @@
 #include "PropertyPanel.h"
-
 #include "EditorCore.h"
 #include "VarletFramework.h"
 
@@ -10,10 +9,17 @@ void PropertyPanel::Update()
 	if (EditorData::selectedEntity != nullptr)
 	{
 		const auto components = EditorData::selectedEntity->GetComponents();
-		for (auto component : components)
+		for (auto& component : components)
 		{
+			const auto typeInfo = component->GetType();
+
 			ImGui::PushID(component);
-			DisplayObject(component);
+			if (ImGui::CollapsingHeader(typeInfo.name, ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				for (auto& property : typeInfo.properties)
+					DisplayProperty(property);
+			}
+
 			ImGui::PopID();
 		};
 	}
@@ -126,7 +132,7 @@ void PropertyPanel::DisplayProperty(const Varlet::Property* property) const
 		break;
 
 	case Varlet::Type::Object:
-		DisplayObject(static_cast<Object*>(property->value));
+		DisplayObject(static_cast<Object**>(property->value));
 		break;
 
 	case Varlet::Type::Array:
@@ -154,9 +160,12 @@ void PropertyPanel::DisplayProperty(const Varlet::Property* property) const
 	}
 }
 
-void PropertyPanel::DisplayObject(Object* object, const int32_t& id) const
+void PropertyPanel::DisplayObject(Object** object, const int32_t& id) const
 {
-	auto type = object->GetType();
+	if (*object == nullptr)
+		return; // empty object
+
+	auto type = (*object)->GetType();
 	std::string name(type.name);
 
 	if (id > -1)
@@ -164,7 +173,7 @@ void PropertyPanel::DisplayObject(Object* object, const int32_t& id) const
 
 	if (ImGui::TreeNode(name.c_str()))
 	{
-		for (auto property : type.properties)
+		for (auto& property : type.properties)
 			DisplayProperty(property);
 
 		ImGui::TreePop();
@@ -200,7 +209,7 @@ void PropertyPanel::DisplayArray(const Varlet::Array* property) const
 			for (auto element : *elements)
 			{
 				ImGui::PushID(element);
-				DisplayObject(element, elementId);
+				DisplayObject(&element, elementId);
 				ImGui::PopID();
 				++elementId;
 			}
@@ -260,11 +269,16 @@ void PropertyPanel::DisplaySampler2DProperty(const Varlet::Property* property) c
 	constexpr float buttonSize = 75.f;
 
 	auto texturePtr = static_cast<Varlet::Texture**>(property->value);
-	const uint32_t previewTextureId = *texturePtr == nullptr ? 0 : static_cast<Varlet::Texture*>(*texturePtr)->GetId();
+	if (texturePtr == nullptr)
+		return;
+
+	const ImTextureID textureID = *texturePtr == nullptr
+		? 0 
+		: NATIVE_TEXTURE_TO_IMTEXTUREID(Varlet::RendererAPI::GetNativeTexture(*texturePtr));
 
 	ImGui::PushID(texturePtr);
 
-	ImGui::ImageButton(reinterpret_cast<ImTextureID>(previewTextureId), { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 }, 1);
+	ImGui::ImageButton(textureID, { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 }, 1);
 
 	if (ImGui::BeginPopupContextItem("TextureContext"))
 	{
@@ -279,12 +293,7 @@ void PropertyPanel::DisplaySampler2DProperty(const Varlet::Property* property) c
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(TEXTURE_FILE_PAYLOAD))
 		{
 			auto path = static_cast<const char*>(payload->Data);
-
-			LoadableTextureConfiguration configuration;
-			configuration.path = path;
-			auto newTexture = Varlet::RendererAPI::LoadTexture(configuration);
-
-			*texturePtr = newTexture.get();
+			*texturePtr = Varlet::Texture::Load(path);
 		}
 		ImGui::EndDragDropTarget();
 	}

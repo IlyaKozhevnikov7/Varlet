@@ -16,38 +16,53 @@ namespace Varlet
 		_api = api;
 	}
 
-	Shader* RendererAPI::CreateShader(const ShaderInitializer& initializer)
+	Shader* RendererAPI::CreateShader(const std::string& vertSource, const std::string& fragSource, const std::string& geomSource)
 	{
-		return _api->CreateShader(initializer);
+		return _api->CreateShader(vertSource, fragSource, geomSource);
 	}
 
-	Framebuffer* RendererAPI::CreateFrameBuffer(FramebufferConfiguration& configuration)
-	{
-		return _api->CreateFrameBuffer(configuration);
-	}
-
-	Texture* RendererAPI::CreateTexture(const TextureConfiguration& configuration)
+	Texture* RendererAPI::CreateTexture(const LoadableTextureConfiguration& configuration)
 	{
 		return _api->CreateTexture(configuration);
 	}
 
-	std::shared_ptr<Texture> RendererAPI::LoadTexture(const LoadableTextureConfiguration& configuration)
+	void RendererAPI::RegisterMesh(const Mesh* mesh, const std::vector<MeshData>& vertices)
 	{
-		return _api->LoadTexture(configuration);
+		return _api->RegisterMesh(mesh, vertices);
 	}
 
-	UniformBuffer* RendererAPI::CreateUniformBuffer(const int64_t& size)
+	Texture* RendererAPI::GetTextureOf(Camera* camera)
 	{
-		return _api->CreateUniformBuffer(size);
+		return _api->GetTextureOf(camera);
 	}
 
-	VertexArray* RendererAPI::CreateVertexArray(const VertexArrayData& configuration)
+	void RendererAPI::ChangeResolution(Camera* camera)
 	{
-		return _api->CreateVertexArray(configuration);
+		return _api->ChangeResolution(camera);
 	}
-	
-	void RendererAPI::UnbindTexure(const uint32_t& unit)
+
+	void RendererAPI::GetFramebufferSize(Camera* camera, int32_t& width, int32_t& height)
 	{
-		_api->UnbindTexure(unit);
+		return _api->GetFramebufferSize(camera, width, height);
+	}
+
+	std::vector<uint8_t> RendererAPI::ReadRenderTexturePixels(Camera* camera, const int32_t& x, const int32_t& y, const int32_t& width, const int32_t& height, const uint32_t& attachment)
+	{
+		return _api->ReadRenderTexturePixels(camera, x, y, width, height, attachment);
+	}
+
+	const void* RendererAPI::GetNativeTexture(Texture* texture)
+	{
+		return _api->GetNativeTexture(texture);
+	}
+
+	const void* RendererAPI::GetNativeRenderTexture(Camera* camera, const uint32_t& attachment)
+	{
+		return _api->GetNativeRenderTexture(camera, attachment);
+	}
+
+	void RendererAPI::DestroyCamera(Camera* camera)
+	{
+		return _api->DestroyCamera(camera);
 	}
 }
