@@ -9,6 +9,7 @@
 #include "Core/Logger.h"
 #include "Core/Reflection.h"
 #include "Core/Object.h"
+#include "Core/Debug.h"
 
 // components
 #include "Scene/Entity.h"

@@ -1,4 +1,15 @@
 #include "OpenGL/Graphics.h"
+#include "OpenGL/DescriptorPool.h"
+#include "OpenGL/Command.h"
+#include "OpenGL/Camera.h"
+#include "OpenGL/Shader.h"
+#include "OpenGL/Texture.h"
+#include "OpenGL/VertexBuffer.h"
+#include "OpenGL/Utils.h"
+
+#ifdef DEBUG
+#include "OpenGL/DebugGeometry.h"
+#endif // DEBUG
 
 #include "Transform.h"
 #include "Mesh.h"
@@ -7,14 +18,6 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-
-// new
-#include "OpenGL/DescriptorPool.h"
-#include "OpenGL/Camera.h"
-#include "OpenGL/Shader.h"
-#include "OpenGL/Texture.h"
-#include "OpenGL/VertexBuffer.h"
-#include "OpenGL/Utils.h"
 
 static void DebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -55,10 +58,12 @@ namespace Varlet::OpenGL
 			VARLET_LOG(LevelType::Normal, (char*)extension);
 		}
 
-		glGenProgramPipelines(1, &_mainPipeline);
-		glBindProgramPipeline(_mainPipeline);
+		glGenProgramPipelines(1, &pipeline);
+		glBindProgramPipeline(pipeline);
 
 #ifdef DEBUG
+		DebugGeometry::Init();
+
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(DebugMessage, nullptr);
@@ -80,7 +85,7 @@ namespace Varlet::OpenGL
 		PROFILE_OUT(GraphicsInfo::renderTime);
 		
 		UpdateIllumination();
-		
+
 		for (auto[cameraComponent, camera] : OpenGL::DescriptorPool::GetCameras())
 		{
 			if (cameraComponent->IsActive() == false)
@@ -133,13 +138,21 @@ namespace Varlet::OpenGL
 				glDeleteTextures(1, &postProcessingTexture);
 			}
 		
+#ifdef DEBUG
+			Command::DrawDebugGeomtry();
+#endif // DEBUG
+			
 			camera->framebuffer.UnBind();
 		}
 	}
 
 	void Graphics::Shutdown()
 	{
-		glDeleteProgramPipelines(1, &_mainPipeline);
+		glDeleteProgramPipelines(1, &pipeline);
+
+#ifdef DEBUG
+		DebugGeometry::Shutdown();
+#endif // DEBUG
 
 		DescriptorPool::Shutdown();
 	}
@@ -278,7 +291,7 @@ namespace Varlet::OpenGL
 			const uint32_t current = 0x00000001 << offest;
 			
 			if ((current & stages) == current)
-				glUseProgramStages(_mainPipeline, current, shader->GetProgram(current));
+				glUseProgramStages(pipeline, current, shader->GetProgram(current));
 		}
 	}
 

@@ -37,7 +37,7 @@ namespace Varlet::OpenGL
 		UniformBuffer _globalData;
 		UniformBuffer _illuminationData;
 
-		uint32_t _mainPipeline;
+		uint32_t pipeline;
 
 	public:
 

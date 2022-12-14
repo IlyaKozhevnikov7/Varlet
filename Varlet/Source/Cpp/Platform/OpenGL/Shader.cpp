@@ -171,13 +171,13 @@ namespace Varlet::OpenGL
 		if (source[0] == '\0')
 			return 0;
 
-		const uint32_t vertexShaderId = glCreateShader(type);
-		glShaderSource(vertexShaderId, 1, &source, NULL);
-		glCompileShader(vertexShaderId);
+		const uint32_t shaderId = glCreateShader(type);
+		glShaderSource(shaderId, 1, &source, NULL);
+		glCompileShader(shaderId);
 
-		Validate(vertexShaderId, ObjectType::Shader);
+		Validate(shaderId, ObjectType::Shader);
 
-		return vertexShaderId;
+		return shaderId;
 	}
 
 	void Shader::GenerateProgram(const uint32_t& shaderId, const ShaderBit& bit)

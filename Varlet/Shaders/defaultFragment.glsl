@@ -18,7 +18,7 @@ layout(std140, binding = 0) uniform Camera
     vec3 u_CameraPosition;
 };
 
-#define MAX_POINTS_LIGHT_AMOUNT 10
+#define MAX_POINTS_LIGHT_AMOUNT 100
 
 layout(std140, binding = 1) uniform Illumination
 {

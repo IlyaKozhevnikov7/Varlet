@@ -18,8 +18,6 @@ public:
 
 	static bool Init(Varlet::TimeModule* core);
 
-	static void UpdateTime();
-
 	CORE_API static float GetTime();
 
 	CORE_API static float GetDeltaTime();
