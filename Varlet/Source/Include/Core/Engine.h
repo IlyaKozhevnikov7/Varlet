@@ -1,7 +1,6 @@
 #pragma once
 
 #include "VarletCore.h"
-#include "Context.h"
 #include "Module.h"
 
 namespace Varlet
@@ -10,8 +9,6 @@ namespace Varlet
 	{
 	private:
 
-		ContextAPI* _context;
-
 		std::vector<Module*> _modules;
 		std::vector<IUpdatebleModule*> _updatebleModules;
 
@@ -19,13 +16,9 @@ namespace Varlet
 
 	public:
 
-		~Engine();
+		~Engine() = default;
 
 		static Engine* Get();
-
-		ContextAPI* GetContext() const;
-
-		void Init();
 
 		void RegisterTargetModule(Module* targetModule);
 
@@ -34,6 +27,8 @@ namespace Varlet
 		void Run();
 
 		void Shutdown();
+
+		static void WantExit();
 
 	private:
 

@@ -1,12 +1,5 @@
-#include "Rendering/RendererAPI.h"
 #include "Rendering/Graphics.h"
-
-#include "Entity.h"
-#include "Component.h"
-#include "Renderer.h"
-#include "Transform.h"
-#include "Camera.h"
-#include "PointLight.h"
+#include "Rendering/RendererAPI.h"
 
 const uint8_t* GraphicsInfo::rendererName;
 double GraphicsInfo::renderTime;

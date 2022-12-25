@@ -10,8 +10,6 @@ workspace "Varlet"
 		"Release"
 	}
 
-	--platforms { "Windows" }
-
 	startproject "Sandbox"
 
 	entryPointPath = "%{wks.location}/Varlet/Source/Include/EntryPoint"

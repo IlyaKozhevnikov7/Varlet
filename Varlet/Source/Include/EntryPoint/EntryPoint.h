@@ -15,8 +15,6 @@ int32_t main(int32_t argc, char* argv[])
 		std::cout << argv[i] << std::endl;
 
 	auto engine = Varlet::Engine::Get();
-	
-	engine->Init();
 
 	engine->RegisterTargetModule(targetModule);
 	engine->InitModules();

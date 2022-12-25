@@ -1,36 +1,25 @@
 #include "Engine.h"
-#include "GLFWContext.h"
-#include "GLFWInput.h"
-#include "OpenGLGraphics.h"
-#include "GLFWTime.h"
+#include "Platform/Current.h"
+#include "OpenGL/Graphics.h"
+#include "Windows/GLFWTime.h"
+
+#ifdef DEBUG
+	#include "Debug.h"
+#endif // DEBUG
 
 namespace Varlet
 {
 	Engine::Engine()
 	{
-		_context = new GLFWContext(); // hardcode context
-		_isRunning = true;
-	}
+		Platform::Init();
 
-	Engine::~Engine()
-	{
-		delete _context;
+		_isRunning = true;
 	}
 
 	Engine* Engine::Get()
 	{
 		static Engine instance;
 		return &instance;
-	}
-
-	ContextAPI* Engine::GetContext() const
-	{
-		return _context;
-	}
-
-	void Engine::Init()
-	{
-		_context->Init();
 	}
 
 	void Engine::RegisterTargetModule(Module* target)
@@ -43,6 +32,13 @@ namespace Varlet
 		if (dependencies.size() > 0)
 			modules.insert(modules.begin(), dependencies.begin(), dependencies.end());
 
+		// temp add input and time here
+		{
+			auto time = new GLFWTime();
+			_modules.push_back(time);
+			_updatebleModules.push_back(time);
+		}
+
 		for (auto module : modules)
 		{
 			_modules.push_back(module);
@@ -53,15 +49,17 @@ namespace Varlet
 
 		// temp add renderer here
 		{
-			auto openGLGraphics = new OpenGLGraphics();
+			auto openGLGraphics = new OpenGL::Graphics();
 			_modules.push_back(openGLGraphics);
 			_updatebleModules.push_back(openGLGraphics);
 		}
 
-		// temp add input and time here
 		{
-			_modules.push_back(new GLFWInput());
-			_modules.push_back(new GLFWTime());
+#ifdef DEBUG
+			const auto debug = new DebugModule();
+			_modules.push_back(debug);
+			_updatebleModules.push_back(debug);
+#endif // DEBUG
 		}
 	}
 
@@ -88,9 +86,7 @@ namespace Varlet
 	{
 		while (IsRunning())
 		{
-			Time::UpdateTime();
-
-			_context->Update();
+			Platform::Update();
 
 			for (auto module : _updatebleModules)
 				module->Update();
@@ -99,8 +95,6 @@ namespace Varlet
 
 	void Engine::Shutdown()
 	{
-		_context->Shutdown();
-
 		for (auto module : _modules)
 		{
 			module->Shutdown();
@@ -108,8 +102,13 @@ namespace Varlet
 		}
 	}
 
+	void Engine::WantExit()
+	{
+		Get()->_isRunning = false;
+	}
+
 	bool Engine::IsRunning() const
 	{
-		return _isRunning && _context->IsRunning();
+		return _isRunning;
 	}
 }

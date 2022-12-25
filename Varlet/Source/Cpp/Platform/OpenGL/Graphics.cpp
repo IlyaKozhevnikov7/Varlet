@@ -8,16 +8,13 @@
 #include "OpenGL/Utils.h"
 
 #ifdef DEBUG
-#include "OpenGL/DebugGeometry.h"
+	#include "OpenGL/DebugGeometry.h"
 #endif // DEBUG
 
 #include "Transform.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "Scene/Camera.h"
-
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 
 static void DebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
@@ -28,46 +25,11 @@ namespace Varlet::OpenGL
 {
 	int32_t Graphics::Init()
 	{
-		if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == false)
-		{
-			std::cout << "Failed to initialize OpenGL" << std::endl;
-			return FAILED_INITIALIZATION;
-		}
-
-		glEnable(GL_DEPTH_TEST);
-
-		glEnable(GL_STENCIL_TEST);
-		glStencilMask(0xFF);
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-
-		glFrontFace(GL_CCW);
-
-		glEnable(GL_BLEND);
-
-		//glEnable(GL_CULL_FACE);
-		//glCullFace(GL_BACK);
-		
-		GraphicsInfo::rendererName = glGetString(GL_RENDERER);
-
-		GLint numberOfExtensions;
-		glGetIntegerv(GL_NUM_EXTENSIONS, &numberOfExtensions);
-		
-		for (GLint i = 0; i < numberOfExtensions; i++)
-		{
-			const GLubyte* extension = glGetStringi(GL_EXTENSIONS, i);
-			VARLET_LOG(LevelType::Normal, (char*)extension);
-		}
-
-		glGenProgramPipelines(1, &pipeline);
-		glBindProgramPipeline(pipeline);
+		CreateWindow();
+		const int32_t result = InitOpenGL();
 
 #ifdef DEBUG
 		DebugGeometry::Init();
-
-		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(DebugMessage, nullptr);
-		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 #endif // DEBUG
 
 		_globalData = UniformBuffer(sizeof(glm::mat4) * 4 + // view & projection & projection-view & model
@@ -77,13 +39,15 @@ namespace Varlet::OpenGL
 
 		Entity::NewComponentCreatedEvent.Bind(this, &OpenGL::Graphics::OnNewComponentCreated);
 
-		return Varlet::Graphics::Init();
+		return Varlet::Graphics::Init() == result == SUCCESSFUL_INITIALIZATION;
 	}
 
 	void Graphics::Update()
 	{
 		PROFILE_OUT(GraphicsInfo::renderTime);
-		
+	
+		PlatformGL::MakeCurrent(context);
+
 		UpdateIllumination();
 
 		for (auto[cameraComponent, camera] : OpenGL::DescriptorPool::GetCameras())
@@ -144,6 +108,8 @@ namespace Varlet::OpenGL
 			
 			camera->framebuffer.UnBind();
 		}
+
+		PlatformGL::SwapBuffers(context);
 	}
 
 	void Graphics::Shutdown()
@@ -155,6 +121,46 @@ namespace Varlet::OpenGL
 #endif // DEBUG
 
 		DescriptorPool::Shutdown();
+	}
+
+	int32_t Graphics::InitOpenGL()
+	{
+		if (gladLoadGL() == 0)
+		{
+			std::cout << "Failed to initialize OpenGL" << std::endl;
+			return FAILED_INITIALIZATION;
+		}
+
+		GraphicsInfo::rendererName = glGetString(GL_RENDERER);
+
+#ifdef DEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(DebugMessage, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+#endif // DEBUG
+
+		glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_STENCIL_TEST);
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+
+		glFrontFace(GL_CCW);
+
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK);
+
+		glGenProgramPipelines(1, &pipeline);
+		glBindProgramPipeline(pipeline);
+
+		return SUCCESSFUL_INITIALIZATION;
+	}
+
+	void Graphics::CreateWindow()
+	{
+		Platform::CreateWindow();
+		context = static_cast<Platform::WindowDescriptor>(Screen::GetNative());
 	}
 
 	void Graphics::UpdateIllumination() const

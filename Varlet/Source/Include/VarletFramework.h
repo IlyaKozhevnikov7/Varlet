@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Screen.h"
+
 // math
 #include "../../Dependencies/GLM/include/glm/glm.hpp"
 #include "../../Dependencies/GLM/include/GLM/ext/matrix_transform.hpp"
@@ -30,6 +32,5 @@
 
 // input
 #include "Input/Input.h"
-#include "Platform/Windows/GLFWInput.h" // for key enums
 
 #include "Time/VarletTime.h"

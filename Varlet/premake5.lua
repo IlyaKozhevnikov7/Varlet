@@ -22,9 +22,6 @@ project "Varlet"
 		"%{includeDir}/Rendering",
 		"%{includeDir}/Scene",
 		"%{includeDir}/Platform",
-		"%{includeDir}/Platform/Windows",
-		--"%{includeDir}/Platform/OpenGL",
-		--"%{includeDir}/Platform/Vulkan",
 		"%{includeDir}/Time",
 		"%{includeDir}/Utils",
 
@@ -52,6 +49,9 @@ project "Varlet"
 	defines {
 		"VARLET_DLL_EXPORT"
 	}
+
+	filter "system:Windows"
+		defines "VARLET_WINDOWS"
 
 	filter "configurations:Editor"
 		defines {
