@@ -55,13 +55,13 @@ void EditorViewport::UpdateControl()
 {
 	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImGui::IsWindowHovered())
 	{
-		VarletAPI::SetCursorState(CursorState::Disabled);
+		ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 		_camera->SetControl(true);
 	}
 
 	if (ImGui::IsMouseReleased(ImGuiMouseButton_Right))
 	{
-		VarletAPI::SetCursorState(CursorState::Visible);
+		ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
 		_camera->SetControl(false);
 	}
 
