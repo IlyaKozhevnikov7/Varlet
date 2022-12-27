@@ -20,13 +20,6 @@ struct CORE_API GraphicsInfo
 
 namespace Varlet
 {
-	struct LightSourceData
-	{
-		std::vector<std::pair<PointLight*, Transform*>> pointLights;
-		// Directional lights
-		// Spotlights
-	};
-
 	class CORE_API Graphics : public Module, public IUpdatebleModule
 	{
 	public:

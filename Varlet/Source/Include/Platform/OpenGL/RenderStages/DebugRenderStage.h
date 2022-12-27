@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Core/Debug.h"
+#include "OpenGL/RenderStages/IRenderStage.h"
+#include "GLM/glm.hpp"
+#include <stdint.h>
 
 namespace Varlet::OpenGL
 {
@@ -10,7 +12,7 @@ namespace Varlet::OpenGL
 		uint32_t vbo;
 		uint32_t verticesCount;
 	};
-
+	
 	struct IndexedDebugGeomtryBuffer final
 	{
 		uint32_t vao;
@@ -18,14 +20,14 @@ namespace Varlet::OpenGL
 		uint32_t ebo;
 		uint32_t verticesCount;
 	};
-
+	
 	struct Line final
 	{
 		glm::vec3 start;
 		glm::vec3 end;
 		glm::vec3 color;
 	};
-
+	
 	struct Cirlce final
 	{
 		glm::vec3 color;
@@ -34,7 +36,7 @@ namespace Varlet::OpenGL
 		glm::mat4 orientation;
 	};
 
-	struct DebugGeometry final
+	class DebugRenderStage : public IRenderStage
 	{
 	public:
 
@@ -44,27 +46,30 @@ namespace Varlet::OpenGL
 
 		static uint32_t lineShader;
 		static DebugGeomtryBuffer lineBuffer;
-
+		
 		static uint32_t circleShader;
 		static DebugGeomtryBuffer circleBuffer;
 
 	public:
 
-		static void Init();
+		~DebugRenderStage() override = default;
 
-		static void Shutdown();
+		void Init() override;
 
-		// return should update buffer again
-		static bool UpdateLineBuffer();
+		void Shutdown() override;
 
-		static bool UpdateCircleBuffer();
+		void Update() override;
 
 	private:
 
-		static void InitLineBuffer();
+		bool UpdateLineBuffer();
 
-		static void InitCircleBuffer();
+		bool UpdateCircleBuffer();
 
-		static uint32_t CreateShader(const char* vert, const char* geom, const char* frag);
+		void InitLineBuffer();
+
+		void InitCircleBuffer();
+
+		uint32_t CreateShader(const char* vert, const char* geom, const char* frag);
 	};
 }

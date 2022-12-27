@@ -1,4 +1,6 @@
-#include "OpenGL/DebugGeometry.h"
+#include "OpenGL/RenderStages/DebugRenderStage.h"
+#include "OpenGL/DescriptorPool.h"
+#include "OpenGL/Camera.h"
 #include "Core/Debug.h"
 #include <glad/glad.h>
 
@@ -22,6 +24,16 @@
 	return shouldUpdateAgain; \
 
 #define FIELD(Name) element.Name
+
+#define DRAW_GEOMETRY(Shader, Buffer, UpdateFunc) \
+	glUseProgram(Shader); \
+	glBindVertexArray(Buffer.vao); \
+	do \
+	{ \
+		shouldUpdateAgain = UpdateFunc(); \
+		if (Buffer.verticesCount > 0) \
+			glDrawArrays(GL_POINTS, 0, Buffer.verticesCount); \
+	} while (shouldUpdateAgain); \
 
 namespace
 {
@@ -213,71 +225,88 @@ namespace
 
 namespace Varlet::OpenGL
 {
-	uint32_t DebugGeometry::lineShader;
-	DebugGeomtryBuffer DebugGeometry::lineBuffer;
+	uint32_t DebugRenderStage::lineShader;
+	DebugGeomtryBuffer DebugRenderStage::lineBuffer;
 
-	uint32_t DebugGeometry::circleShader;
-	DebugGeomtryBuffer DebugGeometry::circleBuffer;
+	uint32_t DebugRenderStage::circleShader;
+	DebugGeomtryBuffer DebugRenderStage::circleBuffer;
 
-	void DebugGeometry::Init()
+	void DebugRenderStage::Init()
 	{
 		glLineWidth(1.5f);
 
 		lineShader = CreateShader(vertexLineShaderCode, geometrLineShaderCode, fragmentShaderCode);
 		circleShader = CreateShader(vertexCircleShaderCode, geometrCircleShaderCode, fragmentShaderCode);
-
+		
 		InitLineBuffer();
 		InitCircleBuffer();
 	}
 
-	void DebugGeometry::Shutdown()
+	void DebugRenderStage::Shutdown()
 	{
 		glDeleteProgram(lineShader);
 		glDeleteProgram(circleShader);
-
+		
 		glDeleteVertexArrays(1, &lineBuffer.vao);
 		glDeleteBuffers(1, &lineBuffer.vbo);
-
+		
 		glDeleteVertexArrays(1, &circleBuffer.vao);
 		glDeleteBuffers(1, &circleBuffer.vbo);
 	}
 
-	bool DebugGeometry::UpdateLineBuffer()
+	void DebugRenderStage::Update()
+	{
+		for (auto [cameraComponent, camera] : DescriptorPool::GetCameras())
+		{
+			camera->framebuffer.Bind();
+
+			bool shouldUpdateAgain = false;
+
+			DRAW_GEOMETRY(lineShader, lineBuffer, UpdateLineBuffer);
+			DRAW_GEOMETRY(circleShader, circleBuffer, UpdateCircleBuffer);
+
+			camera->framebuffer.UnBind();
+		}
+
+		glUseProgram(0);
+	}
+
+	bool DebugRenderStage::UpdateLineBuffer()
 	{
 		UPDATE_BUFFER(Line, lineBuffer, DebugData::GetLines(), FIELD(start), FIELD(end), FIELD(color));
 	}
 
-	bool DebugGeometry::UpdateCircleBuffer()
+	bool DebugRenderStage::UpdateCircleBuffer()
 	{
 		UPDATE_BUFFER(Cirlce, circleBuffer, DebugData::GetCircles(), FIELD(color), FIELD(radius), static_cast<float>(FIELD(segmentsAmount)), FIELD(model));
 	}
 
-	void DebugGeometry::InitLineBuffer()
+	void DebugRenderStage::InitLineBuffer()
 	{
 		glGenVertexArrays(1, &lineBuffer.vao);
 		glGenBuffers(1, &lineBuffer.vbo);
-
+		
 		glBindVertexArray(lineBuffer.vao);
-
+		
 		glBindBuffer(GL_ARRAY_BUFFER, lineBuffer.vbo);
 		glBufferData(GL_ARRAY_BUFFER, lineBufferSize, nullptr, GL_DYNAMIC_DRAW);
-
+		
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Line), reinterpret_cast<void*>(0));
-
+		
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Line), reinterpret_cast<void*>(sizeof(glm::vec3)));
-
+		
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Line), reinterpret_cast<void*>(sizeof(glm::vec3) * 2));
-
+		
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+		
 		lineBuffer.verticesCount = 0;
 	}
 
-	void DebugGeometry::InitCircleBuffer()
+	void DebugRenderStage::InitCircleBuffer()
 	{
 		glGenVertexArrays(1, &circleBuffer.vao);
 		glGenBuffers(1, &circleBuffer.vbo);
@@ -298,48 +327,48 @@ namespace Varlet::OpenGL
 		
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Cirlce), reinterpret_cast<void*>(sizeof(glm::vec3) + sizeof(float) * 2));
-
+		
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Cirlce), reinterpret_cast<void*>(sizeof(glm::vec3) + sizeof(float) * 2 + sizeof(glm::vec4)));
-
+		
 		glEnableVertexAttribArray(5);
 		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(Cirlce), reinterpret_cast<void*>(sizeof(glm::vec3) + sizeof(float) * 2 + sizeof(glm::vec4) * 2));
-
+		
 		glEnableVertexAttribArray(6);
 		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Cirlce), reinterpret_cast<void*>(sizeof(glm::vec3) + sizeof(float) * 2 + sizeof(glm::vec4) * 3));
-
+		
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
 		circleBuffer.verticesCount = 0;
 	}
 
-	uint32_t DebugGeometry::CreateShader(const char* vert, const char* geom, const char* frag)
+	uint32_t DebugRenderStage::CreateShader(const char* vert, const char* geom, const char* frag)
 	{
 		const uint32_t id = glCreateProgram();
-
+		
 		const uint32_t vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		const uint32_t geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 		const uint32_t fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
+		
 		glShaderSource(vertexShader, 1, &vert, nullptr);
 		glShaderSource(geometryShader, 1, &geom, nullptr);
 		glShaderSource(fragmentShader, 1, &frag, nullptr);
-
+		
 		glCompileShader(vertexShader);
 		glCompileShader(geometryShader);
 		glCompileShader(fragmentShader);
-
+		
 		glAttachShader(id, vertexShader);
 		glAttachShader(id, geometryShader);
 		glAttachShader(id, fragmentShader);
-
+		
 		glLinkProgram(id);
-
+		
 		glDeleteShader(vertexShader);
 		glDeleteShader(geometryShader);
 		glDeleteShader(fragmentShader);
-
+		
 		return id;
 	}
 }
