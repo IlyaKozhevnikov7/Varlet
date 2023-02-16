@@ -1,5 +1,4 @@
 /Build
-/Sandbox
 
 /Varlet/Source/Include/Platform/Vulkan
 /Varlet/Source/Cpp/Platform/Vulkan
@@ -10,6 +9,8 @@
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+**.vcxproj.csproj
+**.vcxproj.csproj.user
 
 # ImGui .ini files
 **imgui.ini

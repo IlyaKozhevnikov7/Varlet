@@ -1,5 +1,3 @@
-include "Dependencies.lua"
-
 workspace "Varlet"
 	
 	architecture "x64"
@@ -10,15 +8,18 @@ workspace "Varlet"
 		"Release"
 	}
 
-	startproject "Sandbox"
+	startproject "Launcher"
 
-	entryPointPath = "%{wks.location}/Varlet/Source/Include/EntryPoint"
+	-- Core
+	include "VarletCore"
+	include "Launcher"
 
-	includeDir = "Source/Include"
+	-- Modules
+	include "Modules/Editor/Cache"
+	include "Modules/Varlet/Cache"
+	include "Modules/OpenGL/Cache"
+	include "Modules/Input/Cache"
 
-	sourceIncludeFiles = "Source/Include/**.h"
-	sourceCppFiles = "Source/Cpp/**.cpp"
-
-	include "Editor"
-	include "Varlet"
-	include "Sandbox"
+	-- Programs
+	include "Programs/ProjectGenerator"
+	include "Programs/CodeGenerator"
