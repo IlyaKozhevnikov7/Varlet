@@ -20,6 +20,8 @@ workspace "Varlet"
 	include "Modules/OpenGL/Cache"
 	include "Modules/Input/Cache"
 
-	-- Programs
-	include "Programs/ProjectGenerator"
-	include "Programs/CodeGenerator"
+	include "Modules/EditorCore/Cache"
+
+	-- Try new graphics module
+	include "Modules/Graphics/Cache"
+	

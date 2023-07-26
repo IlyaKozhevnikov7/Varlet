@@ -1,7 +1,7 @@
 /Build
 
-/Varlet/Source/Include/Platform/Vulkan
-/Varlet/Source/Cpp/Platform/Vulkan
+Programs
+**/Cache
 
 # Visual Studio files
 .vs
