@@ -3,11 +3,8 @@
 #include "Common.h"
 #include "SerializationUtils.generated.h"
 
-namespace Varlet::Core
-{
-	struct SerializeInfo;
-	struct DeserializeInfo;
-}
+class ISerializeContext;
+class IDeserializeContext;
 
 REFLECTABLE(Interface)
 class CORE_API ICustomSerializable
@@ -18,9 +15,13 @@ public:
 
 	virtual ~ICustomSerializable() = default;
 
-	virtual void Serialize(Varlet::Core::SerializeInfo& info) = 0;
+	virtual void Serialize(ISerializeContext* context) = 0;
 
-	virtual void Deserialize(Varlet::Core::DeserializeInfo& info) = 0;
+	/*
+	*	The result determines whether the object was deserialized correctly or not. 
+	*	If false is returned, the object will be deleted.
+	*/
+	virtual bool Deserialize(IDeserializeContext* context) = 0;
 
 	bool CheckIsA(const Varlet::Core::Type* type) const
 	{

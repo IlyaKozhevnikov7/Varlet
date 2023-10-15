@@ -42,7 +42,7 @@ namespace Varlet::Core
 
 		if (type->flags.Has(TypeMetaFlags::Enum))
 		{
-
+			// TODO:
 		}
 	}
 
@@ -77,13 +77,53 @@ namespace Varlet::Core
 		}
 	}
 
+	bool Type::IsPrimetive(uint32_t id)
+	{
+		static std::vector<uint32_t> primitiveTypeIds =
+		{
+			Type::GetType(NAME_OF(bool))->id,
+			Type::GetType(NAME_OF(int8_t))->id,
+			Type::GetType(NAME_OF(uint8_t))->id,
+			Type::GetType(NAME_OF(int16_t))->id,
+			Type::GetType(NAME_OF(uint16_t))->id,
+			Type::GetType(NAME_OF(int32_t))->id,
+			Type::GetType(NAME_OF(uint32_t))->id,
+			Type::GetType(NAME_OF(int64_t))->id,
+			Type::GetType(NAME_OF(uint64_t))->id,
+			Type::GetType(NAME_OF(float))->id,
+			Type::GetType(NAME_OF(double))->id,
+
+			// TODO: Remove
+			Type::GetType(NAME_OF(glm::bvec2))->id,
+			Type::GetType(NAME_OF(glm::bvec3))->id,
+			Type::GetType(NAME_OF(glm::bvec4))->id,
+			Type::GetType(NAME_OF(glm::ivec2))->id,
+			Type::GetType(NAME_OF(glm::ivec3))->id,
+			Type::GetType(NAME_OF(glm::ivec4))->id,
+			Type::GetType(NAME_OF(glm::uvec2))->id,
+			Type::GetType(NAME_OF(glm::uvec3))->id,
+			Type::GetType(NAME_OF(glm::uvec4))->id,
+			Type::GetType(NAME_OF(glm::vec2))->id,
+			Type::GetType(NAME_OF(glm::vec3))->id,
+			Type::GetType(NAME_OF(glm::vec4))->id,
+			Type::GetType(NAME_OF(glm::dvec2))->id,
+			Type::GetType(NAME_OF(glm::dvec3))->id,
+			Type::GetType(NAME_OF(glm::dvec4))->id,
+			Type::GetType(NAME_OF(glm::mat2))->id,
+			Type::GetType(NAME_OF(glm::mat3))->id,
+			Type::GetType(NAME_OF(glm::mat4))->id,
+		};
+
+		return std::find(primitiveTypeIds.begin(), primitiveTypeIds.end(), id) != primitiveTypeIds.end();
+	}
+
 	const Type* Type::GetType(const char* name)
 	{
 		const uint32_t id = Hash(name);
 		return GetType(id);
 	}
 
-	const Type* Type::GetType(const uint32_t id)
+	const Type* Type::GetType(uint32_t id)
 	{
 		for (auto& type : _types)
 			if (type->id == id)
@@ -125,7 +165,7 @@ namespace Varlet::Core
 		return _types;
 	}
 
-	Type::Type(const char* name, const size_t& size, std::initializer_list<ParentInfo> parentInfos, std::initializer_list<FieldInfo> fieldInfos, GetActualTypeFunction getActualTypeFunction, CreateFunction createFunction, BitMask<TypeMetaFlags> flags) :
+	Type::Type(const char* name, size_t size, std::initializer_list<ParentInfo> parentInfos, std::initializer_list<FieldInfo> fieldInfos, GetActualTypeFunction getActualTypeFunction, CreateFunction createFunction, BitMask<TypeMetaFlags> flags) :
 		name(name),
 		id(Hash(name)),
 		size(size),
@@ -137,7 +177,7 @@ namespace Varlet::Core
 	{
 	}
 
-	Type::Type(const char* name, const size_t& size, std::initializer_list<EnumValue> values) :
+	Type::Type(const char* name, size_t size, std::initializer_list<EnumValue> values) :
 		name(name),
 		id(Hash(name)),
 		size(size),

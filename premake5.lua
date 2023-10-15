@@ -3,7 +3,7 @@ workspace "Varlet"
 	architecture "x64"
 
 	configurations {
-		"Editor",
+		"Development",
 		"Debug",
 		"Release"
 	}
@@ -23,5 +23,6 @@ workspace "Varlet"
 	include "Modules/EditorCore/Cache"
 
 	-- Try new graphics module
-	include "Modules/Graphics/Cache"
+	include "Modules/GraphicsInterface/Cache"
+	include "Modules/GraphicsCore/Cache"
 	

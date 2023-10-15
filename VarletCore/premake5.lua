@@ -8,20 +8,27 @@ project "VarletCore"
 	objdir("%{wks.location}/Build/Obj/%{prj.name}/%{cfg.buildcfg}")
 
 	files {
-		"Code/**"
+		"Code/**",
+		"Cache/Generation/**"
 	}
 
 	includedirs {
 		"Code/Include",
-		"Dependencies/Windows"
+		"Cache/Generation"
 	}
 
 	defines {
 		"CORE_DLL_EXPORT"
 	}
 
+	prebuildcommands "W:/VarletUtils/CodeGenerator/bin/Debug/net6.0/CodeGenerator.exe W:/Varlet/VarletCore/ -core"
+
 	filter "system:Windows"
 		defines "VARLET_WINDOWS"
+
+		includedirs {
+			"Dependencies/Windows"
+		}
 
 		links {
 			"glfw3dll"
@@ -31,11 +38,10 @@ project "VarletCore"
 			"Dependencies/Windows/glfw"
 		}
 
-	filter "configurations:Editor"
+	filter "configurations:Development"
 		defines {
-			"VARLET_EDITOR",
-			"VARLET_DEBUG",
-			"VARLET_META"
+			"VARLET_DEVELOPMENT",
+			"VARLET_DEBUG"
 		}
 		symbols "On"
 

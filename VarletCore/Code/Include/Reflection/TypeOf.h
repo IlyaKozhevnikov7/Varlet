@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Reflection/Type.h"
+#include "Serialization/SerializationUtils.h"
 #include "Serialization/Formatter.h"
 #include "TypeOf.generated.h"
 
@@ -53,17 +54,22 @@ public:
 		return _type == type;
 	}
 
-	void Serialize(Varlet::Core::SerializeInfo& info) override
+	void Serialize(ISerializeContext* context) override
 	{
-		if (_type == nullptr)
-			info.AddData<uint32_t>(0);
-		else
-			info.AddData(_type->id);
+		//const uint32_t value = _type == nullptr
+		//	? 0
+		//	: _type->id;
+		//
+		//context->AddData<uint32_t>(value);
 	}
 
-	void Deserialize(Varlet::Core::DeserializeInfo& info) override
+	bool Deserialize(IDeserializeContext* context) override
 	{
-		uint32_t id = info.Read<uint32_t>();
-		_type = Varlet::Core::Type::GetType(id);
+		//context->Read();
+
+		//uint32_t id = info.Read<uint32_t>();
+		//_type = Varlet::Core::Type::GetType(id);
+
+		return false;
 	}
 };

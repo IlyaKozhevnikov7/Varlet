@@ -60,9 +60,11 @@ namespace Varlet::Core
 
 		static void UnregisterModuleTypes(const Module* module);
 
+		static bool IsPrimetive(uint32_t id);
+
 		static const Type* GetType(const char* name);
 
-		static const Type* GetType(const uint32_t id);
+		static const Type* GetType(uint32_t id);
 
 		/*
 		* Return 0 if generated type doesnt exist
@@ -109,12 +111,12 @@ namespace Varlet::Core
 		/*
 		 * Class/Struct contructor
 		 */
-		Type(const char* name, const size_t& size, std::initializer_list<ParentInfo> parentInfos, std::initializer_list<FieldInfo> fieldInfos, GetActualTypeFunction getActualTypeFunction, CreateFunction createFunction, BitMask<TypeMetaFlags> flags = 0);
+		Type(const char* name, size_t size, std::initializer_list<ParentInfo> parentInfos, std::initializer_list<FieldInfo> fieldInfos, GetActualTypeFunction getActualTypeFunction, CreateFunction createFunction, BitMask<TypeMetaFlags> flags = 0);
 
 		/*
 		 * Enum contructor
 		 */
-		Type(const char* name, const size_t& size, std::initializer_list<EnumValue> values);
+		Type(const char* name, size_t size, std::initializer_list<EnumValue> values);
 
 		virtual ~Type();
 
