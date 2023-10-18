@@ -1,7 +1,9 @@
 /Build
 
 Programs
-**/Cache
+
+**/Cache/**
+!**/Cache/premake5.lua
 
 # Visual Studio files
 .vs
