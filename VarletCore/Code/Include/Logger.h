@@ -5,7 +5,8 @@
 #include <vector>
 
 #ifdef VARLET_DEBUG
-	#define VARLET_LOG(Type, Message) Varlet::Core::Logger::ConsoleLog(Type, Message);
+	#define VARLET_LOG(Verbosity, Format, ...) Varlet::Core::Logger::Get()->AddLog(Verbosity, Format, __VA_ARGS__);
+	#define VT_LOG(Verbosity, Format, ...) VARLET_LOG(Verbosity, WIDE(Format), __VA_ARGS__);
 	#define VARLET_ASSERT(Expression, Message) assert(Expression && Message);
 	#define VARLET_ERROR(Message) assert(false && Message);
 #else
@@ -14,7 +15,7 @@
 	#define VARLET_ERROR(Message)
 #endif // DEBUG
 
-enum LevelType : uint8_t
+enum LogVerbosity : uint8_t
 {
 	Normal = 0,
 	Warning,
@@ -27,28 +28,32 @@ namespace Varlet::Core
 	{
 	public:
 
-		LevelType type;
-		std::string message;
+		LogVerbosity type;
+		std::wstring message;
 
 	public:
 
-		Log(const LevelType& type, const std::string& message);
+		Log(LogVerbosity verbosity, const std::wstring& message);
 	};
 
 	class CORE_API Logger final
 	{
 	private:
+		
+		constexpr static int32_t MaxLogSize = 256;
 
-		static std::vector<Log> _buffer;
+		static Logger* _instance;
+		
+		std::vector<Log> _buffer;
 
 	public:
 
-		static void ConsoleLog(LevelType&& type, std::string&& message);
+		static Logger* Get();
+
+		void AddLog(LogVerbosity verbosity, const wchar_t* format, ...);
 
 	private:
 
-		static Log CreateLog(LevelType&& type, std::string&& message);
-
-		static std::string LevelTypeToString(LevelType&& type);
+		Logger() = default;
 	};
 }

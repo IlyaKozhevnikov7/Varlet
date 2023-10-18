@@ -15,7 +15,7 @@ namespace Varlet::Core
 
 		if (isInitialized)
 		{
-			VARLET_LOG(Warning, "Input already initialized...");
+			VARLET_LOG(Warning, WIDE("Input already initialized"));
 			return;
 		}
 

@@ -6,6 +6,9 @@ namespace Varlet::Core
 {
 	class Type;
 
+	/*
+	 * Base engine managed module witch interprets functional dll
+	 */
 	class CORE_API Module
 	{
 	public:
@@ -14,17 +17,13 @@ namespace Varlet::Core
 
 		virtual ~Module() = default;
 
-		virtual std::vector<const char*> GetDependencies() const;
-
 		// for self initialization
-		virtual bool Init();
+		virtual bool Initialize();
 
 		// for initialization with other modules
-		virtual bool PostInit();
+		virtual bool PostInitialize();
 
 		virtual void Shutdown();
-
-		virtual std::vector<const Type*>& GetTypes();
 	};
 
 	class IUpdatebleModule
@@ -34,18 +33,5 @@ namespace Varlet::Core
 		virtual ~IUpdatebleModule() = default;
 
 		virtual void Update() = 0;
-	};
-
-	class CORE_API EditorModule : public Module, public IUpdatebleModule
-	{
-	public:
-
-		std::string projectDirectory;
-
-	public:
-
-		EditorModule() = default;
-
-		~EditorModule() override = default;
 	};
 }

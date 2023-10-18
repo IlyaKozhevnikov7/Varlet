@@ -13,6 +13,7 @@
 #define CC_RED 12
 
 struct GLFWwindow;
+typedef HWND PlatformNativeWindow;
 
 namespace Varlet::Core
 {
@@ -32,6 +33,8 @@ namespace Varlet::Core
 		static void Initialize();
 
 		static void Update();
+
+		//CORE_API static PlatformNativeWindow CreateWindowNative(const wchar_t* title);
 
 		CORE_API static WindowDescriptor CreateWindow(const char* title);
 

@@ -24,13 +24,13 @@ namespace Varlet::Core
 
 		// new api 
 
-		void Initialize(const char* projcetDirectory);
-
-		// old api
+		void Initialize(const std::wstring& launcherPath, const std::wstring& projcetDirectory);
 
 		static Engine* Get();
 
-		void InitModules();
+		// old api
+
+		void PostInitializeModules();
 
 		void Run();
 			

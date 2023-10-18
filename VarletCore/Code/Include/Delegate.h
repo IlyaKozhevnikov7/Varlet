@@ -1,6 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <type_traits>
+
+template<typename... Args>
+struct Event;
 
 namespace Varlet
 {
@@ -19,8 +23,11 @@ namespace Varlet
 	};
 
 	template<typename T, typename ReturnValue, typename... Args>
-	struct Observer final : ObserverBase<ReturnValue, Args...>
+	struct Observer final : public ObserverBase<ReturnValue, Args...>
 	{
+		template<typename... Args>
+		friend struct Event;
+
 		using Signature = ReturnValue(T::*)(Args...);
 
 	private:
@@ -46,8 +53,11 @@ namespace Varlet
 }
 
 template<typename ReturnValue, typename... Args>
-struct Function final : Varlet::ObserverBase<ReturnValue, Args...>
+struct Function final : public Varlet::ObserverBase<ReturnValue, Args...>
 {
+	template<typename... Args>
+	friend struct Event;
+
 	using Signature = ReturnValue(*)(Args...);
 
 private:
@@ -93,7 +103,13 @@ public:
 
 	ReturnValue Invoke(Args... args) const
 	{
-		return _observer->Invoke(args...);
+		if (_observer != nullptr)
+			return _observer->Invoke(args...);
+
+		if constexpr (std::is_pointer_v<ReturnValue>)
+			return nullptr;
+		else
+			return {};
 	}
 };
 
@@ -106,7 +122,7 @@ struct Event final
 private:
 
 	std::vector<Varlet::ObserverBase<void, Args...>*> _observers;
-
+	
 public:
 
 	template<typename T>
@@ -118,6 +134,34 @@ public:
 	void Bind(void(*method)(Args...))
 	{
 		_observers.push_back(new Function<void, Args...>(method));
+	}
+
+	template<typename T>
+	void UnBind(T* object, void(T::*method)(Args...))
+	{
+		const auto it = std::find_if(_observers.begin(), _observers.end(), [object, method](const Varlet::ObserverBase<void, Args...>* observerBase)
+			{
+				const auto observer = dynamic_cast<const Varlet::Observer<T, void, Args...>*>(observerBase);
+				return observer && observer->_object == object && observer->_method == method;
+			});
+
+		if (it != _observers.end())
+		{
+			delete (*it);
+			_observers.erase(it);
+		}
+	}
+
+	void UnBind(void(*method)(Args...))
+	{
+		const auto it = std::find_if(_observers.begin(), _observers.end(), [method](const Varlet::ObserverBase<void, Args...>* observerBase)
+			{
+				const auto function = dynamic_cast<const Function<void, Args...>*>(observerBase);
+				return function && function->_method == method;
+			});
+
+		if (it != _observers.end())
+			_observers.erase(it);
 	}
 
 	void Invoke(Args... args) const

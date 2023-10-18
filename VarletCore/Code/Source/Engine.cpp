@@ -1,43 +1,59 @@
 #include "Engine.h"
 #include "Platform/Current.h"
 #include "ModuleService.h"
+#include "Paths.h"
+
+// TODO: relocate
+#include "Reflection/Type.h"
+#include "Serialization/SerializationUtils.h"
 
 namespace Varlet::Core
 {
+	Engine Engine::_instance;
+
 	Engine::Engine()
 	{
-		Platform::Init();
+		Platform::Initialize();
 
 		_isRunning = true;
 	}
 
 	Engine* Engine::Get()
 	{
-		static Engine instance;
-		return &instance;
+		return &_instance;
 	}
 
-	void Engine::Initialize(const char* projcetDirectory)
+	void Engine::Initialize(const std::wstring& launcherPath, const std::wstring& projcetDirectory)
 	{
-#ifdef VARLET_EDITOR
-		auto target = dynamic_cast<EditorModule*>(ModuleService::LoadModule("Editor"));
+		_updatebleModules.reserve(10);
 
-		if (target != nullptr)
-			target->projectDirectory = projcetDirectory;
+		ModuleService::OnRegisteredNewModule.Bind([](const ModuleInfo& info)
+			{
+				VT_LOG(Normal, "Module %s has been loaded", info.modulePath.c_str());
+			});
+		
+		ModuleService::OnUnregisteredNewModule.Bind([](const ModuleInfo& info)
+			{
+				VT_LOG(Normal, "Module %s has been unloaded", info.modulePath.c_str());
+			});
+
+		Varlet::Core::Type::Register(nullptr, ICustomSerializable::GetTypeStatic());
+
+		Varlet::Core::Paths::InitializeEnginePath(launcherPath.c_str());
+		Varlet::Core::Paths::InitializeApplicationPath(projcetDirectory.c_str());
+
+#ifdef VARLET_DEVELOPMENT
+		ModuleService::LoadModule(WIDE("Editor"));
 #else
-
-#endif // VARLET_EDITOR
+		ModuleService::LoadModule(projcetDirectory);
+#endif // VARLET_DEVELOPMENT
 	}
 
-	void Engine::InitModules()
+	void Engine::PostInitializeModules()
 	{
 		for (auto module : _modules)
-			if (module->Init() == false)
-				VARLET_LOG(LevelType::Error, "Module initialization error");
-
-		for (auto module : _modules)
-			if (module->PostInit() == false)
-				VARLET_LOG(LevelType::Error, "Module post initialization error");
+			if (module->PostInitialize() == false)
+				VARLET_LOG(Error, WIDE("Module post-initialization error"));
 	}
 
 	void Engine::Run()
@@ -75,9 +91,6 @@ namespace Varlet::Core
 
 		if (auto updatable = dynamic_cast<IUpdatebleModule*>(module))
 			_updatebleModules.push_back(updatable);
-
-		for (auto& dependence : module->GetDependencies())
-			ModuleService::LoadModule(dependence);
 	}
 
 	void Engine::RemoveModule(Module* module)
@@ -86,5 +99,7 @@ namespace Varlet::Core
 
 		if (auto updatable = dynamic_cast<IUpdatebleModule*>(module))
 			_updatebleModules.erase(std::remove(_updatebleModules.begin(), _updatebleModules.end(), updatable), _updatebleModules.end());
+
+		module->Shutdown();
 	}
 }

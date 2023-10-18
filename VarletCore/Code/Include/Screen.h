@@ -9,7 +9,7 @@ public:
 
 	static glm::ivec2 GetResolution();
 
-	static void* GetNative();
+	static Varlet::Core::Platform::WindowDescriptor GetNative();
 };
 
 namespace Varlet::Core
@@ -28,6 +28,6 @@ namespace Varlet::Core
 
 		static void Initialize(Platform::WindowDescriptor window);
 
-		static void SetResolution(const int32_t width, const int32_t height);
+		static void SetResolution(int32_t width, int32_t height);
 	};
 }

@@ -1,42 +1,40 @@
 #include "Logger.h"
+#include "Platform/Current.h"
+#include <stdarg.h>
 
 namespace Varlet::Core
 {
-	Log::Log(const LevelType& type, const std::string& message)
+	Log::Log(LogVerbosity verbosity, const std::wstring& message)
 	{
 		this->type = type;
 		this->message = message;
 	}
 
-	std::vector<Log> Logger::_buffer;
+	Logger* Logger::_instance = nullptr;
 
-	void Logger::ConsoleLog(LevelType&& type, std::string&& message)
+	Logger* Logger::Get()
 	{
-		const auto newLog = CreateLog(std::move(type), std::move(message));
-		_buffer.push_back(newLog);
+		if (_instance == nullptr)
+			_instance = new	Logger;
 
-		const std::string levelTypeStr = LevelTypeToString(std::move(type));
-
-		std::cout << "[LOG] " + message << std::endl;
+		return _instance;
 	}
 
-	Log Logger::CreateLog(LevelType&& type, std::string&& message)
+	void Logger::AddLog(LogVerbosity verbosity, const wchar_t* format, ...)
 	{
-		return Log(type, message);
-	}
+		va_list args;
+		va_start(args, format);
 
-	std::string Logger::LevelTypeToString(LevelType&& type)
-	{
-		switch (type)
-		{
-		case LevelType::Normal:
-			return "Normal";
+		wchar_t buffer[MaxLogSize];
+		_vsnwprintf_s(buffer, MaxLogSize, format, args);
+		
+		_buffer.push_back({ verbosity, buffer });
 
-		case LevelType::Warning:
-			return "Warning";
+		constexpr int16_t consoleColors[] = { CC_GRAY, CC_YELLOW, CC_RED };
+		Platform::SetConsoleColor(consoleColors[verbosity]);
 
-		case LevelType::Error:
-			return "Error";
-		}
+		std::wcout << "[Log] " << buffer << '\n';
+
+		va_end(args);
 	}
 }

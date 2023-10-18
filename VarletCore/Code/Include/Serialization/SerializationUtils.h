@@ -22,11 +22,6 @@ public:
 	*	If false is returned, the object will be deleted.
 	*/
 	virtual bool Deserialize(IDeserializeContext* context) = 0;
-
-	bool CheckIsA(const Varlet::Core::Type* type) const
-	{
-		return GetType()->CheckIsA(type);
-	}
 };
 
 REFLECTABLE(Interface)

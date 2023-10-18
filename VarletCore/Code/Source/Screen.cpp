@@ -5,7 +5,7 @@ glm::ivec2 Screen::GetResolution()
 	return { Varlet::Core::ScreenInternal::_width, Varlet::Core::ScreenInternal::_height };
 }
 
-void* Screen::GetNative()
+Varlet::Core::Platform::WindowDescriptor Screen::GetNative()
 {
 	return Varlet::Core::ScreenInternal::_window;
 }
@@ -21,7 +21,7 @@ namespace Varlet::Core
 		_window = window;
 	}
 
-	void ScreenInternal::SetResolution(const int32_t width, const int32_t height)
+	void ScreenInternal::SetResolution(int32_t width, int32_t height)
 	{
 		_width = width;
 		_height = height;
