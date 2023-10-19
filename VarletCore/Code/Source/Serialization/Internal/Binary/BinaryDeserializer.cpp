@@ -106,7 +106,7 @@ namespace Varlet::Core
 		}
 		else if (type->module == nullptr)
 		{
-			if (auto arrayType = dynamic_cast<const IArrayType*>(type))
+			if (dynamic_cast<const IArrayType*>(type) != nullptr || type->IsA(ICustomSerializable))
 				info.value = _reader.Read(info.regionSize);
 		}
 		else

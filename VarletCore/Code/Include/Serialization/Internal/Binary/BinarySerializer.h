@@ -98,6 +98,8 @@ namespace Varlet::Core
 
 		uint32_t HashName(const char* name);
 
+		void CustomSerialize(const Varlet::Core::Type* type, int8_t* value);
+
 		// TEMP for std
 		void SerializeArray(void* value, const IArrayType* type);
 	};

@@ -56,20 +56,18 @@ public:
 
 	void Serialize(ISerializeContext* context) override
 	{
-		//const uint32_t value = _type == nullptr
-		//	? 0
-		//	: _type->id;
-		//
-		//context->AddData<uint32_t>(value);
+		const uint32_t value = _type == nullptr
+			? 0
+			: _type->id;
+		
+		context->AddData<uint32_t>(value);
 	}
 
 	bool Deserialize(IDeserializeContext* context) override
 	{
-		//context->Read();
+		uint32_t id = context->Read<uint32_t>();
+		_type = Varlet::Core::Type::GetType(id);
 
-		//uint32_t id = info.Read<uint32_t>();
-		//_type = Varlet::Core::Type::GetType(id);
-
-		return false;
+		return true;
 	}
 };

@@ -42,10 +42,7 @@ namespace Varlet::Core
 	{
 		if (type->IsA(ICustomSerializable))
 		{
-			auto customSerializable = CastMemory<ICustomSerializable>(type, value);
-
-			BinarySerializeContext context(_data);
-			customSerializable->Serialize(&context);
+			CustomSerialize(type, value);
 		}
 		else
 		{
@@ -69,10 +66,7 @@ namespace Varlet::Core
 		}
 		else if (fieldType->IsA(ICustomSerializable))
 		{
-			ICustomSerializable* customSerializable = CastMemory<ICustomSerializable>(fieldType, value);
-
-			BinarySerializeContext context(_data);
-			customSerializable->Serialize(&context);
+			CustomSerialize(fieldType, value);
 		}
 		else if (Type::IsPrimetive(info.typeId))
 		{
@@ -212,6 +206,14 @@ namespace Varlet::Core
 			hash = ((hash << 5) + hash) + c;
 
 		return hash;
+	}
+
+	void BinarySerializer::CustomSerialize(const Varlet::Core::Type* type, int8_t* value)
+	{
+		ICustomSerializable* customSerializable = CastMemory<ICustomSerializable>(type, value);
+
+		BinarySerializeContext context(_data);
+		customSerializable->Serialize(&context);
 	}
 
 	void BinarySerializer::SerializeArray(void* value, const IArrayType* type)
