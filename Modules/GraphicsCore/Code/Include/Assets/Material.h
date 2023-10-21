@@ -32,7 +32,7 @@ class GRAPHICSCORE_API Material final : public IAsset, public ICustomSerializabl
 public:
 
 	FIELD(EditorAccessible)
-	bool isActive;
+	bool isActive = true;
 
 	FIELD()
 	std::vector<int8_t> uniformBuffer;

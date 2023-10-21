@@ -12,6 +12,6 @@ class MeshInitializationPanel final : public InitializationAssetPanel<Mesh>
 public:
 
 	~MeshInitializationPanel() override = default;
-	
+
 	void Update() override;
 };

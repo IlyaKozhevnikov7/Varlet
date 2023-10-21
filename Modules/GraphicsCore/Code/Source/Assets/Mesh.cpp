@@ -99,7 +99,7 @@ Varlet::Graphics::SubMeshInfo Mesh::ConstructSubMesh(const aiScene* scene, aiMes
         for (int32_t i = 0; i < mesh->mNumVertices; i++)
         {
             const glm::vec2 data = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
-            memcpy_s(meshInfo.vertexData.data() + offset + i * sizeof(glm::vec2), sizeof(glm::vec2) , &data, sizeof(glm::vec2));
+            memcpy_s(meshInfo.vertexData.data() + offset + i * sizeof(glm::vec2), sizeof(glm::vec2), &data, sizeof(glm::vec2));
         }
 
         offset += mesh->mNumVertices * sizeof(glm::vec2);

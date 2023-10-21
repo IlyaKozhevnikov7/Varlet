@@ -42,7 +42,7 @@ void Material::SetShader(Shader* newShader)
 		{
 			const uint32_t dataSize = GetShaderTypeSize(info.type);
 			const auto type = ShaderDataTypeToType(info.type);
-			
+
 			newUniformInfos.uniformInfos[info.name] = { dataSize, bufferSize, type };
 			bufferSize += dataSize;
 		}
@@ -101,9 +101,9 @@ void Material::SetMat3(const char* name, const glm::mat3& value)
 }
 
 void Material::SetMat4(const char* name, const glm::mat4& value)
-{	
+{
 	auto& layout = _uniformLayouts[_shader];
-	
+
 	if (layout.uniformInfos.contains(name))
 	{
 		const auto& info = layout.uniformInfos[name];

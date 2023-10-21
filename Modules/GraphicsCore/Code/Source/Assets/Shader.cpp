@@ -49,7 +49,7 @@ bool Shader::Deserialize(IDeserializeContext* context)
 {
 	auto sharedId = context->ReadAll();
 	std::wstring path = AssetPath::DeserializePath(sharedId);
-	
+
 	const bool isSuccess = CreateInternal(path.c_str(), this, false);
 
 	if (isSuccess)

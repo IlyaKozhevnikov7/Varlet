@@ -50,9 +50,9 @@ bool Texture2D::Deserialize(IDeserializeContext* context)
 	const size_t pathSize = context->GetDataSize() - sizeof(WrapType) - sizeof(FilterType);
 	int8_t* dataPtr = (int8_t*)context->Read(pathSize);
 	auto data = std::vector<int8_t>(dataPtr, dataPtr + pathSize);
-	
+
 	std::wstring path = AssetPath::DeserializePath(data);
-	
+
 	const bool isSuccess = CreateInternal(path.c_str(), true, _wrapType, _filter, this);
 
 	if (isSuccess)

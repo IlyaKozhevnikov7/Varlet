@@ -18,8 +18,6 @@ public:
 
 	void Update() override;
 
-	void Shutdown() override;
-
 	std::unordered_map<const Varlet::Core::Type*, std::vector<RenderPipelineStage*>>& GetAllRenderPipelineStages();
 
 private:

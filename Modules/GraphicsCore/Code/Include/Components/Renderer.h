@@ -31,7 +31,7 @@ public:
 
 	void OnDestroyed() override;
 
-	virtual Mesh* GetMesh() const { return nullptr; }
+	virtual Mesh* GetMesh() const;
 
 	glm::mat4 GetModelMatrix();
 

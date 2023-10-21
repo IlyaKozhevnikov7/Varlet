@@ -30,7 +30,7 @@ public:
 	static Texture2D* Load(const wchar_t* path, bool mipmap = true, bool flipUV = true, WrapType wrapType = WrapType::Repeat, FilterType filter = FilterType::Linear);
 
 	void Serialize(ISerializeContext* context);
-	
+
 	bool Deserialize(IDeserializeContext* context);
 
 private:

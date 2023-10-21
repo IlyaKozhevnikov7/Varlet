@@ -18,8 +18,6 @@ private:
 
 public:
 
-	void Start() override;
-
 	void SetMesh(Mesh* mesh);
 
 	Mesh* GetMesh() const override;
